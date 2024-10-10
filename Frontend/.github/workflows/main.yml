@@ -31,12 +31,12 @@ jobs:
 
     - name: Deploy to Azure Server
       run: |
-        ssh -i ~/.ssh/private_key -o StrictHostKeyChecking=no ${{ secrets.AZURE_SSH_USER }}@${{ secrets.AZURE_SERVER_IP }} <<EOF
+        ssh -i ~/.ssh/private_key.pem -o StrictHostKeyChecking=no ${{ secrets.AZURE_SSH_USER }}@${{ secrets.AZURE_SERVER_IP }} <<EOF
           sudo rm -rf /var/www/html/*
           sudo mkdir -p /tmp/deployment
         EOF
-        scp -i ~/.ssh/private_key -r dist/personal-digital-agent-frontend/* ${{ secrets.AZURE_SSH_USER }}@${{ secrets.AZURE_SERVER_IP }}:/tmp/deployment
-        ssh -i ~/.ssh/private_key -o StrictHostKeyChecking=no ${{ secrets.AZURE_SSH_USER }}@${{ secrets.AZURE_SERVER_IP }} <<EOF
+        scp -i ~/.ssh/private_key.pem -r dist/personal-digital-agent-frontend/* ${{ secrets.AZURE_SSH_USER }}@${{ secrets.AZURE_SERVER_IP }}:/tmp/deployment
+        ssh -i ~/.ssh/private_key.pem -o StrictHostKeyChecking=no ${{ secrets.AZURE_SSH_USER }}@${{ secrets.AZURE_SERVER_IP }} <<EOF
           sudo mv /tmp/deployment/* /var/www/html/
           sudo chown -R www-data:www-data /var/www/html/
           sudo chmod -R 755 /var/www/html/
