@@ -31,14 +31,20 @@ jobs:
 
     - name: Deploy to Azure Server
       run: |
-        ssh -i ~/.ssh/private_key.pem -o StrictHostKeyChecking=no ${{ secrets.AZURE_SSH_USER }}@${{ secrets.AZURE_SERVER_IP }} <<EOF
+        # Add SSH private key from secrets to the SSH agent
+        echo "${{ secrets.AZURE_SSH_PRIVATE_KEY }}" > azure_key.pem
+        chmod 600 azure_key.pem
+        ssh -i azure_key.pem -o StrictHostKeyChecking=no ${{ secrets.AZURE_SSH_USER }}@${{ secrets.AZURE_SERVER_IP }} <<EOF
           sudo rm -rf /var/www/html/*
           sudo mkdir -p /tmp/deployment
         EOF
-        scp -i ~/.ssh/private_key.pem -r dist/personal-digital-agent-frontend/* ${{ secrets.AZURE_SSH_USER }}@${{ secrets.AZURE_SERVER_IP }}:/tmp/deployment
-        ssh -i ~/.ssh/private_key.pem -o StrictHostKeyChecking=no ${{ secrets.AZURE_SSH_USER }}@${{ secrets.AZURE_SERVER_IP }} <<EOF
+        scp -i azure_key.pem -r dist/personal-digital-agent-frontend/* ${{ secrets.AZURE_SSH_USER }}@${{ secrets.AZURE_SERVER_IP }}:/tmp/deployment
+        ssh -i azure_key.pem -o StrictHostKeyChecking=no ${{ secrets.AZURE_SSH_USER }}@${{ secrets.AZURE_SERVER_IP }} <<EOF
           sudo mv /tmp/deployment/* /var/www/html/
           sudo chown -R www-data:www-data /var/www/html/
           sudo chmod -R 755 /var/www/html/
           sudo systemctl restart apache2
         EOF
+
+    - name: Clean up
+      run: rm -f azure_key.pem
