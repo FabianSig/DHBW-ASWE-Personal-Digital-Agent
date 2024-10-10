@@ -35,9 +35,9 @@ jobs:
         host: ${{ secrets.AZURE_SERVER_IP }}
         username: ${{ secrets.AZURE_SSH_USER }}
         key: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
-        source: "dist/personal-digital-agent-frontend/*"
+        source: "dist/personal-digital-agent-frontend/browser/*"
         target: "/var/www/html/"
-        strip-components: 1
+        strip-components: 0
 
     - name: Restart Apache on Azure Server
       uses: appleboy/ssh-action@v0.1.6
