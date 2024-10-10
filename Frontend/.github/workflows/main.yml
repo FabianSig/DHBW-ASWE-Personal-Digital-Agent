@@ -29,7 +29,6 @@ jobs:
         ls -l dist/
         ls -l dist/personal-digital-agent-frontend/
 
-
     - name: Copy Files to Azure Server
       uses: appleboy/scp-action@v0.1.4
       with:
@@ -38,6 +37,7 @@ jobs:
         key: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
         source: "dist/personal-digital-agent-frontend/*"
         target: "/var/www/html/"
+        strip-components: 1
 
     - name: Restart Apache on Azure Server
       uses: appleboy/ssh-action@v0.1.6
