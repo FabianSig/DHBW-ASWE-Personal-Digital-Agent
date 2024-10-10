@@ -32,6 +32,7 @@ jobs:
         key: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
         port: 22
         script: |
+          mkdir hi
           sudo rm -rf /var/www/html/*
           sudo cp -r dist/<Personal-Digital-Agent-Frontend>/* /var/www/html/
           sudo systemctl restart apache2
