@@ -33,5 +33,5 @@ jobs:
         port: 22
         script: |
           sudo rm -rf /var/www/html/*
-          sudo cp -r dist/* /var/www/html/
+          sudo cp -r dist/<Personal-Digital-Agent-Frontend>/* /var/www/html/
           sudo systemctl restart apache2
