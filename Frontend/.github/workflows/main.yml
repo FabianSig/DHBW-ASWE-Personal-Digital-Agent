@@ -29,6 +29,16 @@ jobs:
         ls -l dist/
         ls -l dist/personal-digital-agent-frontend/
 
+    - name: Clean Target Directory on Azure Server
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: ${{ secrets.AZURE_SERVER_IP }}
+        username: ${{ secrets.AZURE_SSH_USER }}
+        key: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
+        port: 22
+        script: |
+          sudo rm -rf /var/www/html/*
+
     - name: Copy Files to Azure Server
       uses: appleboy/scp-action@v0.1.4
       with:
