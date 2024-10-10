@@ -34,6 +34,7 @@ jobs:
         echo "${{ secrets.AZURE_SSH_PRIVATE_KEY }}" > azure_key.pem
         chmod 600 azure_key.pem
         ssh -i azure_key.pem -o StrictHostKeyChecking=no ${{ secrets.AZURE_SSH_USER }}@${{ secrets.AZURE_SERVER_IP }} <<EOF
+          sudo chmod -R 777 /var/www/html/
           sudo rm -rf /var/www/html/*
         EOF
         scp -i azure_key.pem -r dist/personal-digital-agent-frontend/* ${{ secrets.AZURE_SSH_USER }}@${{ secrets.AZURE_SERVER_IP }}:/var/www/html/
