@@ -24,7 +24,16 @@ jobs:
     - name: Build Angular App
       run: npm run build -- --configuration production
 
-    - name: Deploy to Azure Server
+    - name: Copy Files to Azure Server
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: ${{ secrets.AZURE_SERVER_IP }}
+        username: ${{ secrets.AZURE_SSH_USER }}
+        key: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
+        source: "dist/Personal-Digital-Agent-Frontend/*"
+        target: "/var/www/html/"
+
+    - name: Restart Apache on Azure Server
       uses: appleboy/ssh-action@v0.1.6
       with:
         host: ${{ secrets.AZURE_SERVER_IP }}
@@ -32,6 +41,4 @@ jobs:
         key: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
         port: 22
         script: |
-          sudo rm -rf /var/www/html/*
-          sudo cp -r dist/Personal-Digital-Agent-Frontend/* /var/www/html/
           sudo systemctl restart apache2
