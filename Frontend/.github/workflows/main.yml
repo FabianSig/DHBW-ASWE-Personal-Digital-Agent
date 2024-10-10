@@ -36,7 +36,7 @@ jobs:
         host: ${{ secrets.AZURE_SERVER_IP }}
         username: ${{ secrets.AZURE_SSH_USER }}
         key: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
-        source: "dist/personal-digital-agent-frontend/*"
+        source: "dist/personal-digital-agent-frontend/dist/personal-digital-agent-frontend/browser$*"
         target: "/var/www/html/"
 
     - name: Restart Apache on Azure Server
