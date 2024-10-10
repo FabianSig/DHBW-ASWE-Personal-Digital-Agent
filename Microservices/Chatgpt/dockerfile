@@ -1,12 +1,12 @@
 # Step 1: Use an official OpenJDK runtime as a parent image
-FROM openjdk:17-jdk-alpine
+FROM openjdk:21-jdk-alpine
 
 # Step 2: Set the working directory inside the container
 WORKDIR /app
 
 # Step 3: Copy the built JAR file into the container
 # Make sure to adjust 'my-app.jar' to the correct name of your JAR file
-COPY target/my-app.jar /app/my-app.jar
+COPY build/libs/demo-0.0.1-SNAPSHOT-plain.jar /app/my-app.jar
 
 # Step 4: Run the application
 CMD ["java", "-jar", "/app/my-app.jar"]
