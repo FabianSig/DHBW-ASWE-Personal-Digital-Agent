@@ -5,6 +5,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class ChatGPTService {
     public static String test(String message) {
-        return "Hello, " + message;
+        return "Hello Es wurde automatisch deployed, " + message;
     }
 }
