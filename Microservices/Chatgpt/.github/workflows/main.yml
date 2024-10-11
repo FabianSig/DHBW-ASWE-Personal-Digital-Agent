@@ -3,42 +3,46 @@ name: Build and Deploy Spring Boot API to Azure
 on:
   push:
     branches:
-      - main  # Trigger on pushes to the main branch, modify as needed.
+      - main
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Docker Buildx for multi-platform builds
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Build with Maven
+        run: |
+          mvn clean package -DskipTests
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      # Step 3: Log in to Azure Container Registry (ACR)
       - name: Log in to Azure Container Registry
         uses: azure/docker-login@v1
         with:
-          login-server: advancedswe.azurecr.io  # Your ACR login server
-          username: ${{ secrets.AZURE_ACR_USERNAME }}  # Define these in GitHub secrets
+          login-server: advancedswe.azurecr.io
+          username: ${{ secrets.AZURE_ACR_USERNAME }}
           password: ${{ secrets.AZURE_ACR_PASSWORD }}
 
-      # Step 4: Build and push the Docker image to ACR
       - name: Build and Push Docker Image
         run: |
           docker build -t advancedswe.azurecr.io/chatgpt:v1 .
           docker push advancedswe.azurecr.io/chatgpt:v1
 
-      # Step 5: Log in to Azure CLI
       - name: Log in to Azure
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}  # Use service principal credentials as a secret
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Step 6: Deploy the Docker image to Azure Container Instance (ACI)
       - name: Deploy to Azure Container Instance
         run: |
           az container create \
