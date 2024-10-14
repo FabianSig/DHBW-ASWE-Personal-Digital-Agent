@@ -35,8 +35,8 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t advancedswe.azurecr.io/chatgpt:v1 .
-          docker push advancedswe.azurecr.io/chatgpt:v1
+          docker build -t advancedswe.azurecr.io/chatgpt:${{ github.sha }} .
+          docker push advancedswe.azurecr.io/chatgpt:${{ github.sha }}
 
       - name: Log in to Azure
         uses: azure/login@v1
@@ -48,7 +48,7 @@ jobs:
           az container create \
             --resource-group Advanced-SWE_group \
             --name springboot-api-instance \
-            --image advancedswe.azurecr.io/chatgpt:v1 \
+            --image advancedswe.azurecr.io/chatgpt:${{ github.sha }} \
             --cpu 1 \
             --memory 1 \
             --registry-login-server advancedswe.azurecr.io \
@@ -56,4 +56,5 @@ jobs:
             --ports 8080 \
             --registry-username ${{ secrets.AZURE_ACR_USERNAME }} \
             --registry-password ${{ secrets.AZURE_ACR_PASSWORD }} \
-            --restart-policy Always
+            --restart-policy Always \
+            --environment-variables API_KEY=${{ secrets.API_KEY }}
