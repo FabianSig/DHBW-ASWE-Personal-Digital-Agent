@@ -23,7 +23,7 @@ public class ChatGPTService {
                 new ChatGPTMessage("system", "You are a helpful assistant."),
                 new ChatGPTMessage("user", message)
         );
-        ChatGPTRequest request = new ChatGPTRequest("gpt-3.5-turbo", messages);
+        ChatGPTRequest request = new ChatGPTRequest("gpt-4o-mini", messages);
         return chatGPTClient.test(request, API_KEY);
     }
 }
