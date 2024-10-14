@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import nikomitk.mschatgpt.ChatGPTClient;
 import nikomitk.mschatgpt.dto.ChatGPTMessage;
 import nikomitk.mschatgpt.dto.ChatGPTRequest;
+import nikomitk.mschatgpt.model.Message;
+import nikomitk.mschatgpt.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,16 +17,23 @@ public class ChatGPTService {
 
 
     private final String API_KEY = System.getenv("API_KEY");
-
+    private final MessageRepository messageRepository;
     private final ChatGPTClient chatGPTClient;
 
     public String test(String message) {
 
-        List<ChatGPTMessage> messages = List.of(
-                new ChatGPTMessage("system", "You are a helpful assistant."),
-                new ChatGPTMessage("user", message)
-        );
+        List<ChatGPTMessage> messages = new java.util.ArrayList<>(messageRepository.findAll().stream().map(m -> new ChatGPTMessage(m.getRole(), m.getContent())).toList());
+
+        Message newMessage = Message.builder().role("user").content(message).build();
+        messages.add(new ChatGPTMessage(newMessage.getRole(), newMessage.getContent()));
+
         ChatGPTRequest request = new ChatGPTRequest("gpt-4o-mini", messages);
-        return chatGPTClient.test(request, "Bearer " + API_KEY);
+        String response = chatGPTClient.test(request, "Bearer " + API_KEY);
+
+        Message responseMessage = Message.builder().role("bot").content(response).build();
+        messageRepository.save(newMessage);
+        messageRepository.save(responseMessage);
+
+        return response;
     }
 }
