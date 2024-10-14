@@ -13,9 +13,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChatGPTService {
 
-    @Value("${chatgpt.api.url}")
-    private static String API_URL;
-    private static final String API_KEY = System.getenv("API_KEY");
+
+    private final String API_KEY = System.getenv("API_KEY");
 
     private final ChatGPTClient chatGPTClient;
 
@@ -25,6 +24,6 @@ public class ChatGPTService {
                 new ChatGPTMessage("user", message)
         );
         ChatGPTRequest request = new ChatGPTRequest("gpt-3.5-turbo", messages);
-        return chatGPTClient.test(request);
+        return chatGPTClient.test(request, API_KEY);
     }
 }
