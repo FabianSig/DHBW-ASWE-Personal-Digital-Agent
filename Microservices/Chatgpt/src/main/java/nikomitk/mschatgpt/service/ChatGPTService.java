@@ -24,6 +24,6 @@ public class ChatGPTService {
                 new ChatGPTMessage("user", message)
         );
         ChatGPTRequest request = new ChatGPTRequest("gpt-3.5-turbo", messages);
-        return chatGPTClient.test(request, API_KEY);
+        return chatGPTClient.test(request, "Bearer " + API_KEY);
     }
 }
