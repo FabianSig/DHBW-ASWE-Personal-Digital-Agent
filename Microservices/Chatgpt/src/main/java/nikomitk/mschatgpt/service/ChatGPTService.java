@@ -19,11 +19,12 @@ public class ChatGPTService {
     private final ChatGPTClient chatGPTClient;
 
     public String test(String message) {
+
         List<ChatGPTMessage> messages = List.of(
                 new ChatGPTMessage("system", "You are a helpful assistant."),
                 new ChatGPTMessage("user", message)
         );
         ChatGPTRequest request = new ChatGPTRequest("gpt-4o-mini", messages);
-        return chatGPTClient.test(request, API_KEY);
+        return chatGPTClient.test(request, "Bearer " + API_KEY);
     }
 }
