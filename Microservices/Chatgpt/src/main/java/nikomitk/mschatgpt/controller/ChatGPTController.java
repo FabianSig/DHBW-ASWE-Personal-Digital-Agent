@@ -1,6 +1,8 @@
 package nikomitk.mschatgpt.controller;
 
 import lombok.RequiredArgsConstructor;
+import nikomitk.mschatgpt.dto.ChatGPTResponse;
+import nikomitk.mschatgpt.dto.ChatGPTResponseChoice;
 import nikomitk.mschatgpt.service.ChatGPTService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +16,7 @@ public class ChatGPTController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public String sendMessage(@RequestBody String message) {
+    public ChatGPTResponseChoice sendMessage(@RequestBody String message) {
         return chatGPTService.sendMessage(message);
     }
 }

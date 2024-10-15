@@ -5,6 +5,7 @@ import nikomitk.mschatgpt.ChatGPTClient;
 import nikomitk.mschatgpt.dto.ChatGPTMessage;
 import nikomitk.mschatgpt.dto.ChatGPTRequest;
 import nikomitk.mschatgpt.dto.ChatGPTResponse;
+import nikomitk.mschatgpt.dto.ChatGPTResponseChoice;
 import nikomitk.mschatgpt.model.Message;
 import nikomitk.mschatgpt.repository.MessageRepository;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class ChatGPTService {
     private final MessageRepository messageRepository;
     private final ChatGPTClient chatGPTClient;
 
-    public String sendMessage(String message) {
+    public ChatGPTResponseChoice sendMessage(String message) {
 
         List<ChatGPTMessage> messages = new java.util.ArrayList<>(messageRepository.findAll().stream().map(m -> new ChatGPTMessage(m.getRole(), m.getContent())).toList());
 
@@ -34,6 +35,6 @@ public class ChatGPTService {
         messageRepository.save(newMessage);
         messageRepository.save(responseMessage);
 
-        return chatGPTResponseContent;
+        return response.choices().getFirst();
     }
 }
