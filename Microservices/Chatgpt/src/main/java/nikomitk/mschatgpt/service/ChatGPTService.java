@@ -2,10 +2,7 @@ package nikomitk.mschatgpt.service;
 
 import lombok.RequiredArgsConstructor;
 import nikomitk.mschatgpt.ChatGPTClient;
-import nikomitk.mschatgpt.dto.ChatGPTMessage;
-import nikomitk.mschatgpt.dto.ChatGPTRequest;
-import nikomitk.mschatgpt.dto.ChatGPTResponse;
-import nikomitk.mschatgpt.dto.ChatGPTResponseChoice;
+import nikomitk.mschatgpt.dto.*;
 import nikomitk.mschatgpt.model.Message;
 import nikomitk.mschatgpt.repository.MessageRepository;
 import org.springframework.stereotype.Service;
@@ -20,18 +17,18 @@ public class ChatGPTService {
     private final MessageRepository messageRepository;
     private final ChatGPTClient chatGPTClient;
 
-    public ChatGPTResponseChoice sendMessage(String message) {
+    public ChatGPTResponseChoice sendMessage(Request request) {
 
         List<ChatGPTMessage> messages = new java.util.ArrayList<>(messageRepository.findAll().stream().map(m -> new ChatGPTMessage(m.getRole(), m.getContent())).toList());
 
-        Message newMessage = Message.builder().role("user").content(message).build();
+        Message newMessage = Message.builder().role("user").content(request.message()).build();
         messages.add(new ChatGPTMessage(newMessage.getRole(), newMessage.getContent()));
 
-        ChatGPTRequest request = new ChatGPTRequest("gpt-4o-mini", messages);
-        ChatGPTResponse response = chatGPTClient.test(request);
-        String chatGPTResponseContent = response.choices().getFirst().message().content();
+        ChatGPTRequest chatGPTRequest = new ChatGPTRequest("gpt-4o-mini", messages);
+        ChatGPTResponse response = chatGPTClient.sendMessage(chatGPTRequest);
+        String chatGPTResponseMessage = response.choices().getFirst().message().content();
 
-        Message responseMessage = Message.builder().role("assistant").content(chatGPTResponseContent).build();
+        Message responseMessage = Message.builder().role("assistant").content(chatGPTResponseMessage).build();
         messageRepository.save(newMessage);
         messageRepository.save(responseMessage);
 

@@ -8,5 +8,5 @@ import org.springframework.web.service.annotation.PostExchange;
 public interface ChatGPTClient {
 
     @PostExchange("v1/chat/completions")
-    ChatGPTResponse test(@RequestBody ChatGPTRequest request);
+    ChatGPTResponse sendMessage(@RequestBody ChatGPTRequest request);
 }
