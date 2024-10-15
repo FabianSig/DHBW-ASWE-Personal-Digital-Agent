@@ -6,7 +6,6 @@ import nikomitk.mschatgpt.dto.ChatGPTMessage;
 import nikomitk.mschatgpt.dto.ChatGPTRequest;
 import nikomitk.mschatgpt.model.Message;
 import nikomitk.mschatgpt.repository.MessageRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +15,6 @@ import java.util.List;
 public class ChatGPTService {
 
 
-    private final String API_KEY = System.getenv("API_KEY");
     private final MessageRepository messageRepository;
     private final ChatGPTClient chatGPTClient;
 
@@ -28,7 +26,7 @@ public class ChatGPTService {
         messages.add(new ChatGPTMessage(newMessage.getRole(), newMessage.getContent()));
 
         ChatGPTRequest request = new ChatGPTRequest("gpt-4o-mini", messages);
-        String response = chatGPTClient.test(request, "Bearer " + API_KEY);
+        String response = chatGPTClient.test(request);
 
         Message responseMessage = Message.builder().role("bot").content(response).build();
         messageRepository.save(newMessage);

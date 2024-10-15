@@ -20,12 +20,9 @@ public class RestClientConfig {
     public ChatGPTClient chatGPTClient() {
         RestClient restClient = RestClient.builder()
                 .baseUrl(chatGPTServiceUrl)
-                .requestInterceptor((request, context, execution) -> {
-                    request.getHeaders().forEach((key, value) -> log.info("Request header: {}={}", key, value));
-                    log.info(request.toString());
-                    return execution.execute(request, context);
-                })
+                .defaultHeader("Authorization", "Bearer " + System.getenv("API_KEY"))
                 .build();
+
         RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
         HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(restClientAdapter).build();
         return httpServiceProxyFactory.createClient(ChatGPTClient.class);
