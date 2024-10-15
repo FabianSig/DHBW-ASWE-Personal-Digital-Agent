@@ -16,6 +16,10 @@ public class CustomAPIKeyFilter implements Filter {
 
         // Conversion to HttpServletRequest to access the header
         if(servletRequest instanceof HttpServletRequest httpServletRequest) {
+            if(!httpServletRequest.getRequestURL().toString().contains("/chatgpt")) {
+                filterChain.doFilter(servletRequest, servletResponse);
+                return;
+            }
 
             String ourApiKey = httpServletRequest.getHeader("Authorization");
 
