@@ -28,7 +28,7 @@ public class ChatGPTService {
 
         ChatGPTRequest request = new ChatGPTRequest("gpt-4o-mini", messages);
         ChatGPTResponse response = chatGPTClient.test(request);
-        String chatGPTResponseContent = response.choices().get(1).message().content();
+        String chatGPTResponseContent = response.choices().getFirst().message().content();
 
         Message responseMessage = Message.builder().role("assistant").content(chatGPTResponseContent).build();
         messageRepository.save(newMessage);
