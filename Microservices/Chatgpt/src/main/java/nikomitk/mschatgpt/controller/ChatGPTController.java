@@ -12,9 +12,9 @@ public class ChatGPTController {
 
     private final ChatGPTService chatGPTService;
 
-    @GetMapping("/test")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public String test(@RequestBody String message) {
-        return chatGPTService.test(message);
+    public String sendMessage(@RequestBody String message) {
+        return chatGPTService.sendMessage(message);
     }
 }
