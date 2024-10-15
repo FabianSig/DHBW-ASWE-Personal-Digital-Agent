@@ -57,4 +57,4 @@ jobs:
             --registry-username ${{ secrets.AZURE_ACR_USERNAME }} \
             --registry-password ${{ secrets.AZURE_ACR_PASSWORD }} \
             --restart-policy Always \
-            --environment-variables API_KEY=${{ secrets.API_KEY }} OUR_API_KEY=${{ secrets.OUR_API_KEY }}
+            --environment-variables API_KEY=${{ secrets.API_KEY }} OUR_API_KEY=${{ secrets.OUR_API_KEY }} MONGODB_PASSWORD=${{ secrets.MONGODB_PASSWORD }}
