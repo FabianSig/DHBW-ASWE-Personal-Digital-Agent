@@ -15,7 +15,7 @@ public class ChatGPTController {
 
     private final ChatGPTService chatGPTService;
 
-    @GetMapping
+    @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public ChatGPTResponseChoice sendMessage(@RequestBody Request request) {
         return chatGPTService.sendMessage(request);
