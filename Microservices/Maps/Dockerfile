@@ -2,6 +2,6 @@ FROM openjdk:21
 
 WORKDIR /app
 
-COPY target/MS-Routing-0.0.1-SNAPSHOT.jar /app/my-app.jar
+COPY target/DHBW-ASWE-Personal-Digital-Agent-MS-Routing-0.0.1-SNAPSHOT.jar /app/my-app.jar
 
 CMD ["java", "-jar", "/app/my-app.jar"]
