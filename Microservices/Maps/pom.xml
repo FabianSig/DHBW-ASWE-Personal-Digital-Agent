@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>fabiansig</groupId>
-	<artifactId>DHBW-ASWE-Personal-Digital-Agent-BFF</artifactId>
+	<artifactId>DHBW-ASWE-Personal-Digital-Agent-MS-Routing</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>DHBW-ASWE-Personal-Digital-Agent-BFF</name>
-	<description>DHBW-ASWE-Personal-Digital-Agent-BFF</description>
+	<name>DHBW-ASWE-Personal-Digital-Agent-MS-Routing</name>
+	<description>DHBW-ASWE-Personal-Digital-Agent-MS-Routing</description>
 	<url/>
 	<licenses>
 		<license/>
