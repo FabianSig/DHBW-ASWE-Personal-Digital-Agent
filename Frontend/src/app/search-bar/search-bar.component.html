@@ -1,2 +1,5 @@
+<input type="text" placeholder="Give the API key..." (input)="onSearch($event)" />
+<button (click)="handleKeySearch()">Send</button>
+
 <input type="text" placeholder="Ask PDA..." (input)="onSearch($event)" />
-<button (click)="sendDataToChatGPT()">Senden</button>
+<button (click)="handleChatGPTSearch()">Senden</button>

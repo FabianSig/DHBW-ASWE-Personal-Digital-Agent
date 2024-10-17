@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import {SearchBarComponent} from './search-bar/search-bar.component';
+import {ChatGPTResponse} from './interfaces/chat-gptresponse';
 
 @Component({
   selector: 'app-root',
@@ -10,5 +11,9 @@ import {SearchBarComponent} from './search-bar/search-bar.component';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'Personal-Digital-Agent-Frontend';
+chatGPTResponse?: ChatGPTResponse;
+
+  onChatGPTResponse(response: ChatGPTResponse): void {
+    this.chatGPTResponse = response;
+  }
 }
