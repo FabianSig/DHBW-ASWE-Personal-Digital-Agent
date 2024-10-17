@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.support.RestClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
@@ -20,7 +22,9 @@ public class RestClientConfig {
     public GoogleClient googleClient() {
         RestClient restClient = RestClient.builder()
                 .baseUrl(googleServiceUrl)
-                .defaultHeader("X-Goog-Api-Key", "Bearer " + System.getenv("API_KEY"))
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .defaultHeader("X-Goog-Api-Key", System.getenv("API_KEY"))
+                .defaultHeader("X-Goog-FieldMask", "routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline")
                 .build();
 
         RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
