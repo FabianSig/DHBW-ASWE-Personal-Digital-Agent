@@ -20,7 +20,7 @@ public class RestClientConfig {
     public GoogleClient googleClient() {
         RestClient restClient = RestClient.builder()
                 .baseUrl(googleServiceUrl)
-                .defaultHeader("Authorization", "Bearer " + System.getenv("API_KEY"))
+                .defaultHeader("X-Goog-Api-Key", "Bearer " + System.getenv("API_KEY"))
                 .build();
 
         RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
