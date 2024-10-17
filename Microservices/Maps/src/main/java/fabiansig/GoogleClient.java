@@ -7,6 +7,6 @@ import org.springframework.web.service.annotation.PostExchange;
 
 public interface GoogleClient {
 
-    @PostExchange("v1/chat/completions")
+    @PostExchange("/directions/v2:computeRoutes")
     RouteResponse getRoute(@RequestBody RouteRequest request);
 }
