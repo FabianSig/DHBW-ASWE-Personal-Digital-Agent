@@ -14,7 +14,7 @@ public class RoutingController {
 
     private final RoutingService routingService;
 
-    @GetMapping
+    @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public RouteResponse getRouting(@RequestBody RouteRequest request) {
         return routingService.getRoute(request);
