@@ -19,6 +19,4 @@ public class RoutingController {
     public String getRouting(@RequestBody RouteRequest request) {
         return "routingService.getRoute(request)";
     }
-
-
 }
