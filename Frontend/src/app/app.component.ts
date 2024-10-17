@@ -11,7 +11,8 @@ import {ChatGPTResponse} from './interfaces/chat-gptresponse';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-chatGPTResponse?: ChatGPTResponse;
+  title = 'Personal-Digital-Agent-Frontend';
+  chatGPTResponse?: ChatGPTResponse;
 
   onChatGPTResponse(response: ChatGPTResponse): void {
     this.chatGPTResponse = response;

@@ -1,5 +1,14 @@
-<input type="text" placeholder="Give the API key..." (input)="onSearch($event)" />
-<button (click)="handleKeySearch()">Send</button>
+<div id="searchbars">
+  <div class="searchbar-container">
+    <input class="searchbar" type="text" placeholder="Give the API key..." (input)="onSearch($event)" />
+    <button (click)="handleKeySearch()">Send</button>
+  </div>
+  <div class="searchbar-container">
+    <input class="searchbar" type="text" placeholder="Ask PDA..." (input)="onSearch($event)" />
+    <button (click)="handleChatGPTSearch()">Send</button>
+  </div>
+</div>
 
-<input type="text" placeholder="Ask PDA..." (input)="onSearch($event)" />
-<button (click)="handleChatGPTSearch()">Senden</button>
+@if (error) {
+  <p>{{ error }}</p>
+}

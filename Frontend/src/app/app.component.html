@@ -1,7 +1,9 @@
+<h1>{{ title }}</h1>
+
 <app-search-bar (chatGPTResponseEmitter)="onChatGPTResponse($event)"></app-search-bar>
 
 @if (chatGPTResponse) {
-  <h1>ChatGPT Data:</h1>
+  <h2>ChatGPT Data:</h2>
   <p>{{ chatGPTResponse.message.content }}</p>
 }
 

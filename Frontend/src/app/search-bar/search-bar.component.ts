@@ -14,6 +14,7 @@ export class SearchBarComponent {
 
   searchTerm: string = '';
   apiKey: string = '';
+  error: string = '';
 
   constructor(private apiService: ApiService) {}
 
@@ -27,6 +28,9 @@ export class SearchBarComponent {
         this.chatGPTResponseEmitter.emit(res as ChatGPTResponse);
       },
       (error) => {
+        if (error.status === 401) {
+          this.error = "Provide a valid API key."
+        }
         console.error('Error occurred:', error);
       }
     );
