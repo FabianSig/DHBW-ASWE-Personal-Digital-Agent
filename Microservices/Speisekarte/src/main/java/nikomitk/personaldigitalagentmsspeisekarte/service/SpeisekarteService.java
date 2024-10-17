@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -23,13 +24,17 @@ public class SpeisekarteService {
     }
 
     public List<String> getSpeisekarte() {
+        String today = LocalDate.now().toString();
+        String startThisWeek = LocalDate.now().getDayOfWeek().getValue() <= 3 ? LocalDate.now().minusDays(LocalDate.now().getDayOfWeek().getValue()).toString() : LocalDate.now().plusDays(7 - LocalDate.now().getDayOfWeek().getValue()).toString();
+        String startNextWeek = LocalDate.now().getDayOfWeek().getValue() <= 3 ? LocalDate.now().plusDays(7 - LocalDate.now().getDayOfWeek().getValue()).toString() : LocalDate.now().plusDays(14 - LocalDate.now().getDayOfWeek().getValue()).toString();
+
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.put("func", List.of("make_spl"));
         formData.put("locId", List.of("16"));
-        formData.put("date", List.of("2024-10-17"));
+        formData.put("date", List.of(today));
         formData.put("lang", List.of("de"));
-        formData.put("startThisWeek", List.of("2024-10-14"));
-        formData.put("startNextWeek", List.of("2024-10-21"));
+        formData.put("startThisWeek", List.of(startThisWeek));
+        formData.put("startNextWeek", List.of(startNextWeek));
 
         String websiteHtml = speisekarteClient.getSpeisekarte(formData);
 
