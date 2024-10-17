@@ -16,7 +16,7 @@ public class RoutingController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public String getRouting(@RequestBody RouteRequest request) {
-        return "routingService.getRoute(request)";
+    public RouteResponse getRouting(@RequestBody RouteRequest request) {
+        return routingService.getRoute(request);
     }
 }
