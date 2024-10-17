@@ -1,6 +1,7 @@
 package nikomitk.personaldigitalagentmsspeisekarte.controller;
 
 import lombok.RequiredArgsConstructor;
+import nikomitk.personaldigitalagentmsspeisekarte.Speisekarte;
 import nikomitk.personaldigitalagentmsspeisekarte.service.SpeisekarteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class SpeisekarteController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<String> getSpeisekarte() {
+    public Speisekarte getSpeisekarte() {
         return speisekarteService.getSpeisekarte();
     }
 
