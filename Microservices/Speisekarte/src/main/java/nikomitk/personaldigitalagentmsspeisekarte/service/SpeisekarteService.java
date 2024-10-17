@@ -1,7 +1,7 @@
 package nikomitk.personaldigitalagentmsspeisekarte.service;
 
 import lombok.extern.slf4j.Slf4j;
-import nikomitk.personaldigitalagentmsspeisekarte.Speisekarte;
+import nikomitk.personaldigitalagentmsspeisekarte.dto.Speisekarte;
 import nikomitk.personaldigitalagentmsspeisekarte.client.SpeisekarteClient;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;

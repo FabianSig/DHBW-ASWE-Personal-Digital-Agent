@@ -1,4 +1,4 @@
-package nikomitk.personaldigitalagentmsspeisekarte;
+package nikomitk.personaldigitalagentmsspeisekarte.dto;
 
 import java.util.List;
 

@@ -1,8 +1,9 @@
 package nikomitk.personaldigitalagentmsspeisekarte.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nikomitk.personaldigitalagentmsspeisekarte.Speisekarte;
+import nikomitk.personaldigitalagentmsspeisekarte.dto.Speisekarte;
 import nikomitk.personaldigitalagentmsspeisekarte.service.SpeisekarteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +20,16 @@ public class SpeisekarteController {
     private final SpeisekarteService speisekarteService;
 
     /**
-     * Test
+     * Get the speisekarte for the given date.
      *
      * @param datum in format yyyy-MM-dd
+     * @return the speisekarte for the given date
+     * @see nikomitk.personaldigitalagentmsspeisekarte.dto.Speisekarte
      */
+    @Operation(summary = "Get the speisekarte for the given date")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Speisekarte getSpeisekarte(@RequestParam Optional<String> datum) {
+    public Speisekarte getSpeisekarte(@io.swagger.v3.oas.annotations.Parameter(example = "dd-MM-yyyy") @RequestParam Optional<String> datum) {
         return speisekarteService.getSpeisekarte(datum);
     }
 
