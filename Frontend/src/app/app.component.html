@@ -1,3 +1,9 @@
-<app-search-bar></app-search-bar>
+<app-search-bar (chatGPTResponseEmitter)="onChatGPTResponse($event)"></app-search-bar>
+
+@if (chatGPTResponse) {
+  <h1>ChatGPT Data:</h1>
+  <p>{{ chatGPTResponse.message.content }}</p>
+}
 
 <router-outlet />
+
