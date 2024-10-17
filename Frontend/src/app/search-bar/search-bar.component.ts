@@ -23,17 +23,17 @@ export class SearchBarComponent {
   }
 
   handleChatGPTSearch(): void {
-    this.apiService.getChatGPTData(this.searchTerm, this.apiKey).subscribe(
-      (res) => {
+    this.apiService.getChatGPTData(this.searchTerm, this.apiKey).subscribe({
+      next: (res) => {
         this.chatGPTResponseEmitter.emit(res as ChatGPTResponse);
       },
-      (error) => {
+      error: (error) => {
         if (error.status === 401) {
-          this.error = "Provide a valid API key."
+          this.error = "Provide a valid API key.";
         }
         console.error('Error occurred:', error);
       }
-    );
+    });
   }
 
   handleKeySearch(): void {
