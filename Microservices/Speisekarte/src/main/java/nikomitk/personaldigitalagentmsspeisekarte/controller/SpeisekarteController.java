@@ -15,7 +15,7 @@ public class SpeisekarteController {
 
     private final SpeisekarteService speisekarteService;
 
-    @PostMapping
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<String> getSpeisekarte() {
         return speisekarteService.getSpeisekarte();
