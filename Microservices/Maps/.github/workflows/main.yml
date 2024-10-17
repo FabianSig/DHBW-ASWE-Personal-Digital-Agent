@@ -54,7 +54,7 @@ jobs:
             --memory 1 \
             --registry-login-server advancedswe.azurecr.io \
             --dns-name-label routing-ms \
-            --ports 8080 \
+            --ports 8081 \
             --registry-username ${{ secrets.AZURE_ACR_USERNAME }} \
             --registry-password ${{ secrets.AZURE_ACR_PASSWORD }} \
             --restart-policy Always \
