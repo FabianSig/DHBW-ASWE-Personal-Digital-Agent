@@ -29,7 +29,7 @@ public class RoutingService {
                 new Origin(extractCoordinates(originResponse)),
                 new Destination(extractCoordinates(destinationResponse)),
                 routeAddressRequest.travelMode(),
-                "",
+                "TRAFFIC_UNAWARE",
                 false,
                 new RouteModifiers(false, false, false),
                 "en-US",
