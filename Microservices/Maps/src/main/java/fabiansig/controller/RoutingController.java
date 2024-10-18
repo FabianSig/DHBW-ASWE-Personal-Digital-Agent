@@ -1,7 +1,7 @@
 package fabiansig.controller;
 
-import fabiansig.dto.RouteRequest;
-import fabiansig.dto.RouteResponse;
+import fabiansig.dto.routing.RouteRequest;
+import fabiansig.dto.routing.RouteResponse;
 import fabiansig.service.RoutingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

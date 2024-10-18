@@ -1,4 +1,4 @@
-package fabiansig.dto;
+package fabiansig.dto.routing;
 
 import java.util.List;
 

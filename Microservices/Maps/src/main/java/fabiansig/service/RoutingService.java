@@ -1,8 +1,8 @@
 package fabiansig.service;
 
 import fabiansig.GoogleClient;
-import fabiansig.dto.RouteRequest;
-import fabiansig.dto.RouteResponse;
+import fabiansig.dto.routing.RouteRequest;
+import fabiansig.dto.routing.RouteResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
