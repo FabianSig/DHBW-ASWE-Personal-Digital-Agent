@@ -9,4 +9,5 @@ public interface SpeisekarteClient extends RestClient {
 
     @PostExchange("/inc/ajax-php_konnektor.inc.php")
     String getSpeisekarte(@RequestBody MultiValueMap<String, String> formData);
+
 }
