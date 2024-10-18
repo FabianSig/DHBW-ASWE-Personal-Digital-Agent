@@ -5,7 +5,7 @@ import {HttpClient} from '@angular/common/http';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrlChatgpt = "20.101.234.68:8080/chatgpt";
+  private apiUrlChatgpt = "http://20.101.234.68:8080/chatgpt";
   private apiUrlSpeisekarte = "";
 
   constructor(private http: HttpClient) {}
