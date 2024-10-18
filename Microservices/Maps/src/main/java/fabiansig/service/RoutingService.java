@@ -1,6 +1,6 @@
 package fabiansig.service;
 
-import fabiansig.GoogleClient;
+import fabiansig.clients.RoutingClient;
 import fabiansig.dto.routing.RouteRequest;
 import fabiansig.dto.routing.RouteResponse;
 import lombok.RequiredArgsConstructor;
@@ -11,11 +11,9 @@ import org.springframework.stereotype.Service;
 public class RoutingService {
 
 
-    private final GoogleClient googleClient;
+    private final RoutingClient routingClient;
 
     public RouteResponse getRoute(RouteRequest routeRequest) {
-
-
-        return googleClient.getRoute(routeRequest);
+        return routingClient.getRoute(routeRequest);
     }
 }

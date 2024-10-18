@@ -1,6 +1,7 @@
 package fabiansig.config;
 
-import fabiansig.GoogleClient;
+import fabiansig.clients.GeoCodingClient;
+import fabiansig.clients.RoutingClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,13 +16,16 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 @Slf4j
 public class RestClientConfig {
 
-    @Value("${google.api.url}")
-    private String googleServiceUrl;
+    @Value("${routes.google.api.url}")
+    private String routesGoogleServiceUrl;
+
+    @Value("${maps.google.api.url}")
+    private String mapsGoogleServiceUrl;
 
     @Bean
-    public GoogleClient googleClient() {
+    public RoutingClient routingClient() {
         RestClient restClient = RestClient.builder()
-                .baseUrl(googleServiceUrl)
+                .baseUrl(routesGoogleServiceUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .defaultHeader("X-Goog-Api-Key", System.getenv("API_KEY"))
                 .defaultHeader("X-Goog-FieldMask", "routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline")
@@ -29,6 +33,17 @@ public class RestClientConfig {
 
         RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
         HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(restClientAdapter).build();
-        return httpServiceProxyFactory.createClient(GoogleClient.class);
+        return httpServiceProxyFactory.createClient(RoutingClient.class);
+    }
+
+    @Bean
+    public GeoCodingClient geoCodingClient() {
+        RestClient restClient = RestClient.builder()
+                .baseUrl(mapsGoogleServiceUrl)
+                .build();
+
+        RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
+        HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(restClientAdapter).build();
+        return httpServiceProxyFactory.createClient(GeoCodingClient.class);
     }
 }
