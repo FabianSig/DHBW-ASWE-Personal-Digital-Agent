@@ -25,11 +25,13 @@ public class RoutingService {
         GeoCodingResponse originResponse = geoCodingService.getGeoCoding(routeAddressRequest.origin());
         GeoCodingResponse destinationResponse = geoCodingService.getGeoCoding(routeAddressRequest.destination());
 
+        String travelMode = routeAddressRequest.travelMode();
+
         return this.getRoute(new RouteRequest(
                 new Origin(extractCoordinates(originResponse)),
                 new Destination(extractCoordinates(destinationResponse)),
-                routeAddressRequest.travelMode(),
-                routeAddressRequest.travelMode().equals("TRANSIT") ? null : "TRAFFIC_UNAWARE",
+                travelMode,
+                travelMode.equals("TRANSIT") || travelMode.equals("WALK") || travelMode.equals("BICYCLE") ? null : "TRAFFIC_UNAWARE",
                 false,
                 new RouteModifiers(false, false, false),
                 "en-US",
