@@ -1,0 +1,15 @@
+{
+  "/chatgpt": {
+    "target": "http://4.175.99.99:8080",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/speisekarte": {
+    "target": "http://localhost:8080",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}
+
