@@ -6,7 +6,7 @@
     "logLevel": "debug"
   },
   "/speisekarte": {
-    "target": "http://localhost:8080",
+    "target": "",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"

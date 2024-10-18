@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrlChatgpt = "http://20.101.234.68:8080/chatgpt";
-  private apiUrlSpeisekarte = "";
+  private apiUrlChatgpt = environment.apiUrlChatgpt;
+  private apiUrlSpeisekarte = environment.apiUrlSpeisekarte;
 
   constructor(private http: HttpClient) {}
 
