@@ -1,7 +1,5 @@
 package fabiansig.dto.routing;
 
-import fabiansig.dto.Destination;
-
 public record RouteRequest(
         Origin origin,
         Destination destination,
