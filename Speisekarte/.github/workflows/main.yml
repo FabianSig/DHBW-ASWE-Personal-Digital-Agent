@@ -1,0 +1,61 @@
+name: Build and Deploy Spring Boot API to Azure
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Build with Maven
+        run: |
+          mvn clean package -DskipTests
+      - name: Verify Maven Build Output
+        run: ls -la target 
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: advancedswe.azurecr.io
+          username: ${{ secrets.AZURE_ACR_USERNAME }}
+          password: ${{ secrets.AZURE_ACR_PASSWORD }}
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t advancedswe.azurecr.io/speisekarte:${{ github.sha }} .
+          docker push advancedswe.azurecr.io/speisekarte:${{ github.sha }}
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to Azure Container Instance
+        run: |
+          az container create \
+            --resource-group Advanced-SWE_group \
+            --name speisekarte \
+            --image advancedswe.azurecr.io/speisekarte:${{ github.sha }} \
+            --cpu 1 \
+            --memory 1 \
+            --registry-login-server advancedswe.azurecr.io \
+            --dns-name-label speisekarte-ms \
+            --ports 8080 \
+            --registry-username ${{ secrets.AZURE_ACR_USERNAME }} \
+            --registry-password ${{ secrets.AZURE_ACR_PASSWORD }} \
+            --restart-policy Always \
+            --environment-variables OUR_API_KEY=${{ secrets.OUR_API_KEY }}
