@@ -15,7 +15,6 @@ export class SpeechToTextComponent {
   constructor(private ngZone: NgZone) {}
 
   startListening() {
-    // let voiceHandler = this.hiddenSearchHandler?.nativeElement;
     if ('webkitSpeechRecognition' in window) {
       const vSearch = new webkitSpeechRecognition();
       vSearch.continuous = false;
@@ -23,21 +22,13 @@ export class SpeechToTextComponent {
       vSearch.lang = 'de-DE';
       vSearch.start();
       vSearch.onresult = (e: any) => {
-        console.log(e);
-        // voiceHandler.value = e?.results[0][0]?.transcript;
         this.ngZone.run(() => {
           this.speechToTextResult = e.results[0][0].transcript;
         });
-        this.getResult();
-        // console.log(this.results);
         vSearch.stop();
       };
     } else {
       alert('Your browser does not support voice recognition!');
     }
-  }
-
-  getResult(){
-    console.log(this.speechToTextResult);
   }
 }
