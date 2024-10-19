@@ -1,10 +1,9 @@
 package nikomitk.personaldigitalagentmsspeisekarte.service;
 
-import jakarta.servlet.ServletException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nikomitk.personaldigitalagentmsspeisekarte.dto.Speisekarte;
 import nikomitk.personaldigitalagentmsspeisekarte.client.SpeisekarteClient;
+import nikomitk.personaldigitalagentmsspeisekarte.dto.Speisekarte;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -36,7 +35,7 @@ public class SpeisekarteService {
     public Speisekarte getSpeisekarte(Optional<String> datumParam) {
         final String datum = datumParam.filter(Predicate.not(String::isBlank)).orElse(LocalDate.now().toString());
 
-        if(LocalDate.parse(datum).getDayOfWeek().getValue() > 5) {
+        if (LocalDate.parse(datum).getDayOfWeek().getValue() > 5) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Am Wochenende gibt es keine Speisekarte");
         }
 
