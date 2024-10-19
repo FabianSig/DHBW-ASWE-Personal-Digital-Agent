@@ -16,7 +16,7 @@ public class CustomAPIKeyFilter implements Filter {
 
         // Conversion to HttpServletRequest to access the header
         if(servletRequest instanceof HttpServletRequest httpServletRequest) {
-            if(!httpServletRequest.getRequestURL().toString().contains("/chatgpt")) {
+            if(httpServletRequest.getRequestURL().toString().contains("/swagger") || httpServletRequest.getRequestURL().toString().contains("/api-docs")) {
                 filterChain.doFilter(servletRequest, servletResponse);
                 return;
             }
