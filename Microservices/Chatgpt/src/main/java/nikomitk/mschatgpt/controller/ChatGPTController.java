@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/chatgpt")
+@RequestMapping("/api/chatgpt")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class ChatGPTController {
