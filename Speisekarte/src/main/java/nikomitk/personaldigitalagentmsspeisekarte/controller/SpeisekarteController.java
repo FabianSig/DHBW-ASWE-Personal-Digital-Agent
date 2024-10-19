@@ -1,6 +1,7 @@
 package nikomitk.personaldigitalagentmsspeisekarte.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.ServletException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nikomitk.personaldigitalagentmsspeisekarte.dto.Speisekarte;

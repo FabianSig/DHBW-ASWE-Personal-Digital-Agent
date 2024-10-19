@@ -1,30 +1,32 @@
 package nikomitk.personaldigitalagentmsspeisekarte.service;
 
+import jakarta.servlet.ServletException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nikomitk.personaldigitalagentmsspeisekarte.dto.Speisekarte;
 import nikomitk.personaldigitalagentmsspeisekarte.client.SpeisekarteClient;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class SpeisekarteService {
 
 
     private final SpeisekarteClient speisekarteClient;
 
-    public SpeisekarteService(SpeisekarteClient speisekarteClient) {
-        this.speisekarteClient = speisekarteClient;
-    }
-
     private static List<String> extractMenu(String gruppe) {
-        String[] split = gruppe.split("<span style='font-size:1.5em'>");
+        final String[] split = gruppe.split("<span style='font-size:1.5em'>");
         return Arrays.stream(split)
                 .map(s -> s.split("</span>")[0])
                 .dropWhile(s -> s.contains("<div"))
@@ -32,12 +34,18 @@ public class SpeisekarteService {
     }
 
     public Speisekarte getSpeisekarte(Optional<String> datumParam) {
-        String datum = datumParam.orElse(LocalDate.now().toString());
+        final String datum = datumParam.filter(Predicate.not(String::isBlank)).orElse(LocalDate.now().toString());
 
-        String startThisWeek = LocalDate.now().getDayOfWeek().getValue() <= 3 ? LocalDate.now().minusDays(LocalDate.now().getDayOfWeek().getValue()).toString() : LocalDate.now().plusDays(7 - LocalDate.now().getDayOfWeek().getValue()).toString();
-        String startNextWeek = LocalDate.now().getDayOfWeek().getValue() <= 3 ? LocalDate.now().plusDays(7L - LocalDate.now().getDayOfWeek().getValue()).toString() : LocalDate.now().plusDays(14 - LocalDate.now().getDayOfWeek().getValue()).toString();
+        if(LocalDate.parse(datum).getDayOfWeek().getValue() > 5) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Am Wochenende gibt es keine Speisekarte");
+        }
 
-        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        final int dayOfWeek = LocalDate.now().getDayOfWeek().getValue();
+
+        final String startThisWeek = dayOfWeek <= 3 ? LocalDate.now().minusDays(dayOfWeek).toString() : LocalDate.now().plusDays(7 - dayOfWeek).toString();
+        final String startNextWeek = dayOfWeek <= 3 ? LocalDate.now().plusDays(7L - dayOfWeek).toString() : LocalDate.now().plusDays(14 - dayOfWeek).toString();
+
+        final MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.put("func", List.of("make_spl"));
         formData.put("locId", List.of("16"));
         formData.put("date", List.of(datum));
@@ -45,9 +53,9 @@ public class SpeisekarteService {
         formData.put("startThisWeek", List.of(startThisWeek));
         formData.put("startNextWeek", List.of(startNextWeek));
 
-        String websiteHtml = speisekarteClient.getSpeisekarte(formData);
+        final String websiteHtml = speisekarteClient.getSpeisekarte(formData);
 
-        String[] gruppen = websiteHtml.split("<div class='col-xs-4 gruppenname'>");
+        final String[] gruppen = websiteHtml.split("<div class='col-xs-4 gruppenname'>");
 
 
         return new Speisekarte(
