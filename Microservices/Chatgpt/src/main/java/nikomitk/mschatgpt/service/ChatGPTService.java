@@ -34,4 +34,9 @@ public class ChatGPTService {
 
         return response.choices().getFirst();
     }
+
+    public ChatGPTAudioResponse sendAudio(ChatGPTAudioRequest request) {
+
+        return chatGPTClient.sendAudio(request);
+    }
 }
