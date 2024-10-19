@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  apiUrlChatgpt: '/chatgpt',
-  apiUrlSpeisekarte: '/speisekarte'
+  apiUrlChatgpt: '/api/chatgpt',
+  apiUrlSpeisekarte: '/api/speisekarte'
 };
