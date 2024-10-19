@@ -26,10 +26,8 @@ public class ChatGPTController {
 
     @PostMapping("/audio")
     @ResponseStatus(HttpStatus.OK)
-    public ChatGPTAudioResponse sendAudio(@RequestPart("file") MultipartFile file,
-                                          @RequestPart("model") String model,
-                                          @RequestPart("language") String language) {
-        ChatGPTAudioRequest audioRequest = new ChatGPTAudioRequest(file, model, language);
+    public ChatGPTAudioResponse sendAudio(@RequestPart("file") MultipartFile file) {
+        ChatGPTAudioRequest audioRequest = new ChatGPTAudioRequest(file, "whisper-1", "de");
         return chatGPTService.sendAudio(audioRequest);
     }
 }
