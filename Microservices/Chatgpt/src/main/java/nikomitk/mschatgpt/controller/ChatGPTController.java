@@ -8,6 +8,7 @@ import nikomitk.mschatgpt.dto.Request;
 import nikomitk.mschatgpt.service.ChatGPTService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/chatgpt")
@@ -25,7 +26,10 @@ public class ChatGPTController {
 
     @PostMapping("/audio")
     @ResponseStatus(HttpStatus.OK)
-    public ChatGPTAudioResponse sendAudio(@RequestBody ChatGPTAudioRequest request) {
-        return chatGPTService.sendAudio(request);
+    public ChatGPTAudioResponse sendAudio(@RequestPart("file") MultipartFile file,
+                                          @RequestPart("model") String model,
+                                          @RequestPart("language") String language) {
+        ChatGPTAudioRequest audioRequest = new ChatGPTAudioRequest(file, model, language);
+        return chatGPTService.sendAudio(audioRequest);
     }
 }

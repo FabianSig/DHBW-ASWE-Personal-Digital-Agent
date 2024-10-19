@@ -13,7 +13,7 @@ public interface ChatGPTClient {
     @PostExchange("v1/chat/completions")
     ChatGPTResponse sendMessage(@RequestBody ChatGPTRequest request);
 
-    @PostExchange("v1/audio/transcriptions")
+    @PostExchange(value = "v1/audio/transcriptions", contentType = "multipart/form-data")
     ChatGPTAudioResponse sendAudio(@RequestPart("file") MultipartFile audioFile,
                                    @RequestPart("model") String model,
                                    @RequestPart("language") String language);
