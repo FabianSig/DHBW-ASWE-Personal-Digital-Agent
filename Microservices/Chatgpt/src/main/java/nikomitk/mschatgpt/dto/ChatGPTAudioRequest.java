@@ -1,6 +1,6 @@
 package nikomitk.mschatgpt.dto;
 
-import java.io.File;
+import org.springframework.web.multipart.MultipartFile;
 
-public record ChatGPTAudioRequest(File audioFile, String model, String language) {
+public record ChatGPTAudioRequest(MultipartFile audioFile, String model, String language) {
 }
