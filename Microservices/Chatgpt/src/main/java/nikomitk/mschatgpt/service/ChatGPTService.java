@@ -38,6 +38,6 @@ public class ChatGPTService {
 
     public ChatGPTAudioResponse sendAudio(ChatGPTAudioRequest request) {
 
-        return chatGPTClient.sendAudio(request);
+        return chatGPTClient.sendAudio(request.audioFile(), request.model(), request.language());
     }
 }
