@@ -4,12 +4,11 @@ import {SearchBarComponent} from './search-bar/search-bar.component';
 import {ChatGPTResponse} from './interfaces/chat-gptresponse';
 import {MenuComponent} from './menu/menu.component';
 import {MenuResponse} from './interfaces/menu-response';
-import {SpeechToTextComponent} from './speech-to-text/speech-to-text.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, SearchBarComponent, MenuComponent, SpeechToTextComponent],
+  imports: [RouterOutlet, SearchBarComponent, MenuComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
