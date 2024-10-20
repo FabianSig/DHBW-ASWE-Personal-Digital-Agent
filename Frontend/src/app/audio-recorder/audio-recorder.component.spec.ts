@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SpeechToTextComponent } from './speech-to-text.component';
+import { AudioRecorderComponent } from './audio-recorder.component';
 
-describe('SpeechToTextComponent', () => {
-  let component: SpeechToTextComponent;
-  let fixture: ComponentFixture<SpeechToTextComponent>;
+describe('AudioRecorderComponent', () => {
+  let component: AudioRecorderComponent;
+  let fixture: ComponentFixture<AudioRecorderComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SpeechToTextComponent]
+      imports: [AudioRecorderComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SpeechToTextComponent);
+    fixture = TestBed.createComponent(AudioRecorderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
