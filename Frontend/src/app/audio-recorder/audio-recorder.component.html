@@ -1,0 +1,9 @@
+<h2>Audio Recorder</h2>
+<div class="audio-recorder">
+  <input class="searchbar" type="text" placeholder="Give the API key..." (input)="onSearch($event)" />
+  <button (click)="handleKeySearch()">Send</button>
+  <br>
+  <button (click)="startRecording()" [disabled]="isRecording">Start Recording</button>
+  <button (click)="stopRecording()" [disabled]="!isRecording">Stop Recording</button>
+  <button (click)="sendAudioToChatGPT()" [disabled]="!audioFile">Send Audio</button>
+</div>

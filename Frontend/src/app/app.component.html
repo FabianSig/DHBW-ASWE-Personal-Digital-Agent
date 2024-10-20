@@ -20,5 +20,11 @@
   <p><strong>buffet:</strong> {{ menuResponse.buffet }}</p>
 }
 
+<app-audio-recorder (audioResponseEmitter)="onAudioResponse($event)"></app-audio-recorder>
+@if (audioResponse) {
+  <h2>ChatGPT Data:</h2>
+  <p>{{ audioResponse.text }}</p>
+}
+
 <router-outlet />
 
