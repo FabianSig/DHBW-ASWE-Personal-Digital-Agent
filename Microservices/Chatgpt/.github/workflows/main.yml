@@ -1,4 +1,4 @@
-name: Build and Deploy Spring Boot API to Azure VM with Systemd
+name: Build and Deploy MS ChatGPT App to Azure VM with Systemd
 
 on:
   push:
@@ -23,21 +23,50 @@ jobs:
         run: |
           mvn clean package -DskipTests
 
-      - name: Deploy to Azure VM
+      - name: Create SSH Key File
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Test SSH Connection
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.VM_PORT }} ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} "echo Connection successful"
+
+      - name: Deploy MS ChatGPT App to Azure VM
         run: |
           echo "${{ secrets.VM_SSH_KEY }}" > azure_key.pem
           chmod 600 azure_key.pem
           
-          ssh -i azure_key.pem -o StrictHostKeyChecking=no -p ${{ secrets.VM_PORT }} ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} <<EOF
-            sudo mkdir -p /opt/chatgpt/
-            sudo chmod -R 777 /opt/chatgpt/
-            sudo rm -rf /opt/chatgpt/*
-          EOF
-          
-          scp -i azure_key.pem -P ${{ secrets.VM_PORT }} target/MS-ChatGPT-0.0.1-SNAPSHOT.jar ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }}:/opt/chatgpt/
+          service_name="ms-chatgpt-app"
+          jar_path="/opt/chatgpt/MS-ChatGPT-0.0.1-SNAPSHOT.jar"
 
           ssh -i azure_key.pem -o StrictHostKeyChecking=no -p ${{ secrets.VM_PORT }} ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} <<EOF
-            sudo systemctl restart your-spring-boot-service  # Adjust as needed
+            sudo mkdir -p $(dirname $jar_path)
+            sudo chmod -R 777 $(dirname $jar_path)
+            sudo rm -rf $(dirname $jar_path)/*
+          EOF
+
+          scp -i azure_key.pem -P ${{ secrets.VM_PORT }} target/MS-ChatGPT-0.0.1-SNAPSHOT.jar ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }}:$jar_path
+
+          ssh -i azure_key.pem -o StrictHostKeyChecking=no -p ${{ secrets.VM_PORT }} ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} <<EOF
+            echo "[Unit]
+            Description=MS ChatGPT Application
+            After=network.target
+
+            [Service]
+            User=${{ secrets.VM_USERNAME }}
+            ExecStart=/usr/bin/java -jar $jar_path
+            SuccessExitStatus=143
+            Restart=always
+            RestartSec=10
+
+            [Install]
+            WantedBy=multi-user.target" | sudo tee /etc/systemd/system/$service_name.service
+
+            sudo systemctl daemon-reload
+            sudo systemctl start $service_name.service
+            sudo systemctl enable $service_name.service
           EOF
 
       - name: Clean up
