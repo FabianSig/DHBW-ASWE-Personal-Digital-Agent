@@ -37,8 +37,8 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t advancedswe.azurecr.io/speisekarte:${{ github.sha }} .
-          docker push advancedswe.azurecr.io/speisekarte:${{ github.sha }}
+          docker build -t advancedswe.azurecr.io/speisekarte:latest .
+          docker push advancedswe.azurecr.io/speisekarte:latest
       - name: Log in to Azure
         uses: azure/login@v1
         with:
@@ -49,7 +49,7 @@ jobs:
           az container create \
             --resource-group Advanced-SWE_group \
             --name speisekarte \
-            --image advancedswe.azurecr.io/speisekarte:${{ github.sha }} \
+            --image advancedswe.azurecr.io/speisekarte:latest \
             --cpu 1 \
             --memory 1 \
             --registry-login-server advancedswe.azurecr.io \
