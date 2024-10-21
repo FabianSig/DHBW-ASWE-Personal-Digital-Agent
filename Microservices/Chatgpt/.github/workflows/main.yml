@@ -38,11 +38,10 @@ jobs:
           docker build -t advancedswe.azurecr.io/chatgpt:latest .
           docker push advancedswe.azurecr.io/chatgpt:latest
 
-      # Delete untagged manifests after pushing the new image
       - name: Delete All Untagged Manifests
         run: |
-          # List all untagged manifests (digests) in the repository
-          untagged_manifests=$(az acr repository show-manifests --name AdvancedSWE --repository chatgpt --output tsv --query "[?tags == null].digest")
+          # List all untagged manifests (digests) in the repository using the updated command
+          untagged_manifests=$(az acr manifest list-metadata --name AdvancedSWE --repository chatgpt --output tsv --query "[?tags == null].digest")
 
           # Loop through each untagged manifest and delete it
           for digest in $untagged_manifests; do
