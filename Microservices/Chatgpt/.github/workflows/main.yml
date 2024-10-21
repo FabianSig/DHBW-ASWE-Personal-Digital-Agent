@@ -1,4 +1,4 @@
-name: Build and Deploy Spring Boot API
+name: Build and Deploy Spring Boot API to Azure VM with Systemd
 
 on:
   push:
@@ -23,46 +23,22 @@ jobs:
         run: |
           mvn clean package -DskipTests
 
-      - name: Create SSH Key File
+      - name: Deploy to Azure VM
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-
-      - name: Copy JAR to VM
-        uses: appleboy/scp-action@v0.1.0
-        with:
-          host: ${{ secrets.VM_HOST }}
-          username: ${{ secrets.VM_USERNAME }}
-          key: ~/.ssh/id_rsa
-          port: ${{ secrets.VM_PORT }}
-          source: target/MS-ChatGPT-0.0.1-SNAPSHOT.jar
-          target: /opt/chatgpt/
-
-      - name: Configure and Start JAR on VM with Systemd
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ${{ secrets.VM_SSH_KEY }} ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} << 'EOF'
-            cat <<EOL | sudo tee /etc/systemd/system/chatgpt.service
-            [Unit]
-            Description=ChatGPT Spring Boot Application
-            After=network.target
-
-            [Service]
-            User=${{ secrets.VM_USERNAME }}
-            ExecStart=/usr/bin/java -jar /path/to/target/directory/chatgpt-*.jar
-            SuccessExitStatus=143
-            Restart=always
-            RestartSec=10
-            Environment=API_KEY=${{ secrets.API_KEY }}
-            Environment=OUR_API_KEY=${{ secrets.OUR_API_KEY }}
-            Environment=MONGODB_PASSWORD=${{ secrets.MONGODB_PASSWORD }}
-
-            [Install]
-            WantedBy=multi-user.target
-            EOL
-
-            sudo systemctl daemon-reload
-            sudo systemctl start chatgpt
-            sudo systemctl enable chatgpt
-            sudo systemctl status chatgpt
+          echo "${{ secrets.VM_SSH_KEY }}" > azure_key.pem
+          chmod 600 azure_key.pem
+          
+          ssh -i azure_key.pem -o StrictHostKeyChecking=no -p ${{ secrets.VM_PORT }} ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} <<EOF
+            sudo mkdir -p /opt/chatgpt/
+            sudo chmod -R 777 /opt/chatgpt/
+            sudo rm -rf /opt/chatgpt/*
           EOF
+          
+          scp -i azure_key.pem -P ${{ secrets.VM_PORT }} target/MS-ChatGPT-0.0.1-SNAPSHOT.jar ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }}:/opt/chatgpt/
+
+          ssh -i azure_key.pem -o StrictHostKeyChecking=no -p ${{ secrets.VM_PORT }} ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} <<EOF
+            sudo systemctl restart your-spring-boot-service  # Adjust as needed
+          EOF
+
+      - name: Clean up
+        run: rm -f azure_key.pem
