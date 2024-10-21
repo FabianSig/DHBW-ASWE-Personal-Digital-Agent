@@ -1,4 +1,4 @@
-name: Build and Deploy MS ChatGPT App to Azure VM with Systemd
+name: Build and Deploy MS ChatGPT App to Azure VM with Docker
 
 on:
   push:
@@ -33,41 +33,26 @@ jobs:
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.VM_PORT }} ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} "echo Connection successful"
 
-      - name: Deploy MS ChatGPT App to Azure VM
+      - name: Build Docker Image
         run: |
-          echo "${{ secrets.VM_SSH_KEY }}" > azure_key.pem
-          chmod 600 azure_key.pem
-          
-          service_name="ms-chatgpt-app"
-          jar_path="/opt/chatgpt/MS-ChatGPT-0.0.1-SNAPSHOT.jar"
+          docker build -t ms-chatgpt-app .
 
-          ssh -i azure_key.pem -o StrictHostKeyChecking=no -p ${{ secrets.VM_PORT }} ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} <<EOF
-            sudo mkdir -p $(dirname $jar_path)
-            sudo chmod -R 777 $(dirname $jar_path)
-            sudo rm -rf $(dirname $jar_path)/*
-          EOF
+      - name: Save Docker Image to a Tar File
+        run: |
+          docker save ms-chatgpt-app -o ms-chatgpt-app.tar
 
-          scp -i azure_key.pem -P ${{ secrets.VM_PORT }} target/MS-ChatGPT-0.0.1-SNAPSHOT.jar ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }}:$jar_path
+      - name: Copy Docker Image to Azure VM
+        run: |
+          scp -i ~/.ssh/id_rsa -P ${{ secrets.VM_PORT }} ms-chatgpt-app.tar ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }}:~/
 
-          ssh -i azure_key.pem -o StrictHostKeyChecking=no -p ${{ secrets.VM_PORT }} ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} <<EOF
-            echo "[Unit]
-            Description=MS ChatGPT Application
-            After=network.target
-
-            [Service]
-            User=${{ secrets.VM_USERNAME }}
-            ExecStart=/usr/bin/java -jar $jar_path
-            SuccessExitStatus=143
-            Restart=always
-            RestartSec=10
-
-            [Install]
-            WantedBy=multi-user.target" | sudo tee /etc/systemd/system/$service_name.service
-
-            sudo systemctl daemon-reload
-            sudo systemctl start $service_name.service
-            sudo systemctl enable $service_name.service
+      - name: Load Docker Image on Azure VM
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.VM_PORT }} ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} <<EOF
+            sudo docker load -i ~/ms-chatgpt-app.tar
+            sudo docker run -d --name ms-chatgpt-app -p 8080:8080 ms-chatgpt-app
           EOF
 
       - name: Clean up
-        run: rm -f azure_key.pem
+        run: |
+          rm -f ms-chatgpt-app.tar
+          rm -f ~/.ssh/id_rsa
