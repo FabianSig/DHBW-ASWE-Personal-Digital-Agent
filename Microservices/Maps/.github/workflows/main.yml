@@ -39,10 +39,22 @@ jobs:
         run: |
           docker build -t advancedswe.azurecr.io/routing:latest .
           docker push advancedswe.azurecr.io/routing:latest
+
       - name: Log in to Azure
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Delete All Untagged Manifests
+        run: |
+          # List all untagged manifests (digests) in the repository
+          untagged_manifests=$(az acr repository show-manifests --name AdvancedSWE --repository routing --output tsv --query "[?tags == null].digest")
+
+          # Loop through each untagged manifest and delete it
+          for digest in $untagged_manifests; do
+            echo "Deleting untagged image with digest: $digest in repository: routing"
+            az acr repository delete --name AdvancedSWE --repository routing --manifest $digest --yes || echo "Failed to delete untagged image with digest: $digest"
+          done
 
       - name: Deploy to Azure Container Instance
         run: |
