@@ -23,7 +23,7 @@ jobs:
         run: |
           mvn clean package -DskipTests
       - name: Verify Maven Build Output
-        run: ls -la target 
+        run: ls -la target  # Verify that the JAR file is present
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -39,10 +39,22 @@ jobs:
         run: |
           docker build -t advancedswe.azurecr.io/speisekarte:latest .
           docker push advancedswe.azurecr.io/speisekarte:latest
+
       - name: Log in to Azure
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Delete All Untagged Manifests
+        run: |
+          # List all untagged manifests (digests) in the repository
+          untagged_manifests=$(az acr repository show-manifests --name AdvancedSWE --repository speisekarte --output tsv --query "[?tags == null].digest")
+
+          # Loop through each untagged manifest and delete it
+          for digest in $untagged_manifests; do
+            echo "Deleting untagged image with digest: $digest in repository: speisekarte"
+            az acr repository delete --name AdvancedSWE --repository speisekarte --manifest $digest --yes || echo "Failed to delete untagged image with digest: $digest"
+          done
 
       - name: Deploy to Azure Container Instance
         run: |
