@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiUrlChatgpt: '/api/chatgpt/message',
-  apiUrlSpeisekarte: '/api/speisekarte',
-  apiUrlAudio: '/api/chatgpt/audio'
+  apiUrlChatgpt: 'http://backend-for-frontend.westeurope.azurecontainer.io:8080/api/chatgpt/message',
+  apiUrlSpeisekarte: 'http://backend-for-frontend.westeurope.azurecontainer.io:8080/api/speisekarte',
+  apiUrlAudio: 'http://backend-for-frontend.westeurope.azurecontainer.io:8080/api/chatgpt/audio'
 };
