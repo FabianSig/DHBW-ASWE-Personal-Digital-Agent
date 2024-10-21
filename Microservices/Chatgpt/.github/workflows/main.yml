@@ -23,19 +23,6 @@ jobs:
         run: |
           mvn clean package -DskipTests
 
-      - name: List files in workspace
-        run: |
-          echo "Current directory:"
-          pwd
-          echo "Files:"
-          ls -la
-
-      - name: List files in target directory
-        run: |
-          echo "Contents of target directory:"
-          ls -la target/
-
-
       - name: Copy JAR to VM
         uses: appleboy/scp-action@v0.1.0
         with:
@@ -43,8 +30,8 @@ jobs:
           username: ${{ secrets.VM_USERNAME }}
           key: ${{ secrets.VM_SSH_KEY }}
           port: ${{ secrets.VM_PORT }}
-          source: target/chatgpt-*.jar
-          target: /path/to/target/directory/
+          source: target/MS-ChatGPT-0.0.1-SNAPSHOT.jar
+          target: /opt/chatgpt/
 
       - name: Configure and Start JAR on VM with Systemd
         run: |
