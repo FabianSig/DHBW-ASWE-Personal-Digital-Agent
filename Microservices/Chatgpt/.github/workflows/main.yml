@@ -46,7 +46,7 @@ jobs:
       - name: Delete All Untagged Manifests
         run: |
           # List all untagged manifests (digests) in the repository using the updated command
-          untagged_manifests=$(az acr manifest list-metadata --name AdvancedSWE --repository chatgpt --output tsv --query "[?tags == null].digest")
+          untagged_manifests=$(az acr manifest list-metadata --name AdvancedSWE --repository chatgpt --query "[?tags == null].digest" --output tsv)
 
           # Loop through each untagged manifest and delete it
           for digest in $untagged_manifests; do
