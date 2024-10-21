@@ -19,6 +19,11 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Test SSH Connection
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.VM_PORT }} ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} "echo Connection successful"
+
+
       - name: Build with Maven
         run: |
           mvn clean package -DskipTests
