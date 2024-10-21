@@ -19,6 +19,11 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Create SSH Key File
+        run: |
+          echo "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+      
       - name: Test SSH Connection
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.VM_PORT }} ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} "echo Connection successful"
