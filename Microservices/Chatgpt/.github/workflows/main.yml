@@ -18,31 +18,23 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
-      
+
+      - name: Build with Maven
+        run: |
+          mvn clean package -DskipTests
+
       - name: Create SSH Key File
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-      - name: List SSH Directory Contents
-        run: ls -la ~/.ssh/
-
-      - name: Test SSH Connection
-        run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.VM_PORT }} ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} "echo Connection successful"
-
-
-      - name: Build with Maven
-        run: |
-          mvn clean package -DskipTests
-
       - name: Copy JAR to VM
         uses: appleboy/scp-action@v0.1.0
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USERNAME }}
-          key: ${{ secrets.VM_SSH_KEY }}
+          key: ~/.ssh/id_rsa
           port: ${{ secrets.VM_PORT }}
           source: target/MS-ChatGPT-0.0.1-SNAPSHOT.jar
           target: /opt/chatgpt/
