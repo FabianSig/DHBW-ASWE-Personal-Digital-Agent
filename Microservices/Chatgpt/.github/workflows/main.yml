@@ -38,6 +38,11 @@ jobs:
           docker build -t advancedswe.azurecr.io/chatgpt:latest .
           docker push advancedswe.azurecr.io/chatgpt:latest
 
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       - name: Delete All Untagged Manifests
         run: |
           # List all untagged manifests (digests) in the repository using the updated command
@@ -48,11 +53,6 @@ jobs:
             echo "Deleting untagged image with digest: $digest in repository: chatgpt"
             az acr repository delete --name AdvancedSWE --repository chatgpt --manifest $digest --yes || echo "Failed to delete untagged image with digest: $digest"
           done
-
-      - name: Log in to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy to Azure Container Instance
         run: |
