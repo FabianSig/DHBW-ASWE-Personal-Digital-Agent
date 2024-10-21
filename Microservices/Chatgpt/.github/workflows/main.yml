@@ -35,8 +35,8 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t advancedswe.azurecr.io/chatgpt:${{ github.sha }} .
-          docker push advancedswe.azurecr.io/chatgpt:${{ github.sha }}
+          docker build -t advancedswe.azurecr.io/chatgpt:latest .
+          docker push advancedswe.azurecr.io/chatgpt:latest
 
       - name: Log in to Azure
         uses: azure/login@v1
@@ -48,7 +48,7 @@ jobs:
           az container create \
             --resource-group Advanced-SWE_group \
             --name chatgpt-ms \
-            --image advancedswe.azurecr.io/chatgpt:${{ github.sha }} \
+            --image advancedswe.azurecr.io/chatgpt:latest} \
             --cpu 1 \
             --memory 1 \
             --registry-login-server advancedswe.azurecr.io \
