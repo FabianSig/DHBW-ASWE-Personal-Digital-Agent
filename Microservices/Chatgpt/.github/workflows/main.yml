@@ -1,4 +1,4 @@
-name: Build and Deploy Spring Boot API to Azure
+name: Build and Deploy MS ChatGPT App to Azure VM with Podman
 
 on:
   push:
@@ -23,50 +23,48 @@ jobs:
         run: |
           mvn clean package -DskipTests
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Log in to Azure Container Registry
-        uses: azure/docker-login@v1
-        with:
-          login-server: advancedswe.azurecr.io
-          username: ${{ secrets.AZURE_ACR_USERNAME }}
-          password: ${{ secrets.AZURE_ACR_PASSWORD }}
-
-      - name: Build and Push Docker Image
+      - name: Create SSH Key File
         run: |
-          docker build -t advancedswe.azurecr.io/chatgpt:latest .
-          docker push advancedswe.azurecr.io/chatgpt:latest
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
 
-      - name: Log in to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      # Delete untagged manifests after login
-      - name: Delete All Untagged Manifests
+      - name: Test SSH Connection
         run: |
-          # List all untagged manifests (digests) in the repository
-          untagged_manifests=$(az acr repository show-manifests --name AdvancedSWE --repository chatgpt --output tsv --query "[?tags == null].digest")
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p 22 ${{ secrets.VM_USERNAME }}@20.74.83.28 "echo Connection successful"
 
-          # Loop through each untagged manifest and delete it
-          for digest in $untagged_manifests; do
-            echo "Deleting untagged image with digest: $digest in repository: chatgpt"
-            az acr repository delete --name AdvancedSWE --repository chatgpt --manifest $digest --yes || echo "Failed to delete untagged image with digest: $digest"
-          done
-
-      - name: Deploy to Azure Container Instance
+      - name: Build Docker Image
         run: |
-          az container create \
-            --resource-group Advanced-SWE_group \
-            --name chatgpt-ms \
-            --image advancedswe.azurecr.io/chatgpt:latest \
-            --cpu 1 \
-            --memory 1 \
-            --registry-login-server advancedswe.azurecr.io \
-            --dns-name-label chatgpt-ms \
-            --ports 8080 \
-            --registry-username ${{ secrets.AZURE_ACR_USERNAME }} \
-            --registry-password ${{ secrets.AZURE_ACR_PASSWORD }} \
-            --restart-policy Always \
-            --environment-variables API_KEY=${{ secrets.API_KEY }} OUR_API_KEY=${{ secrets.OUR_API_KEY }} MONGODB_PASSWORD=${{ secrets.MONGODB_PASSWORD }}
+          docker build -t ms-chatgpt-app .
+
+      - name: Save Docker Image to a Tar File
+        run: |
+          docker save ms-chatgpt-app -o ms-chatgpt-app.tar
+
+      - name: Copy Docker Image to Azure VM
+        run: |
+          scp -i ~/.ssh/id_rsa -P 22 ms-chatgpt-app.tar ${{ secrets.VM_USERNAME }}@20.74.83.28:~/
+
+      - name: Load Docker Image on Azure VM
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p 22 ${{ secrets.VM_USERNAME }}@20.74.83.28 <<EOF
+            # Stop and remove any existing container
+            if [ \$(sudo podman ps -a -q -f name=ms-chatgpt-app) ]; then
+              sudo podman stop ms-chatgpt-app
+              sudo podman rm ms-chatgpt-app
+            fi
+
+            # Remove any existing image
+            if [ \$(sudo podman images -q ms-chatgpt-app) ]; then
+              sudo podman rmi ms-chatgpt-app
+            fi
+
+            # Load and run the new image
+            sudo podman load -i ~/ms-chatgpt-app.tar
+            sudo podman run -d --name ms-chatgpt-app -p 8081:8080 ms-chatgpt-app
+          EOF
+
+      - name: Clean up
+        run: |
+          rm -f ms-chatgpt-app.tar
+          rm -f ~/.ssh/id_rsa
