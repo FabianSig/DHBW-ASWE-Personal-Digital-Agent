@@ -52,7 +52,7 @@ jobs:
             sudo podman load -i ~/ms-chatgpt-app.tar
             
             # Remove any existing container with the same name and replace it
-            sudo podman run -d --replace --name ms-chatgpt-app -p 8081:8080 ms-chatgpt-app
+            sudo podman run -d --replace --name ms-chatgpt-app -p 8081:8081 ms-chatgpt-app
           EOF
 
       - name: Clean up
