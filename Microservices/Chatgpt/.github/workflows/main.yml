@@ -31,7 +31,7 @@ jobs:
 
       - name: Test SSH Connection
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.VM_PORT }} ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} "echo Connection successful"
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p 22 ${{ secrets.VM_USERNAME }}@20.74.83.28 "echo Connection successful"
 
       - name: Build Docker Image
         run: |
@@ -43,11 +43,11 @@ jobs:
 
       - name: Copy Docker Image to Azure VM
         run: |
-          scp -i ~/.ssh/id_rsa -P ${{ secrets.VM_PORT }} ms-chatgpt-app.tar ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }}:~/
+          scp -i ~/.ssh/id_rsa -P 22 ms-chatgpt-app.tar ${{ secrets.VM_USERNAME }}@20.74.83.28:~/
 
       - name: Load Docker Image on Azure VM
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.VM_PORT }} ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} <<EOF
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p 22 ${{ secrets.VM_USERNAME }}@20.74.83.28 <<EOF
             # Stop and remove any existing container
             if [ \$(sudo docker ps -a -q -f name=ms-chatgpt-app) ]; then
               sudo docker stop ms-chatgpt-app
