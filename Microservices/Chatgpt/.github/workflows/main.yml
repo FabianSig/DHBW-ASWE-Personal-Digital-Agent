@@ -53,14 +53,11 @@ jobs:
               sudo podman stop ms-chatgpt-app
               sudo podman rm ms-chatgpt-app
             fi
-
-            # Remove any existing image
-            if [ \$(sudo podman images -q ms-chatgpt-app) ]; then
-              sudo podman rmi ms-chatgpt-app
-            fi
-
-            # Load and run the new image
+            
+            # Load the new image
             sudo podman load -i ~/ms-chatgpt-app.tar
+            
+            # Run the new image
             sudo podman run -d --name ms-chatgpt-app -p 8081:8080 ms-chatgpt-app
           EOF
 
