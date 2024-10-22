@@ -49,6 +49,12 @@ jobs:
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.VM_PORT }} ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} <<EOF
             sudo docker load -i ~/ms-chatgpt-app.tar
+            
+            if [ \$(sudo docker ps -q -f name=ms-chatgpt-app) ]; then
+              sudo docker stop ms-chatgpt-app
+              sudo docker rm ms-chatgpt-app
+            fi
+            
             sudo docker run -d --name ms-chatgpt-app -p 8080:8080 ms-chatgpt-app
           EOF
 
