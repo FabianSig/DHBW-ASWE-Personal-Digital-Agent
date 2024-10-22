@@ -56,7 +56,7 @@ jobs:
             if [ \$(sudo docker images -q ms-chatgpt-app) ]; then
               sudo docker rmi ms-chatgpt-app
             fi
-
+            
             sudo docker load -i ~/ms-chatgpt-app.tar
             sudo docker run -d --name ms-chatgpt-app -p 8081:8080 ms-chatgpt-app
           EOF
