@@ -48,17 +48,11 @@ jobs:
       - name: Load Docker Image on Azure VM
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p 22 ${{ secrets.VM_USERNAME }}@20.74.83.28 <<EOF
-            # Stop and remove any existing container
-            if [ \$(sudo podman ps -a -q -f name=ms-chatgpt-app) ]; then
-              sudo podman stop ms-chatgpt-app
-              sudo podman rm ms-chatgpt-app
-            fi
-            
             # Load the new image
             sudo podman load -i ~/ms-chatgpt-app.tar
             
-            # Run the new image
-            sudo podman run -d --name ms-chatgpt-app -p 8081:8080 ms-chatgpt-app
+            # Remove any existing container with the same name and replace it
+            sudo podman run -d --replace --name ms-chatgpt-app -p 8081:8080 ms-chatgpt-app
           EOF
 
       - name: Clean up
