@@ -4,4 +4,6 @@ WORKDIR /app
 
 COPY target/MS-ChatGPT-0.0.1-SNAPSHOT.jar /app/my-app.jar
 
+EXPOSE 8081
+
 CMD ["java", "-jar", "/app/my-app.jar"]
