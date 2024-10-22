@@ -48,15 +48,18 @@ jobs:
       - name: Load Docker Image on Azure VM
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.VM_PORT }} ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} <<EOF
-            if [ \$(sudo docker ps -q -f name=ms-chatgpt-app) ]; then
+            # Stop and remove any existing container
+            if [ \$(sudo docker ps -a -q -f name=ms-chatgpt-app) ]; then
               sudo docker stop ms-chatgpt-app
               sudo docker rm ms-chatgpt-app
             fi
-            
+
+            # Remove any existing image
             if [ \$(sudo docker images -q ms-chatgpt-app) ]; then
               sudo docker rmi ms-chatgpt-app
             fi
-            
+
+            # Load and run the new Docker image
             sudo docker load -i ~/ms-chatgpt-app.tar
             sudo docker run -d --name ms-chatgpt-app -p 8081:8080 ms-chatgpt-app
           EOF
