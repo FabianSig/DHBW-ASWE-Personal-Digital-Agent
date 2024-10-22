@@ -1,4 +1,4 @@
-name: Build and Deploy MS ChatGPT App to Azure VM with Docker
+name: Build and Deploy MS ChatGPT App to Azure VM with Podman
 
 on:
   push:
@@ -49,19 +49,19 @@ jobs:
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p 22 ${{ secrets.VM_USERNAME }}@20.74.83.28 <<EOF
             # Stop and remove any existing container
-            if [ \$(sudo docker ps -a -q -f name=ms-chatgpt-app) ]; then
-              sudo docker stop ms-chatgpt-app
-              sudo docker rm ms-chatgpt-app
+            if [ \$(sudo podman ps -a -q -f name=ms-chatgpt-app) ]; then
+              sudo podman stop ms-chatgpt-app
+              sudo podman rm ms-chatgpt-app
             fi
 
             # Remove any existing image
-            if [ \$(sudo docker images -q ms-chatgpt-app) ]; then
-              sudo docker rmi ms-chatgpt-app
+            if [ \$(sudo podman images -q ms-chatgpt-app) ]; then
+              sudo podman rmi ms-chatgpt-app
             fi
 
-            # Load and run the new Docker image
-            sudo docker load -i ~/ms-chatgpt-app.tar
-            sudo docker run -d --name ms-chatgpt-app -p 8081:8080 ms-chatgpt-app
+            # Load and run the new image
+            sudo podman load -i ~/ms-chatgpt-app.tar
+            sudo podman run -d --name ms-chatgpt-app -p 8081:8080 ms-chatgpt-app
           EOF
 
       - name: Clean up
