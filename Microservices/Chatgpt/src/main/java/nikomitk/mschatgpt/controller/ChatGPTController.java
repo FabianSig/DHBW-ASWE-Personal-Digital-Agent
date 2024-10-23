@@ -19,21 +19,15 @@ public class ChatGPTController {
     private final ChatGPTService chatGPTService;
 
     @PostMapping("/message")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public ChatGPTResponseChoice sendMessage(@RequestBody Request request) {
         return chatGPTService.sendMessage(request);
     }
 
     @PostMapping("/audio")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public ChatGPTAudioResponse sendAudio(@RequestPart("file") MultipartFile file) {
         ChatGPTAudioRequest audioRequest = new ChatGPTAudioRequest(file, "whisper-1", "de");
         return chatGPTService.sendAudio(audioRequest);
-    }
-
-    @GetMapping("/test")
-    @ResponseStatus(HttpStatus.OK)
-    public String test() {
-        return "Works!";
     }
 }
