@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class DhbwAswePersonalDigitalAgentMsWetterApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(DhbwAswePersonalDigitalAgentMsWetterApplication.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(DhbwAswePersonalDigitalAgentMsWetterApplication.class, args);
+	}
 
 }
