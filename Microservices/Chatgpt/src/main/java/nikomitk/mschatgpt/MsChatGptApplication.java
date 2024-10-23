@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MsChatGptApplication {
 
     public static void main(String[] args) {
+        System.out.println("Test");
         SpringApplication.run(MsChatGptApplication.class, args);
     }
 

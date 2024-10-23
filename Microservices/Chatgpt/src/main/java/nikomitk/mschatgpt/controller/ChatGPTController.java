@@ -30,4 +30,10 @@ public class ChatGPTController {
         ChatGPTAudioRequest audioRequest = new ChatGPTAudioRequest(file, "whisper-1", "de");
         return chatGPTService.sendAudio(audioRequest);
     }
+
+    @GetMapping("/test")
+    @ResponseStatus(HttpStatus.OK)
+    public String test() {
+        return "Works!";
+    }
 }
