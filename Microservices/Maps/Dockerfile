@@ -1,7 +1,18 @@
+FROM maven:3.9.8-eclipse-temurin-21 AS build
+
+WORKDIR /app
+
+COPY pom.xml /app/
+COPY src /app/src
+
+RUN mvn clean package
+
 FROM openjdk:21
 
 WORKDIR /app
 
-COPY target/DHBW-ASWE-Personal-Digital-Agent-MS-Routing-0.0.1-SNAPSHOT.jar /app/my-app.jar
+COPY --from=build /app/target/DHBW-ASWE-Personal-Digital-Agent-MS-Routing-0.0.1-SNAPSHOT.jar /app/my-app.jar
+
+EXPOSE 8080
 
 CMD ["java", "-jar", "/app/my-app.jar"]
