@@ -37,8 +37,8 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t advancedswe.azurecr.io/routing:latest .
-          docker push advancedswe.azurecr.io/routing:latest
+          docker build -t advancedswe.azurecr.io/chatgpt:latest .
+          docker push advancedswe.azurecr.io/chatgpt:latest
 
       - name: Log in to Azure
         uses: azure/login@v1
@@ -48,24 +48,24 @@ jobs:
       - name: Delete All Untagged Manifests
         run: |
           # List all untagged manifests (digests) in the repository
-          untagged_manifests=$(az acr repository show-manifests --name AdvancedSWE --repository routing --output tsv --query "[?tags == null].digest")
+          untagged_manifests=$(az acr repository show-manifests --name AdvancedSWE --repository chatgpt --output tsv --query "[?tags == null].digest")
 
           # Loop through each untagged manifest and delete it
           for digest in $untagged_manifests; do
-            echo "Deleting untagged image with digest: $digest in repository: routing"
-            az acr repository delete --name AdvancedSWE --repository routing --manifest $digest --yes || echo "Failed to delete untagged image with digest: $digest"
+            echo "Deleting untagged image with digest: $digest in repository: chatgpt"
+            az acr repository delete --name AdvancedSWE --repository chatgpt --manifest $digest --yes || echo "Failed to delete untagged image with digest: $digest"
           done
 
       - name: Deploy to Azure Container Instance
         run: |
           az container create \
             --resource-group Advanced-SWE_group \
-            --name routing \
-            --image advancedswe.azurecr.io/routing:latest \
+            --name chatgpt \
+            --image advancedswe.azurecr.io/chatgpt:latest \
             --cpu 1 \
             --memory 1 \
             --registry-login-server advancedswe.azurecr.io \
-            --dns-name-label routing-ms \
+            --dns-name-label chatgpt-ms \
             --ports 8080 \
             --registry-username ${{ secrets.AZURE_ACR_USERNAME }} \
             --registry-password ${{ secrets.AZURE_ACR_PASSWORD }} \
