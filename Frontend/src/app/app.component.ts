@@ -7,11 +7,12 @@ import {AudioRecorderComponent} from './audio-recorder/audio-recorder.component'
 import {ChatGPTResponse} from './interfaces/chat-gptresponse';
 import {AudioResponse} from './interfaces/audio-response';
 import {AlarmClockComponent} from './alarm-clock/alarm-clock.component';
+import {PreferencesComponent} from './preferences/preferences.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, SearchBarComponent, MenuComponent, AudioRecorderComponent, AlarmClockComponent],
+  imports: [RouterOutlet, SearchBarComponent, MenuComponent, AudioRecorderComponent, AlarmClockComponent, PreferencesComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
