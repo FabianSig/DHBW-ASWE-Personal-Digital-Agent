@@ -1,7 +1,7 @@
 package nikomitk.mschatgpt.service;
 
 import lombok.RequiredArgsConstructor;
-import nikomitk.mschatgpt.ChatGPTClient;
+import nikomitk.mschatgpt.client.ChatGPTClient;
 import nikomitk.mschatgpt.dto.ChatGPTAudioResponse;
 import nikomitk.mschatgpt.dto.*;
 import nikomitk.mschatgpt.model.Message;

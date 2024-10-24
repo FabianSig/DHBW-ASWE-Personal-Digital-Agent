@@ -1,4 +1,4 @@
-package nikomitk.mschatgpt;
+package nikomitk.mschatgpt.client;
 
 import nikomitk.mschatgpt.dto.ChatGPTAudioResponse;
 import nikomitk.mschatgpt.dto.ChatGPTRequest;

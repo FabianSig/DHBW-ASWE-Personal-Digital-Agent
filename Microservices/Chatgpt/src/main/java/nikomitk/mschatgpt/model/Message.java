@@ -3,8 +3,6 @@ package nikomitk.mschatgpt.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.lang.annotation.Documented;
-
 @Entity
 @Table(name = "messages")
 @AllArgsConstructor
