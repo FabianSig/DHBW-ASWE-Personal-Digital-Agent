@@ -1,7 +1,11 @@
 package nikomitk.mschatgpt.repository;
 
 import nikomitk.mschatgpt.model.Message;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MessageRepository extends MongoRepository<Message, String> {
+import java.util.List;
+
+public interface MessageRepository extends JpaRepository<Message, Long> {
+
+    public List<Message> findByChatId(Long chatId);
 }

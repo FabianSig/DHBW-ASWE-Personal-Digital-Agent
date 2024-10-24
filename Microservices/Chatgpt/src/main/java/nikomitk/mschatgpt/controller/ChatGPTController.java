@@ -1,10 +1,7 @@
 package nikomitk.mschatgpt.controller;
 
 import lombok.RequiredArgsConstructor;
-import nikomitk.mschatgpt.dto.ChatGPTAudioRequest;
-import nikomitk.mschatgpt.dto.ChatGPTAudioResponse;
-import nikomitk.mschatgpt.dto.ChatGPTResponseChoice;
-import nikomitk.mschatgpt.dto.Request;
+import nikomitk.mschatgpt.dto.*;
 import nikomitk.mschatgpt.service.ChatGPTService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +18,7 @@ public class ChatGPTController {
     @PostMapping("/message")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ChatGPTResponseChoice sendMessage(@RequestBody Request request) {
-        return chatGPTService.sendMessage(request);
+        return chatGPTService.sendMessage(request, 100L);
     }
 
     @PostMapping("/audio")
@@ -29,5 +26,12 @@ public class ChatGPTController {
     public ChatGPTAudioResponse sendAudio(@RequestPart("file") MultipartFile file) {
         ChatGPTAudioRequest audioRequest = new ChatGPTAudioRequest(file, "whisper-1", "de");
         return chatGPTService.sendAudio(audioRequest);
+    }
+
+    @PostMapping("/intention")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public String findIntention(@RequestBody String message) {
+        ChatGPTMessage chatGPTMessage = new ChatGPTMessage("user", message);
+        return chatGPTService.findIntention(chatGPTMessage);
     }
 }
