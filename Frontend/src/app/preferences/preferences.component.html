@@ -1,0 +1,52 @@
+<h2>Preferences</h2>
+<form [formGroup]="preferencesForm" (ngSubmit)="onSubmit()">
+
+  <h3>Fortbewegungsmittel</h3>
+  <div formGroupName="transportation">
+    <input type="checkbox" formControlName="onFoot" id="onFoot">
+    <label for="onFoot">Zu Fuß</label><br>
+
+    <input type="checkbox" formControlName="byBike" id="byBike">
+    <label for="byBike">Mit Fahrrad</label><br>
+
+    <input type="checkbox" formControlName="byCar" id="byCar">
+    <label for="byCar">Mit Auto</label><br>
+
+    <input type="checkbox" formControlName="byPublicTransport" id="byPublicTransport">
+    <label for="byPublicTransport">Mit öffentlichen Verkehrsmittel</label><br>
+  </div>
+
+  <h3>Zuhause</h3>
+  <div formGroupName="address">
+    <label for="street">Straße und Hausnummer:</label>
+    <input type="text" formControlName="street" id="street" required><br><br>
+
+    <label for="city">Stadt:</label>
+    <input type="text" formControlName="city" id="city" required><br><br>
+
+    <label for="zip">Postleitzahl:</label>
+    <input type="number" formControlName="zip" id="zip" required><br><br>
+
+    <label for="country">Land:</label>
+    <input type="text" formControlName="country" id="country" required><br><br>
+  </div>
+
+  <h3>Erinnerung für Kalender</h3>
+  <select formControlName="reminder" id="reminder" required>
+    <option value="">Keine Erinnerung</option>
+    <option value="1">1 Minute</option>
+    <option value="5">5 Minuten</option>
+    <option value="10">10 Minuten</option>
+    <option value="15">15 Minuten</option>
+    <option value="30">30 Minuten</option>
+    <option value="45">45 Minuten</option>
+    <option value="60">60 Minuten</option>
+  </select><br><br>
+
+  <button type="submit">Submit</button>
+</form>
+
+@if (preferencesForm) {
+  <h3>Submitted Data:</h3>
+  <pre>{{ preferencesJson }}</pre>
+}
