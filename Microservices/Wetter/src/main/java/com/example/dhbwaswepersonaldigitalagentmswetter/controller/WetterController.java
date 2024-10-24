@@ -1,5 +1,7 @@
 package com.example.dhbwaswepersonaldigitalagentmswetter.controller;
 
+import com.example.dhbwaswepersonaldigitalagentmswetter.dto.Wetter;
+import com.example.dhbwaswepersonaldigitalagentmswetter.service.WetterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -12,11 +14,9 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 @RequestMapping("/api/wetter")
 @Slf4j
-
-
 public class WetterController {
 
-    private final wetterService wetterService;
+    private final WetterService wetterService;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
