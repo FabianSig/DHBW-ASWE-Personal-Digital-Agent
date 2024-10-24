@@ -32,3 +32,8 @@ build/
 ### VS Code ###
 .vscode/
 /.env
+
+### Local DB files ###
+*.wt
+WiredTiger*
+*.bson
