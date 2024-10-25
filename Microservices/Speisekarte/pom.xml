@@ -10,7 +10,7 @@
     </parent>
     <groupId>nikomitk</groupId>
     <artifactId>Personal-Digital-Agent-MS-Speisekarte</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2</version>
     <name>Personal-Digital-Agent-MS-Speisekarte</name>
     <description>Personal-Digital-Agent-MS-Speisekarte</description>
     <url/>
