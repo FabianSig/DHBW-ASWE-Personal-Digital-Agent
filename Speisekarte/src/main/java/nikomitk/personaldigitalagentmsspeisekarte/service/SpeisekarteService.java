@@ -11,39 +11,26 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
+
+import static java.util.function.Predicate.not;
+import static nikomitk.personaldigitalagentmsspeisekarte.util.SpeisekarteUtils.extractMenu;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class SpeisekarteService {
 
-
     private final SpeisekarteClient speisekarteClient;
 
-    private static List<String> extractMenu(String gruppe) {
-        final String[] split = gruppe.split("<span style='font-size:1.5em'>");
-        return Arrays.stream(split)
-                .map(s -> s.split("</span>")[0])
-                .dropWhile(s -> s.contains("<div"))
-                .toList();
-    }
+    private static MultiValueMap<String, String> prepareFormData(String datum) {
+        final int todayDayOfWeek = LocalDate.now().getDayOfWeek().getValue();
 
-    public Speisekarte getSpeisekarte(Optional<String> datumParam) {
-        final String datum = datumParam.filter(Predicate.not(String::isBlank)).orElse(LocalDate.now().toString());
+        final String startThisWeek = todayDayOfWeek <= 3 ? LocalDate.now().minusDays(todayDayOfWeek).toString() : LocalDate.now().plusDays(7L - todayDayOfWeek).toString();
+        final String startNextWeek = todayDayOfWeek <= 3 ? LocalDate.now().plusDays(7L - todayDayOfWeek).toString() : LocalDate.now().plusDays(14L - todayDayOfWeek).toString();
 
-        if (LocalDate.parse(datum).getDayOfWeek().getValue() > 5) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Am Wochenende gibt es keine Speisekarte");
-        }
-
-        final int dayOfWeek = LocalDate.now().getDayOfWeek().getValue();
-
-        final String startThisWeek = dayOfWeek <= 3 ? LocalDate.now().minusDays(dayOfWeek).toString() : LocalDate.now().plusDays(7 - dayOfWeek).toString();
-        final String startNextWeek = dayOfWeek <= 3 ? LocalDate.now().plusDays(7L - dayOfWeek).toString() : LocalDate.now().plusDays(14 - dayOfWeek).toString();
-
+        // Da es keine vernünftige API gibt, musste ich hier die parameter, welche die website selbst schickt, mitschicken
         final MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.put("func", List.of("make_spl"));
         formData.put("locId", List.of("16"));
@@ -52,18 +39,20 @@ public class SpeisekarteService {
         formData.put("startThisWeek", List.of(startThisWeek));
         formData.put("startNextWeek", List.of(startNextWeek));
 
-        final String websiteHtml = speisekarteClient.getSpeisekarte(formData);
-
-        final String[] gruppen = websiteHtml.split("<div class='col-xs-4 gruppenname'>");
-
-
-        return new Speisekarte(
-                extractMenu(gruppen[1]),
-                extractMenu(gruppen[2]),
-                extractMenu(gruppen[3]),
-                extractMenu(gruppen[4]),
-                extractMenu(gruppen[5]),
-                extractMenu(gruppen[6]),
-                extractMenu(gruppen[7]));
+        return formData;
     }
+
+    public Speisekarte getSpeisekarte(Optional<String> datumParam) {
+        final String datum = datumParam.filter(not(String::isBlank)).orElse(LocalDate.now().toString());
+
+        if (LocalDate.parse(datum).getDayOfWeek().getValue() > 5) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Am Wochenende gibt es keine Speisekarte");
+        }
+
+        final String websiteHtml = speisekarteClient.getSpeisekarte(prepareFormData(datum));
+
+        return extractMenu(websiteHtml);
+    }
+
+
 }
