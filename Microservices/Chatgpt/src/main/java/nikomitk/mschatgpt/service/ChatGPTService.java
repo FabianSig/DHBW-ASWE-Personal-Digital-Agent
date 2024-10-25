@@ -25,7 +25,7 @@ public class ChatGPTService {
         Message newMessage = Message.builder().role("user").content(request.message()).build();
         messages.add(new ChatGPTMessage(newMessage.getRole(), newMessage.getContent()));
 
-        ChatGPTRequest chatGPTRequest = new ChatGPTRequest("gpt-4o-mini", messages);
+        ChatGPTRequest chatGPTRequest = new ChatGPTRequest("gpt-4o", messages);
         ChatGPTResponse response = chatGPTClient.sendMessage(chatGPTRequest);
         String chatGPTResponseMessage = response.choices().getFirst().message().content();
 
@@ -36,6 +36,11 @@ public class ChatGPTService {
         return response.choices().getFirst();
     }
 
+    public ChatGPTResponseChoice sendMessage(Request request) {
+        Long defaultChatId = 1L;
+        return sendMessage(request, defaultChatId);
+    }
+
     public ChatGPTAudioResponse sendAudio(ChatGPTAudioRequest request) {
 
         return chatGPTClient.sendAudio(request.file(), request.model(), request.language());
@@ -43,9 +48,7 @@ public class ChatGPTService {
 
     public String findIntention(ChatGPTMessage message) {
 
-        //TODO Message bauen mit Intentions und Kontext und Präferenzen usw.
-
-        //sendMessage()
+        ChatGPTRequest chatGPTRequest = new ChatGPTRequest("gpt-4o", List.of(message));
 
         return "";
 

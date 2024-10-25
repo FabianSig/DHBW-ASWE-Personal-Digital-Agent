@@ -18,7 +18,7 @@ public class ChatGPTController {
     @PostMapping("/message")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ChatGPTResponseChoice sendMessage(@RequestBody Request request) {
-        return chatGPTService.sendMessage(request, 100L);
+        return chatGPTService.sendMessage(request);
     }
 
     @PostMapping("/audio")
