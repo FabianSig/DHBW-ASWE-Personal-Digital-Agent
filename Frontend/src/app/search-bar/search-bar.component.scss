@@ -1,0 +1,14 @@
+#searchbars {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.searchbar-container {
+  margin-bottom: 10px;
+}
+
+.searchbar {
+  margin-right: 5px;
+}

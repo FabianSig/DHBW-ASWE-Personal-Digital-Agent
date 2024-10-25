@@ -1,0 +1,50 @@
+name: Deploy Angular App to Azure
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Build Angular App
+      run: npm run build -- --configuration production
+
+    - name: Verify Build Output
+      run: |
+        ls -l dist/
+        ls -l dist/personal-digital-agent-frontend/
+
+    - name: Deploy to Azure Server
+      run: |
+        echo "${{ secrets.AZURE_SSH_PRIVATE_KEY }}" > azure_key.pem
+        chmod 600 azure_key.pem
+        ssh -i azure_key.pem -o StrictHostKeyChecking=no ${{ secrets.AZURE_SSH_USER }}@${{ secrets.AZURE_SERVER_IP }} <<EOF
+          sudo chmod -R 777 /var/www/html/
+          sudo rm -rf /var/www/html/*
+        EOF
+        scp -i azure_key.pem -r dist/personal-digital-agent-frontend/* ${{ secrets.AZURE_SSH_USER }}@${{ secrets.AZURE_SERVER_IP }}:/var/www/html/
+        ssh -i azure_key.pem -o StrictHostKeyChecking=no ${{ secrets.AZURE_SSH_USER }}@${{ secrets.AZURE_SERVER_IP }} <<EOF
+          sudo mv /var/www/html/browser/* /var/www/html/
+          sudo rm -rf /var/www/html/browser
+          sudo chown -R www-data:www-data /var/www/html/
+          sudo chmod -R 755 /var/www/html/
+          sudo systemctl restart apache2
+        EOF
+
+    - name: Clean up
+      run: rm -f azure_key.pem

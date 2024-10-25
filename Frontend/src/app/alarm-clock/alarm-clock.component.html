@@ -1,0 +1,11 @@
+<h2>Alarm Clock</h2>
+<input type="datetime-local" #alarmInput>
+<button (click)="setAlarm(alarmInput)">Set Alarm</button>
+
+<h3>Scheduled Alarms:</h3>
+<ul>
+  @for (alarm of getAlarms(); track alarm) {
+    <li>{{ alarm }}</li>
+  }
+</ul>
+
