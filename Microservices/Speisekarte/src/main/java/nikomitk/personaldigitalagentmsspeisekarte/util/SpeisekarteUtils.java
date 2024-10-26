@@ -43,6 +43,10 @@ public class SpeisekarteUtils {
     }
 
     private List<String> extractAllergene(String s) {
+        if(s.indexOf("<div") < 1) {
+            return List.of();
+        }
+
         String allergene = s
                 .substring(1, s.indexOf("<div"))
                 .trim();
