@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.function.Predicate.not;
-import static nikomitk.personaldigitalagentmsspeisekarte.util.SpeisekarteUtils.extractMenu;
+import static nikomitk.personaldigitalagentmsspeisekarte.util.SpeisekarteUtils.*;
 
 @Service
 @Slf4j
