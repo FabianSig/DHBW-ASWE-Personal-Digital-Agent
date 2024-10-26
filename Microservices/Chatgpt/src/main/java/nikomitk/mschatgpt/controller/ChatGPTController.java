@@ -18,7 +18,7 @@ public class ChatGPTController {
     @PostMapping("/message")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ChatGPTResponseChoice sendMessage(@RequestBody Request request) {
-        return chatGPTService.sendMessage(request, 100L);
+        return chatGPTService.sendMessage(request);
     }
 
     @PostMapping("/audio")
@@ -30,7 +30,7 @@ public class ChatGPTController {
 
     @PostMapping("/intention")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String findIntention(@RequestBody String message) {
+    public ChatGPTResponseChoice findIntention(@RequestBody String message) {
         ChatGPTMessage chatGPTMessage = new ChatGPTMessage("user", message);
         return chatGPTService.findIntention(chatGPTMessage);
     }
