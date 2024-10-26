@@ -22,7 +22,7 @@ public class ChatGPTService {
 
         List<ChatGPTMessage> messages = new java.util.ArrayList<>(messageRepository.findByChatId(chatId).stream().map(m -> new ChatGPTMessage(m.getRole(), m.getContent())).toList());
 
-        Message newMessage = Message.builder().role("user").content(request.message()).build();
+        Message newMessage = Message.builder().role("user").content(request.message()).chatId(chatId).build();
         messages.add(new ChatGPTMessage(newMessage.getRole(), newMessage.getContent()));
 
         ChatGPTRequest chatGPTRequest = new ChatGPTRequest("gpt-4o", messages);
