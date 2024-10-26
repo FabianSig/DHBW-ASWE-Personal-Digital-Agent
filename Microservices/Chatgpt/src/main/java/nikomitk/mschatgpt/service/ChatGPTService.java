@@ -29,7 +29,7 @@ public class ChatGPTService {
         ChatGPTResponse response = chatGPTClient.sendMessage(chatGPTRequest);
         String chatGPTResponseMessage = response.choices().getFirst().message().content();
 
-        Message responseMessage = Message.builder().role("assistant").content(chatGPTResponseMessage).build();
+        Message responseMessage = Message.builder().role("assistant").content(chatGPTResponseMessage).chatId(chatId).build();
         messageRepository.save(newMessage);
         messageRepository.save(responseMessage);
 
