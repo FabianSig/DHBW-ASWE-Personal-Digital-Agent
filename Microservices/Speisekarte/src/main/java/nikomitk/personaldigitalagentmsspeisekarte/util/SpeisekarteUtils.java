@@ -10,7 +10,7 @@ import java.util.List;
 @UtilityClass
 public class SpeisekarteUtils {
 
-    public static Speisekarte extractMenu(String html) {
+    public Speisekarte extractMenu(String html) {
         String[] gruppen = html.split("<div class='col-xs-4 gruppenname'>");
         return new Speisekarte(
                 extractGruppe(gruppen[1]),
@@ -22,7 +22,7 @@ public class SpeisekarteUtils {
                 extractGruppe(gruppen[7]));
     }
 
-    private static List<Speisekarte.Speise> extractGruppe(String gruppe) {
+    private List<Speisekarte.Speise> extractGruppe(String gruppe) {
         final String[] split = gruppe.split("<span style='font-size:1.5em'>");
         return Arrays.stream(split)
                 .dropWhile(s -> s.contains("<div class='col-xs-8 preise-head'>"))
@@ -30,7 +30,7 @@ public class SpeisekarteUtils {
                 .toList();
     }
 
-    private static Speisekarte.Speise extractSpeise(String s) {
+    private Speisekarte.Speise extractSpeise(String s) {
         String[] split1 = s.split("</span>", 2);
         String name = split1[0];
         String[] split2 = split1[1].split("<div class='azn hidden size-13'>", 2)[1].replaceFirst("<br>", "").trim().split("<span style='text-decoration:underline'>Portion</span>", 2);
@@ -42,7 +42,7 @@ public class SpeisekarteUtils {
         return new Speisekarte.Speise(name, allergene, naehrwerte);
     }
 
-    private static List<String> extractAllergene(String s) {
+    private List<String> extractAllergene(String s) {
         String allergene = s
                 .substring(1, s.indexOf("<div"))
                 .trim();
@@ -53,7 +53,7 @@ public class SpeisekarteUtils {
         return List.of(allergeneArr);
     }
 
-    private static List<Speisekarte.Speise.Naehrwerte> extractNaehrwerte(String s) {
+    private List<Speisekarte.Speise.Naehrwerte> extractNaehrwerte(String s) {
         s = s.substring(s.indexOf("Brennwert"), s.indexOf("</div>"));
 
         List<Speisekarte.Speise.Naehrwerte> naehrwerte = new ArrayList<>();
