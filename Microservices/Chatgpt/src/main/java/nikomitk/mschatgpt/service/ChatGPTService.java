@@ -18,7 +18,7 @@ public class ChatGPTService {
     private final MessageRepository messageRepository;
     private final ChatGPTClient chatGPTClient;
 
-    public ChatGPTResponseChoice sendMessage(Request request, Long chatId) {
+    public ChatGPTResponseChoice sendMessage(Request request, String chatId) {
 
         List<ChatGPTMessage> messages = new java.util.ArrayList<>(messageRepository.findByChatId(chatId).stream().map(m -> new ChatGPTMessage(m.getRole(), m.getContent())).toList());
 
@@ -37,7 +37,7 @@ public class ChatGPTService {
     }
 
     public ChatGPTResponseChoice sendMessage(Request request) {
-        Long defaultChatId = 1L;
+        String defaultChatId = "default";
         return sendMessage(request, defaultChatId);
     }
 
@@ -48,7 +48,7 @@ public class ChatGPTService {
 
     public ChatGPTResponseChoice findIntention(ChatGPTMessage message) {
 
-        Long intentChatId = 100L;
+        String intentChatId = "intent";
         List<ChatGPTMessage> messages = new java.util.ArrayList<>(messageRepository.findByChatId(intentChatId).stream().map(m -> new ChatGPTMessage(m.getRole(), m.getContent())).toList());
 
         messages.add(message);
