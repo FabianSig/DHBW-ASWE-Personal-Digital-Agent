@@ -1,7 +1,5 @@
 package com.example.dhbwaswepersonaldigitalagentmswetter.dto;
 
-import java.util.List;
-
 public record Wetter(
         String name,
         Main main
