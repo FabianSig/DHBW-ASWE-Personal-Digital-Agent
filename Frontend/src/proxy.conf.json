@@ -1,6 +1,6 @@
 {
   "/api/**": {
-    "target": "https://bff.blueflower-541916ee.germanywestcentral.azurecontainerapps.io",
+    "target": "localhost:8080",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
