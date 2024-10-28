@@ -4,8 +4,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import nikomitk.mschatgpt.client.ChatGPTClient;
-import nikomitk.mschatgpt.dto.ChatGPTAudioResponse;
-import nikomitk.mschatgpt.dto.*;
+import nikomitk.mschatgpt.dto.audio.ChatGPTAudioResponse;
+import nikomitk.mschatgpt.dto.audio.ChatGPTAudioRequest;
+import nikomitk.mschatgpt.dto.intention.ChatGPTIntentionRequest;
+import nikomitk.mschatgpt.dto.intention.ChatGPTIntentionResponse;
+import nikomitk.mschatgpt.dto.standard.*;
 import nikomitk.mschatgpt.model.Message;
 import nikomitk.mschatgpt.repository.MessageRepository;
 import org.springframework.stereotype.Service;
@@ -51,25 +54,25 @@ public class ChatGPTService {
                 }
                 """;
 
-    public ChatGPTResponseChoice sendMessage(Request request, String chatId) {
+    public ChatGPTResponseChoice<String> sendMessage(MessageRequest request, String chatId) {
 
-        List<ChatGPTMessage> messages = new java.util.ArrayList<>(messageRepository.findByChatId(chatId).stream().map(m -> new ChatGPTMessage(m.getRole(), m.getContent())).toList());
+        List<ChatGPTMessage<String>> messages = new java.util.ArrayList<>(messageRepository.findByChatId(chatId).stream().map(m -> new ChatGPTMessage<>(m.getRole(), m.getContent())).toList());
 
         Message newMessage = Message.builder().role("user").content(request.message()).chatId(chatId).build();
-        messages.add(new ChatGPTMessage(newMessage.getRole(), newMessage.getContent()));
+        messages.add(new ChatGPTMessage<String>(newMessage.getRole(), newMessage.getContent()));
 
         ChatGPTRequest chatGPTRequest = new ChatGPTRequest("gpt-4o", messages);
-        ChatGPTResponse response = chatGPTClient.sendMessage(chatGPTRequest);
-        String chatGPTResponseMessage = response.choices().getFirst().message().content();
+        ChatGPTResponse<String> response = chatGPTClient.sendMessage(chatGPTRequest);
+        String chatGPTResponseMessage = response.getChoices().getFirst().getMessage().payload();
 
         Message responseMessage = Message.builder().role("assistant").content(chatGPTResponseMessage).chatId(chatId).build();
         messageRepository.save(newMessage);
         messageRepository.save(responseMessage);
 
-        return response.choices().getFirst();
+        return response.getChoices().getFirst();
     }
 
-    public ChatGPTResponseChoice sendMessage(Request request) {
+    public ChatGPTResponseChoice<String> sendMessage(MessageRequest request) {
         String defaultChatId = "default";
         return sendMessage(request, defaultChatId);
     }
@@ -79,32 +82,27 @@ public class ChatGPTService {
         return chatGPTClient.sendAudio(request.file(), request.model(), request.language());
     }
 
-    public String findIntention(ChatGPTMessage message) {
+    public ChatGPTIntentionResponse findIntention(ChatGPTMessage<String> message) {
 
         String intentChatId = "intent";
-        List<ChatGPTMessage> messages = new java.util.ArrayList<>(messageRepository.findByChatId(intentChatId).stream().map(m -> new ChatGPTMessage(m.getRole(), m.getContent())).toList());
+        List<ChatGPTMessage<String>> messages = new java.util.ArrayList<>(messageRepository.findByChatId(intentChatId).stream().map(m -> new ChatGPTMessage<>(m.getRole(), m.getContent())).toList());
 
         messages.add(message);
-
-//        ChatGPTRequest chatGPTRequest = new ChatGPTRequest("gpt-4o", messages);
-//        ChatGPTResponse response = chatGPTClient.sendMessage(chatGPTRequest);
 
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> responseFormat;
 
         try {
-            // Parse JSON string to Map
             responseFormat = objectMapper.readValue(responseFormatJson, new TypeReference<>() {});
         } catch (Exception e) {
             e.printStackTrace();
-            return "Error parsing response format JSON.";
+            return new ChatGPTIntentionResponse("error", List.of());
         }
 
         ChatGPTIntentionRequest chatGPTRequest = new ChatGPTIntentionRequest("gpt-4o", messages, responseFormat);
-        ChatGPTResponse response = chatGPTClient.sendIntentionMessage(chatGPTRequest);
+        ChatGPTResponse<ChatGPTIntentionResponse> response = chatGPTClient.sendIntentionMessage(chatGPTRequest);
 
-
-        return response.choices().getFirst().message().content();
+        return response.getChoices().getFirst().getMessage().payload();
 
 
     }
