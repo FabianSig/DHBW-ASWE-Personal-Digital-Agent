@@ -14,7 +14,7 @@ import java.util.Map;
 public class RestClientConfig {
     @Value("${wetter.api.url}")
     private String wetterServiceUrl;
-    private final String apiKey = System.getenv("API_KEY");
+    private final String apiKey = "Dein Key";
     private final Map<String, String> defaultUriVariables = Map.of("appID", apiKey);
 
     @Bean
