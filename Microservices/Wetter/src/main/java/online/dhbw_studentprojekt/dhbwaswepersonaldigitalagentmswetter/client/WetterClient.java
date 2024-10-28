@@ -1,6 +1,6 @@
-package com.example.dhbwaswepersonaldigitalagentmswetter.client;
+package online.dhbw_studentprojekt.dhbwaswepersonaldigitalagentmswetter.client;
 
-import com.example.dhbwaswepersonaldigitalagentmswetter.dto.Wetter;
+import online.dhbw_studentprojekt.dhbwaswepersonaldigitalagentmswetter.dto.Wetter;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.service.annotation.PostExchange;
 

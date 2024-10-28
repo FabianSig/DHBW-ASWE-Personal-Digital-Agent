@@ -1,4 +1,4 @@
-package com.example.dhbwaswepersonaldigitalagentmswetter.config;
+package online.dhbw_studentprojekt.dhbwaswepersonaldigitalagentmswetter.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

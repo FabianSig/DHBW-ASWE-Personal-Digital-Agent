@@ -1,4 +1,4 @@
-package com.example.dhbwaswepersonaldigitalagentmswetter;
+package online.dhbw_studentprojekt.dhbwaswepersonaldigitalagentmswetter;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
