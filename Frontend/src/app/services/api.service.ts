@@ -12,10 +12,9 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  getChatGPTData(query: string, key: string) {
-    const headers = { 'Authorization': key }
+  getChatGPTData(query: string) {
     const body = { message: query };
-    return this.http.post(this.apiUrlChatgpt, body, {headers} );
+    return this.http.post(this.apiUrlChatgpt, body );
   }
 
   getMenuData(menuDate: string) {
@@ -24,10 +23,9 @@ export class ApiService {
     return this.http.get(this.apiUrlSpeisekarte, { params });
   }
 
-  getAudioData(audioFile: Blob, key: string) {
-    const headers = { 'Authorization': key }
+  getAudioData(audioFile: Blob) {
     const formData = new FormData();
     formData.append('file', audioFile, 'recording.ogg');
-    return this.http.post(this.apiUrlAudio, formData, {headers} );
+    return this.http.post(this.apiUrlAudio, formData );
   }
 }
