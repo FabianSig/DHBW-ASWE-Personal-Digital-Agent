@@ -1,4 +1,4 @@
-package com.example.dhbwaswepersonaldigitalagentmswetter;
+package online.dhbw_studentprojekt.dhbwaswepersonaldigitalagentmswetter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

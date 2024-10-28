@@ -1,7 +1,7 @@
-package com.example.dhbwaswepersonaldigitalagentmswetter.controller;
+package online.dhbw_studentprojekt.dhbwaswepersonaldigitalagentmswetter.controller;
 
-import com.example.dhbwaswepersonaldigitalagentmswetter.dto.Wetter;
-import com.example.dhbwaswepersonaldigitalagentmswetter.service.WetterService;
+import online.dhbw_studentprojekt.dhbwaswepersonaldigitalagentmswetter.dto.Wetter;
+import online.dhbw_studentprojekt.dhbwaswepersonaldigitalagentmswetter.service.WetterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

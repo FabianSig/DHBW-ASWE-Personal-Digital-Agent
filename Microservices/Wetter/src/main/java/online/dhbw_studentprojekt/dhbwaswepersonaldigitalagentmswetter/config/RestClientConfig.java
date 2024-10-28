@@ -1,6 +1,6 @@
-package com.example.dhbwaswepersonaldigitalagentmswetter.config;
+package online.dhbw_studentprojekt.dhbwaswepersonaldigitalagentmswetter.config;
 
-import com.example.dhbwaswepersonaldigitalagentmswetter.client.WetterClient;
+import online.dhbw_studentprojekt.dhbwaswepersonaldigitalagentmswetter.client.WetterClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,16 +8,21 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.client.support.RestClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
+import java.util.Map;
+
 @Configuration
 public class RestClientConfig {
     @Value("${wetter.api.url}")
     private String wetterServiceUrl;
+    private final String apiKey = "Dein Key";
+    private final Map<String, String> defaultUriVariables = Map.of("appID", apiKey);
 
     @Bean
     public WetterClient wetterClient() {
 
         RestClient restClient = RestClient.builder()
                 .baseUrl(wetterServiceUrl)
+                .defaultUriVariables(defaultUriVariables)
                 .build();
 
         RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);

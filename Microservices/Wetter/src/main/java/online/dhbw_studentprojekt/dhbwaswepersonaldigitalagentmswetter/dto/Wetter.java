@@ -1,4 +1,4 @@
-package com.example.dhbwaswepersonaldigitalagentmswetter.dto;
+package online.dhbw_studentprojekt.dhbwaswepersonaldigitalagentmswetter.dto;
 
 public record Wetter(
         String name,
