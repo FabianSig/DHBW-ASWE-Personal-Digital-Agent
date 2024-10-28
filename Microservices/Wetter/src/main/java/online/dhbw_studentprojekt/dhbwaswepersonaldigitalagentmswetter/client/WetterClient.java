@@ -6,6 +6,6 @@ import org.springframework.web.service.annotation.PostExchange;
 
 public interface WetterClient extends RestClient {
 
-        @PostExchange("/data/2.5/weather?q=Stuttgart&units=metric&appid=system.getenv('API_KEY')")
+        @PostExchange("/data/2.5/weather?q=Stuttgart&units=metric")
         Wetter getWetter();
 }
