@@ -1,0 +1,27 @@
+{
+  "type": "json_schema",
+  "json_schema": {
+    "name": "intention_response",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "route": { "type": "string" },
+        "attributes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "value": { "type": "string" }
+            },
+            "required": ["name", "value"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["route", "attributes"],
+      "additionalProperties": false
+    },
+    "strict": true
+  }
+}

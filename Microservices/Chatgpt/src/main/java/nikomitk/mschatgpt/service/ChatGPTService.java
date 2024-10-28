@@ -11,6 +11,8 @@ import nikomitk.mschatgpt.dto.intention.ChatGPTIntentionResponse;
 import nikomitk.mschatgpt.dto.standard.*;
 import nikomitk.mschatgpt.model.Message;
 import nikomitk.mschatgpt.repository.MessageRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,36 +25,8 @@ public class ChatGPTService {
 
     private final MessageRepository messageRepository;
     private final ChatGPTClient chatGPTClient;
+    private static final Logger logger = LoggerFactory.getLogger(ChatGPTService.class);
 
-    private final String responseFormatJson = """
-                {
-                  "type": "json_schema",
-                  "json_schema": {
-                    "name": "intention_response",
-                    "schema": {
-                      "type": "object",
-                      "properties": {
-                        "route": { "type": "string" },
-                        "attributes": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "name": { "type": "string" },
-                              "value": { "type": "string" }
-                            },
-                            "required": ["name", "value"],
-                            "additionalProperties": false
-                          }
-                        }
-                      },
-                      "required": ["route", "attributes"],
-                      "additionalProperties": false
-                    },
-                    "strict": true
-                  }
-                }
-                """;
 
     public ChatGPTResponseChoice<String> sendMessage(MessageRequest request, String chatId) {
 
@@ -91,11 +65,13 @@ public class ChatGPTService {
 
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> responseFormat;
-
         try {
-            responseFormat = objectMapper.readValue(responseFormatJson, new TypeReference<>() {});
+            responseFormat = objectMapper.readValue(
+                    getClass().getClassLoader().getResourceAsStream("responseFormat.json"),
+                    new TypeReference<>() {}
+            );
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Failed to load response format JSON for intention analysis", e);
             return new ChatGPTIntentionResponse("error", List.of());
         }
 
@@ -103,9 +79,5 @@ public class ChatGPTService {
         ChatGPTResponse<ChatGPTIntentionResponse> response = chatGPTClient.sendIntentionMessage(chatGPTRequest);
 
         return response.getChoices().getFirst().getMessage().payload();
-
-
     }
-
-
 }

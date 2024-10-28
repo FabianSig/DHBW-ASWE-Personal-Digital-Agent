@@ -3,7 +3,6 @@ package nikomitk.mschatgpt.controller;
 import lombok.RequiredArgsConstructor;
 import nikomitk.mschatgpt.dto.audio.ChatGPTAudioRequest;
 import nikomitk.mschatgpt.dto.audio.ChatGPTAudioResponse;
-import nikomitk.mschatgpt.dto.intention.ChatGPTIntentionRequest;
 import nikomitk.mschatgpt.dto.intention.ChatGPTIntentionResponse;
 import nikomitk.mschatgpt.dto.standard.ChatGPTMessage;
 import nikomitk.mschatgpt.dto.standard.ChatGPTResponseChoice;
