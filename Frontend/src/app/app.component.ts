@@ -8,16 +8,16 @@ import {ChatGPTResponse} from './interfaces/chat-gptresponse';
 import {AudioResponse} from './interfaces/audio-response';
 import {AlarmClockComponent} from './alarm-clock/alarm-clock.component';
 import {PreferencesComponent} from './preferences/preferences.component';
+import {HeaderComponent} from './header/header.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, SearchBarComponent, MenuComponent, AudioRecorderComponent, AlarmClockComponent, PreferencesComponent],
+  imports: [RouterOutlet, SearchBarComponent, MenuComponent, AudioRecorderComponent, AlarmClockComponent, PreferencesComponent, HeaderComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'Personal-Digital-Agent-Frontend';
   chatGPTResponse?: ChatGPTResponse;
   menuResponse?: MenuResponse;
   audioResponse?: AudioResponse;
