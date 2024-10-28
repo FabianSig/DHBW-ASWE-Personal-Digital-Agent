@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {environment} from '../../environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,21 +13,29 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   getChatGPTData(query: string, key: string) {
-    const headers = { 'Authorization': key }
+    const headers = { 'Authorization': key };
     const body = { message: query };
-    return this.http.post(this.apiUrlChatgpt, body, {headers} );
+
+    console.log(`Sending POST request to ChatGPT API at: ${this.apiUrlChatgpt}`, { body, headers });
+
+    return this.http.post(this.apiUrlChatgpt, body);
   }
 
   getMenuData(menuDate: string) {
-    // If no date is given, undefined is used to display the menu for the current day
-    const params = menuDate ? { datum : menuDate } : undefined;
+    const params = menuDate ? { datum: menuDate } : undefined;
+
+    console.log(`Sending GET request to Menu API at: ${this.apiUrlSpeisekarte}`, { params });
+
     return this.http.get(this.apiUrlSpeisekarte, { params });
   }
 
   getAudioData(audioFile: Blob, key: string) {
-    const headers = { 'Authorization': key }
+    const headers = { 'Authorization': key };
     const formData = new FormData();
     formData.append('file', audioFile, 'recording.ogg');
-    return this.http.post(this.apiUrlAudio, formData, {headers} );
+
+    console.log(`Sending POST request to Audio API at: ${this.apiUrlAudio}`, { headers, formData });
+
+    return this.http.post(this.apiUrlAudio, formData, { headers });
   }
 }

@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiUrlChatgpt: '/api/chatgpt/message',
-  apiUrlSpeisekarte: '/api/speisekarte',
-  apiUrlAudio: '/api/chatgpt/audio'
+  apiUrlChatgpt: 'http://20.74.83.28:8080/api/chatgpt/message',
+  apiUrlSpeisekarte: 'http://20.74.83.28:8080/api/speisekarte',
+  apiUrlAudio: 'http://20.74.83.28:8080/api/chatgpt/audio'
 };
