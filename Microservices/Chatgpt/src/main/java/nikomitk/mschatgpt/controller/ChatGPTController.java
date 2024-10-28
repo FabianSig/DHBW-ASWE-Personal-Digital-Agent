@@ -30,7 +30,7 @@ public class ChatGPTController {
 
     @PostMapping("/intention")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ChatGPTResponseChoice findIntention(@RequestBody String message) {
+    public String findIntention(@RequestBody String message) {
         ChatGPTMessage chatGPTMessage = new ChatGPTMessage("user", message);
         return chatGPTService.findIntention(chatGPTMessage);
     }
