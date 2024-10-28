@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import sven.news.client.NewsClient;
 import sven.news.dto.News;
 
-import java.util.Optional;
 
 @Service
 public class NewsService {
@@ -14,7 +13,7 @@ public class NewsService {
         this.newsClient = newsClient;
     }
 
-    public News getNews(Optional<String> newsParam){
+    public News getNews(){
         return newsClient.getNews();
     }
 }

@@ -21,8 +21,8 @@ public class NewsController {
     
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public News getNews(@RequestParam Optional<String> news){
-        return newsService.getNews(news);
+    public News getNews(){
+        return newsService.getNews();
     }
     
 }
