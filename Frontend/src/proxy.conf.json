@@ -1,6 +1,6 @@
 {
   "/api/**": {
-    "target": "localhost:8080",
+    "target": "https://www.dhbw-studentprojekt.online/",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"

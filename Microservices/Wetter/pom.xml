@@ -8,7 +8,7 @@
 		<version>3.3.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
+	<groupId>online.dhbw_studentprojekt</groupId>
 	<artifactId>DHBW-ASWE-Personal-Digital-Agent-MS-Wetter</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>DHBW-ASWE-Personal-Digital-Agent-MS-Wetter</name>
