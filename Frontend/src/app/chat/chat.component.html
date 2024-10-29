@@ -11,6 +11,8 @@
     }
   </div>
 
+  <app-message-box></app-message-box>
+
   <div class="d-flex justify-content-center input-group">
     <app-audio-recorder (audioResponseEmitter)="onAudioResponse($event)"></app-audio-recorder>
     <app-search-bar (chatGPTResponseEmitter)="onChatGPTResponse($event)"></app-search-bar>

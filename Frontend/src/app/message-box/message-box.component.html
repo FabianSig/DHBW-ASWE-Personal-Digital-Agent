@@ -1,0 +1,9 @@
+@for(message of messages; track message.id) {
+  @if(message.sender === 'user') {
+     <span>User: </span>
+  }
+  @else {
+    <span>GPT: </span>
+  }
+  {{ message.id }}: {{ message.text }}
+ }

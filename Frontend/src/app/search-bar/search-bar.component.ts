@@ -1,6 +1,7 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import {ApiService} from '../services/api.service';
 import {ChatGPTResponse} from '../interfaces/chat-gptresponse';
+import {MessageBoxComponent} from '../message-box/message-box.component';
 
 @Component({
   selector: 'app-search-bar',
@@ -15,7 +16,7 @@ export class SearchBarComponent {
   searchTerm: string = '';
   error: string = '';
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private messageBoxComponent: MessageBoxComponent) {}
 
   onSearch(event: any): void {
     this.searchTerm = event.target.value;
@@ -24,6 +25,7 @@ export class SearchBarComponent {
   handleChatGPTSearch(): void {
     this.apiService.getChatGPTData(this.searchTerm).subscribe({
       next: (res) => {
+        this.messageBoxComponent.addUserMessage(this.searchTerm);
         this.chatGPTResponseEmitter.emit(res as ChatGPTResponse);
       },
       error: (error) => {

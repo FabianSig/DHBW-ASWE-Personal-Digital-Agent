@@ -1,6 +1,6 @@
 {
   "/api/**": {
-    "target": "https://dhbw-studentprojekt.online:8080",
+    "target": "http://dhbw-studentprojekt.online:8080",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
