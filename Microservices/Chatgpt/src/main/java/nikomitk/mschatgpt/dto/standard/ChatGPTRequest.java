@@ -1,4 +1,4 @@
-package nikomitk.mschatgpt.dto;
+package nikomitk.mschatgpt.dto.standard;
 
 import java.util.List;
 
