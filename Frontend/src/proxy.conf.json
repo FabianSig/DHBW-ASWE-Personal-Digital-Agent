@@ -1,6 +1,6 @@
 {
   "/api/**": {
-    "target": "localhost:8080",
+    "target": "https://chatgpt-ms-621842214281.europe-west3.run.app",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
