@@ -1,8 +1,5 @@
 package nikomitk.mschatgpt.dto.standard;
 
-import lombok.Getter;
+public record ChatGPTResponseChoice(ChatGPTMessage message) {
 
-@Getter
-public class ChatGPTResponseChoice<T> {
-    private ChatGPTMessage<T> message;
 }

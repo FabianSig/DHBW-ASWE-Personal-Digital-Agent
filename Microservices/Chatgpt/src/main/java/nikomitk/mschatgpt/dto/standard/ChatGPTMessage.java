@@ -1,4 +1,4 @@
 package nikomitk.mschatgpt.dto.standard;
 
-public record ChatGPTMessage<T>(String role, T content) {
+public record ChatGPTMessage(String role, String content) {
 }

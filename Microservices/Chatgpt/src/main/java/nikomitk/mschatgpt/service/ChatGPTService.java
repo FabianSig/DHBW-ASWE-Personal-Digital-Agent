@@ -13,8 +13,11 @@ import nikomitk.mschatgpt.model.Message;
 import nikomitk.mschatgpt.repository.MessageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,15 +29,15 @@ public class ChatGPTService {
     private final MessageRepository messageRepository;
     private final ChatGPTClient chatGPTClient;
 
-    public ChatGPTResponseChoice<String> sendMessage(MessageRequest request, String chatId) {
+    public ChatGPTResponseChoice sendMessage(MessageRequest request, String chatId) {
 
 
 
-        List<ChatGPTMessage<String>> messages = new java.util.ArrayList<>(messageRepository.findByChatId(chatId).stream()
+        List<ChatGPTMessage> messages = new ArrayList<>(messageRepository.findByChatId(chatId).stream()
                 .map(m -> {
                     log.info("m.getRole() = {}###", m.getRole());
                     log.info("m.getContent() = {}###", m.getContent());
-                    return new ChatGPTMessage<>(m.getRole(), m.getContent());
+                    return new ChatGPTMessage(m.getRole(), m.getContent());
 
                 })
                 .toList());
@@ -46,11 +49,11 @@ public class ChatGPTService {
                 .chatId(chatId)
                 .build();
 
-        messages.add(new ChatGPTMessage<>(newMessage.getRole(), newMessage.getContent()));
+        messages.add(new ChatGPTMessage(newMessage.getRole(), newMessage.getContent()));
 
         ChatGPTRequest chatGPTRequest = new ChatGPTRequest("gpt-4o-mini", messages);
-        ChatGPTResponse<String> response = chatGPTClient.sendMessage(chatGPTRequest);
-        String chatGPTResponseMessage = response.getChoices().getFirst().getMessage().content();
+        ChatGPTResponse response = chatGPTClient.sendMessage(chatGPTRequest);
+        String chatGPTResponseMessage = response.choices().getFirst().message().content();
 
         Message responseMessage = Message.builder()
                 .role("assistant")
@@ -61,10 +64,10 @@ public class ChatGPTService {
         messageRepository.save(newMessage);
         messageRepository.save(responseMessage);
 
-        return response.getChoices().getFirst();
+        return response.choices().getFirst();
     }
 
-    public ChatGPTResponseChoice<String> sendMessage(MessageRequest request) {
+    public ChatGPTResponseChoice sendMessage(MessageRequest request) {
         String defaultChatId = "default";
         return sendMessage(request, defaultChatId);
     }
@@ -73,11 +76,11 @@ public class ChatGPTService {
         return chatGPTClient.sendAudio(request.file(), request.model(), request.language());
     }
 
-    public ChatGPTIntentionResponse findIntention(ChatGPTMessage<String> message) {
+    public ChatGPTIntentionResponse findIntention(ChatGPTMessage message) {
         String intentChatId = "intent";
 
-        List<ChatGPTMessage<String>> messages = new java.util.ArrayList<>(messageRepository.findByChatId(intentChatId).stream()
-                .map(m -> new ChatGPTMessage<>(m.getRole(), m.getContent()))
+        List<ChatGPTMessage> messages = new ArrayList<>(messageRepository.findByChatId(intentChatId).stream()
+                .map(m -> new ChatGPTMessage(m.getRole(), m.getContent()))
                 .toList());
 
         messages.add(message);
@@ -91,20 +94,18 @@ public class ChatGPTService {
                     new TypeReference<>() {}
             );
         } catch (Exception e) {
-            return new ChatGPTIntentionResponse("error1", List.of());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error reading response format", e);
         }
 
         ChatGPTIntentionRequest chatGPTRequest = new ChatGPTIntentionRequest("gpt-4o", messages, responseFormat);
-        ChatGPTResponse<ChatGPTIntentionResponse> response;
-        try {
-                response = objectMapper.readValue(objectMapper.readTree(chatGPTClient.sendIntentionMessage(chatGPTRequest)).asText(), ChatGPTResponse.class);
 
+        try {
+            ChatGPTResponse strResponse = chatGPTClient.sendIntentionMessage(chatGPTRequest);
+            return objectMapper.readValue(strResponse.choices().getFirst().message().content(), ChatGPTIntentionResponse.class);
         }
         catch (Exception e) {
-            e.printStackTrace();
-            return new ChatGPTIntentionResponse("error2", List.of());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error reading response format", e);
         }
 
-        return response.getChoices().getFirst().getMessage().content();
     }
 }
