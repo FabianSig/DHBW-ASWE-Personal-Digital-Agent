@@ -11,8 +11,7 @@ import nikomitk.mschatgpt.dto.intention.ChatGPTIntentionResponse;
 import nikomitk.mschatgpt.dto.standard.*;
 import nikomitk.mschatgpt.model.Message;
 import nikomitk.mschatgpt.repository.MessageRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import nikomitk.mschatgpt.repository.PromptRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -28,23 +27,22 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ChatGPTService {
 
-    private static final Logger log = LoggerFactory.getLogger(ChatGPTService.class);
     private final MessageRepository messageRepository;
+    private final PromptRepository promptRepository;
     private final ChatGPTClient chatGPTClient;
 
-    public ChatGPTResponseChoice sendMessage(MessageRequest request, String chatId) {
+    public ChatGPTResponseChoice sendMessage(ChatMessageRequest request, String chatId) {
 
-
+        ChatGPTMessage prompt = promptRepository.findByPromptId(chatId).stream()
+                .map(m -> new ChatGPTMessage(m.getRole(), m.getContent()))
+                .toList().getFirst();
 
         List<ChatGPTMessage> messages = new ArrayList<>(messageRepository.findByChatId(chatId).stream()
-                .map(m -> {
-                    log.info("m.getRole() = {}###", m.getRole());
-                    log.info("m.getContent() = {}###", m.getContent());
-                    return new ChatGPTMessage(m.getRole(), m.getContent());
-
-                })
+                .map(m -> new ChatGPTMessage(m.getRole(), m.getContent()))
                 .toList());
 
+        messages.addFirst(prompt);
+        messages.add(1, new ChatGPTMessage("system", request.data()));
 
         Message newMessage = Message.builder()
                 .role("user")
@@ -70,7 +68,7 @@ public class ChatGPTService {
         return response.choices().getFirst();
     }
 
-    public ChatGPTResponseChoice sendMessage(MessageRequest request) {
+    public ChatGPTResponseChoice sendMessage(ChatMessageRequest request) {
         String defaultChatId = "default";
         return sendMessage(request, defaultChatId);
     }

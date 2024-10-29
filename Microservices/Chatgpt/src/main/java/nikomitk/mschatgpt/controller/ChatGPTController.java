@@ -6,7 +6,7 @@ import nikomitk.mschatgpt.dto.audio.ChatGPTAudioResponse;
 import nikomitk.mschatgpt.dto.intention.ChatGPTIntentionResponse;
 import nikomitk.mschatgpt.dto.standard.ChatGPTMessage;
 import nikomitk.mschatgpt.dto.standard.ChatGPTResponseChoice;
-import nikomitk.mschatgpt.dto.standard.MessageRequest;
+import nikomitk.mschatgpt.dto.standard.ChatMessageRequest;
 import nikomitk.mschatgpt.service.ChatGPTService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +20,18 @@ public class ChatGPTController {
 
     private final ChatGPTService chatGPTService;
 
+    @PostMapping("/message/{chatId}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ChatGPTResponseChoice sendMessage(@RequestBody ChatMessageRequest request, @PathVariable String chatId) {
+        return chatGPTService.sendMessage(request, chatId);
+    }
+
     @PostMapping("/message")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ChatGPTResponseChoice sendMessage(@RequestBody MessageRequest request) {
+    public ChatGPTResponseChoice sendMessage(@RequestBody ChatMessageRequest request) {
         return chatGPTService.sendMessage(request);
     }
+
 
     @PostMapping("/audio")
     @ResponseStatus(HttpStatus.ACCEPTED)
