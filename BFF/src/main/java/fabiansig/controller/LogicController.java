@@ -1,6 +1,6 @@
 package fabiansig.controller;
 
-import fabiansig.dto.MessageRequest;
+import online.dhbw_studentprojekt.dto.chatgpt.standard.MessageRequest;
 import fabiansig.dto.MessageResponse;
 import fabiansig.service.LogicService;
 import lombok.RequiredArgsConstructor;

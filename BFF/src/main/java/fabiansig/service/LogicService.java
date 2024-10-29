@@ -3,8 +3,8 @@ package fabiansig.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fabiansig.client.ChatGPTClient;
 import fabiansig.client.MapsClient;
-import fabiansig.dto.IntentionResponse;
-import fabiansig.dto.MessageRequest;
+import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse;
+import online.dhbw_studentprojekt.dto.chatgpt.standard.MessageRequest;
 import fabiansig.dto.MessageResponse;
 import fabiansig.dto.RouteAddressRequest;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class LogicService {
 
     public String sendMessage(MessageRequest message) {
 
-        IntentionResponse intResponse = chatGPTClient.getIntention(message.content());
+        ChatGPTIntentionResponse intResponse = chatGPTClient.getIntention(message.content());
 
         Map<String, String> attributes = new java.util.HashMap<>();
 
@@ -37,7 +37,7 @@ public class LogicService {
 
 
 
-
+        return "nein";
     }
 
 }
