@@ -91,11 +91,19 @@ public class ChatGPTService {
                     new TypeReference<>() {}
             );
         } catch (Exception e) {
-            return new ChatGPTIntentionResponse("error", List.of());
+            return new ChatGPTIntentionResponse("error1", List.of());
         }
 
         ChatGPTIntentionRequest chatGPTRequest = new ChatGPTIntentionRequest("gpt-4o", messages, responseFormat);
-        ChatGPTResponse<ChatGPTIntentionResponse> response = chatGPTClient.sendIntentionMessage(chatGPTRequest);
+        ChatGPTResponse<ChatGPTIntentionResponse> response;
+        try {
+                response = objectMapper.readValue(objectMapper.readTree(chatGPTClient.sendIntentionMessage(chatGPTRequest)).asText(), ChatGPTResponse.class);
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return new ChatGPTIntentionResponse("error2", List.of());
+        }
 
         return response.getChoices().getFirst().getMessage().content();
     }

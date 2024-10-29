@@ -16,7 +16,7 @@ public interface ChatGPTClient {
     ChatGPTResponse<String> sendMessage(@RequestBody ChatGPTRequest request);
 
     @PostExchange("v1/chat/completions")
-    ChatGPTResponse<ChatGPTIntentionResponse> sendIntentionMessage(@RequestBody ChatGPTIntentionRequest request);
+    String sendIntentionMessage(@RequestBody ChatGPTIntentionRequest request);
 
     @PostExchange(value = "v1/audio/transcriptions", contentType = "multipart/form-data")
     ChatGPTAudioResponse sendAudio(@RequestPart("file") MultipartFile file,
