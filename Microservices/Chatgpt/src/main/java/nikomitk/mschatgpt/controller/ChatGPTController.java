@@ -1,7 +1,12 @@
 package nikomitk.mschatgpt.controller;
 
 import lombok.RequiredArgsConstructor;
-import nikomitk.mschatgpt.dto.*;
+import nikomitk.mschatgpt.dto.audio.ChatGPTAudioRequest;
+import nikomitk.mschatgpt.dto.audio.ChatGPTAudioResponse;
+import nikomitk.mschatgpt.dto.intention.ChatGPTIntentionResponse;
+import nikomitk.mschatgpt.dto.standard.ChatGPTMessage;
+import nikomitk.mschatgpt.dto.standard.ChatGPTResponseChoice;
+import nikomitk.mschatgpt.dto.standard.MessageRequest;
 import nikomitk.mschatgpt.service.ChatGPTService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +22,7 @@ public class ChatGPTController {
 
     @PostMapping("/message")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ChatGPTResponseChoice sendMessage(@RequestBody Request request) {
+    public ChatGPTResponseChoice sendMessage(@RequestBody MessageRequest request) {
         return chatGPTService.sendMessage(request);
     }
 
@@ -30,7 +35,7 @@ public class ChatGPTController {
 
     @PostMapping("/intention")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ChatGPTResponseChoice findIntention(@RequestBody String message) {
+    public ChatGPTIntentionResponse findIntention(@RequestBody String message) {
         ChatGPTMessage chatGPTMessage = new ChatGPTMessage("user", message);
         return chatGPTService.findIntention(chatGPTMessage);
     }

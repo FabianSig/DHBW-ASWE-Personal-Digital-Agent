@@ -1,4 +1,5 @@
-package nikomitk.mschatgpt.dto;
+package nikomitk.mschatgpt.dto.standard;
 
 public record ChatGPTResponseChoice(ChatGPTMessage message) {
+
 }
