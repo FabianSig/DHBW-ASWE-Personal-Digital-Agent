@@ -17,6 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -79,8 +82,14 @@ public class ChatGPTService {
     public ChatGPTIntentionResponse findIntention(ChatGPTMessage message) {
         String intentChatId = "intent";
 
+        LocalDate currentDate = LocalDate.now();
+        LocalTime currentTime = LocalTime.now();
+
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+
         List<ChatGPTMessage> messages = new ArrayList<>(messageRepository.findByChatId(intentChatId).stream()
-                .map(m -> new ChatGPTMessage(m.getRole(), m.getContent()))
+                .map(m -> new ChatGPTMessage(m.getRole(), String.format(m.getContent(), currentDate.format(dateFormatter), currentTime.format(timeFormatter))))
                 .toList());
 
         messages.add(message);
