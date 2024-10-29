@@ -78,7 +78,6 @@ public class ChatGPTService {
     }
 
     public ChatGPTIntentionResponse findIntention(ChatGPTMessage message) {
-        String intentChatId = "intent";
 
         LocalDate currentDate = LocalDate.now();
         LocalTime currentTime = LocalTime.now();
@@ -86,7 +85,7 @@ public class ChatGPTService {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-        List<ChatGPTMessage> messages = new ArrayList<>(messageRepository.findByChatId(intentChatId).stream()
+        List<ChatGPTMessage> messages = new ArrayList<>(promptRepository.findByPromptId("intent").stream()
                 .map(m -> new ChatGPTMessage(m.getRole(), String.format(m.getContent(), currentDate.format(dateFormatter), currentTime.format(timeFormatter))))
                 .toList());
 
