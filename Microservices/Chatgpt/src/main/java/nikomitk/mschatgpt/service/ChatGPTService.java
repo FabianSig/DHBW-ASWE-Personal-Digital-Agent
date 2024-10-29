@@ -33,7 +33,7 @@ public class ChatGPTService {
 
     public ChatGPTResponseChoice sendMessage(ChatMessageRequest request, String chatId) {
 
-        ChatGPTMessage prompt = promptRepository.findByPromptId(chatId).stream()
+        ChatGPTMessage prompt = promptRepository.findByPromptId("message").stream()
                 .map(m -> new ChatGPTMessage(m.getRole(), m.getContent()))
                 .toList().getFirst();
 

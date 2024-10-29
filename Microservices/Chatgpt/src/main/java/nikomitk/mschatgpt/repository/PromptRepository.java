@@ -1,11 +1,11 @@
 package nikomitk.mschatgpt.repository;
 
-import nikomitk.mschatgpt.model.Message;
+import nikomitk.mschatgpt.model.Prompt;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
-public interface PromptRepository extends MongoRepository<Message, String> {
-    List<Message> findByPromptId(String chatId);
+public interface PromptRepository extends MongoRepository<Prompt, String> {
+    List<Prompt> findByPromptId(String chatId);
 
 }
