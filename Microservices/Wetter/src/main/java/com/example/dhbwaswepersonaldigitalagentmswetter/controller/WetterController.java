@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "dhbw-studentprojekt.online")
 @RequestMapping("/api/wetter")
 @Slf4j
 public class WetterController {
