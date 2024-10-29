@@ -1,9 +1,9 @@
 package nikomitk.mschatgpt.client;
 
-import nikomitk.mschatgpt.dto.audio.ChatGPTAudioResponse;
-import nikomitk.mschatgpt.dto.intention.ChatGPTIntentionRequest;
-import nikomitk.mschatgpt.dto.standard.ChatGPTRequest;
-import nikomitk.mschatgpt.dto.standard.ChatGPTResponse;
+import online.dhbw_studentprojekt.dto.chatgpt.audio.ChatGPTAudioResponse;
+import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionRequest;
+import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTRequest;
+import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponse;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
