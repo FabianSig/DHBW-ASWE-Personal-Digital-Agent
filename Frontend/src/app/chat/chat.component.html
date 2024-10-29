@@ -1,18 +1,19 @@
-<div class="d-flex flex-column align-items-center p-5 border border-black w-100">
+<div class="d-flex flex-column align-items-center p-5 border-left border-right border-bottom border-black w-100">
   <div>
-    <app-search-bar (chatGPTResponseEmitter)="onChatGPTResponse($event)"></app-search-bar>
-
     @if (chatGPTResponse) {
-      <h2>ChatGPT Data:</h2>
       <p>{{ chatGPTResponse.message.content }}</p>
     }
   </div>
 
   <div>
-    <app-audio-recorder (audioResponseEmitter)="onAudioResponse($event)"></app-audio-recorder>
     @if (audioResponse) {
-      <h2>ChatGPT Data:</h2>
       <p>{{ audioResponse.text }}</p>
     }
   </div>
+
+  <div class="d-flex justify-content-center input-group">
+    <app-audio-recorder (audioResponseEmitter)="onAudioResponse($event)"></app-audio-recorder>
+    <app-search-bar (chatGPTResponseEmitter)="onChatGPTResponse($event)"></app-search-bar>
+  </div>
+
 </div>
