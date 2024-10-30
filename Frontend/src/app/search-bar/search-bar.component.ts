@@ -13,7 +13,6 @@ export class SearchBarComponent {
   @Output() chatGPTResponseEmitter = new EventEmitter<ChatGPTResponse>();
 
   searchTerm: string = '';
-  apiKey: string = '';
   error: string = '';
 
   constructor(private apiService: ApiService) {}
@@ -23,7 +22,7 @@ export class SearchBarComponent {
   }
 
   handleChatGPTSearch(): void {
-    this.apiService.getChatGPTData(this.searchTerm, this.apiKey).subscribe({
+    this.apiService.getChatGPTData(this.searchTerm).subscribe({
       next: (res) => {
         this.chatGPTResponseEmitter.emit(res as ChatGPTResponse);
       },
@@ -34,9 +33,5 @@ export class SearchBarComponent {
         console.error('Error occurred:', error);
       }
     });
-  }
-
-  handleKeySearch(): void {
-    this.apiKey = this.searchTerm;
   }
 }

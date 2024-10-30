@@ -1,12 +1,6 @@
-<div id="searchbars">
-  <div class="searchbar-container">
-    <input class="searchbar" type="text" placeholder="Give the API key..." (input)="onSearch($event)" />
-    <button (click)="handleKeySearch()">Send</button>
-  </div>
-  <div class="searchbar-container">
-    <input class="searchbar" type="text" placeholder="Ask PDA..." (input)="onSearch($event)" />
-    <button (click)="handleChatGPTSearch()">Send</button>
-  </div>
+<div class="d-flex flex-row">
+  <input class="form-control" type="text" placeholder="Texteingabe..." (input)="onSearch($event)" />
+  <button (click)="handleChatGPTSearch()">Senden</button>
 </div>
 
 @if (error) {
