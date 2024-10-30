@@ -17,7 +17,7 @@ public class LogicController {
     @PostMapping("/message")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String sendMessage(@RequestBody MessageRequest request) {
-        return logicService.sendMessage(request);
+        return logicService.sendResponseMessage(request);
     }
 
 }
