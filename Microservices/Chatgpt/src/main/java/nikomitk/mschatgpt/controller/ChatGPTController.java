@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/chatgpt")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "dhbw-studentprojekt.online")
 public class ChatGPTController {
 
     private final ChatGPTService chatGPTService;

@@ -12,7 +12,6 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "dhbw-studentprojekt.online")
 @RequestMapping("/api/speisekarte")
 @Slf4j
 public class SpeisekarteController {
