@@ -6,9 +6,9 @@ import {environment} from '../../environments/environment';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrlChatgpt = environment.apiUrlChatgpt;
-  private apiUrlSpeisekarte = environment.apiUrlSpeisekarte;
-  private apiUrlAudio = environment.apiUrlAudio;
+  private apiUrlChatgpt = "http://localhost:8080" + environment.apiUrlChatgpt;
+  private apiUrlSpeisekarte = "http://localhost:8080" + environment.apiUrlSpeisekarte;
+  private apiUrlAudio = "http://localhost:8080" + environment.apiUrlAudio;
 
   constructor(private http: HttpClient) {}
 
