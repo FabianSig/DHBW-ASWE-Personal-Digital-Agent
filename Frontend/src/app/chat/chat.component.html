@@ -1,7 +1,7 @@
 <div class="d-flex flex-column align-items-center p-5 border-left border-right border-bottom border-black w-100">
   <div>
-    @if (chatGPTResponse) {
-      <p>{{ chatGPTResponse.message.content }}</p>
+    @if (apiService.chatGPTResponse().length>1) {
+      <p>{{ apiService.chatGPTResponse() }}</p>
     }
   </div>
 
@@ -15,7 +15,7 @@
 
   <div class="d-flex justify-content-center input-group">
     <app-audio-recorder (audioResponseEmitter)="onAudioResponse($event)"></app-audio-recorder>
-    <app-search-bar (chatGPTResponseEmitter)="onChatGPTResponse($event)"></app-search-bar>
+    <app-search-bar class="w-75"></app-search-bar>
   </div>
 
 </div>
