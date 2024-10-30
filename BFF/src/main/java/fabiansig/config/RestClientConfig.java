@@ -38,7 +38,6 @@ public class RestClientConfig {
     public MapsClient mapsClient() {
         RestClient restClient = RestClient.builder()
                 .baseUrl(mapsServiceUrl)
-                .defaultHeader("Authorization", System.getenv("API_KEY"))
                 .build();
 
         RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
