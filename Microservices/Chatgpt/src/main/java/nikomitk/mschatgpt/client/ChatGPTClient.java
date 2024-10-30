@@ -21,5 +21,4 @@ public interface ChatGPTClient {
     ChatGPTAudioResponse sendAudio(@RequestPart("file") MultipartFile file,
                                    @RequestPart("model") String model,
                                    @RequestPart("language") String language);
-
 }

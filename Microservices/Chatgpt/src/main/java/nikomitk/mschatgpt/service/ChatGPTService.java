@@ -27,6 +27,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ChatGPTService {
 
+
     private final MessageRepository messageRepository;
     private final PromptRepository promptRepository;
     private final ChatGPTClient chatGPTClient;
@@ -74,6 +75,7 @@ public class ChatGPTService {
     }
 
     public ChatGPTAudioResponse sendAudio(ChatGPTAudioRequest request) {
+
         return chatGPTClient.sendAudio(request.file(), request.model(), request.language());
     }
 

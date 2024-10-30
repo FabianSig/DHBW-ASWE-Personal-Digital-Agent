@@ -13,8 +13,6 @@ import {AudioRecorderService} from '../services/audio-recorder.service';
 export class AudioRecorderComponent {
   @Output() audioResponseEmitter = new EventEmitter<AudioResponse>();
 
-  searchTerm: string = '';
-  apiKey: string = '';
   isRecording = false;
   audioFile?: Blob;
 
@@ -31,18 +29,21 @@ export class AudioRecorderComponent {
       .then(audioBlob => {
         this.audioFile = audioBlob;
       })
+      .then(() => {
+        this.sendAudioToChatGPT();
+      })
       .catch(error => {
         console.error('Error stopping recording:', error);
       });
   }
 
-  sendAudioToChatGPT(): void {
+  private sendAudioToChatGPT(): void {
     if (!this.audioFile) {
       console.error('No audio file available');
       return;
     }
 
-    this.apiService.getAudioData(this.audioFile, this.apiKey).subscribe({
+    this.apiService.getAudioData(this.audioFile).subscribe({
       next: (res) => {
         this.audioResponseEmitter.emit(res as AudioResponse);
       },
@@ -50,13 +51,5 @@ export class AudioRecorderComponent {
         console.error('Error occurred:', error);
       }
     });
-  }
-
-  onSearch(event: any): void {
-    this.searchTerm = event.target.value;
-  }
-
-  handleKeySearch(): void {
-    this.apiKey = this.searchTerm;
   }
 }

@@ -30,15 +30,12 @@ public class ChatGPTController {
     @PostMapping("/message")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ChatGPTResponseChoice sendMessage(@RequestBody ChatMessageRequest request) {
-
         return chatGPTService.sendMessage(request);
     }
-
 
     @PostMapping("/audio")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ChatGPTAudioResponse sendAudio(@RequestPart("file") MultipartFile file) {
-
         ChatGPTAudioRequest audioRequest = new ChatGPTAudioRequest(file, "whisper-1", "de");
         return chatGPTService.sendAudio(audioRequest);
     }
@@ -46,9 +43,7 @@ public class ChatGPTController {
     @PostMapping("/intention")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ChatGPTIntentionResponse findIntention(@RequestBody String message) {
-
         ChatGPTMessage chatGPTMessage = new ChatGPTMessage("user", message);
         return chatGPTService.findIntention(chatGPTMessage);
     }
-
 }
