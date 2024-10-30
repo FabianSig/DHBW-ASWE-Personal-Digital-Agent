@@ -1,14 +1,27 @@
 package nikomitk.mschatgpt.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import nikomitk.mschatgpt.client.ChatGPTClient;
-import nikomitk.mschatgpt.dto.ChatGPTAudioResponse;
-import nikomitk.mschatgpt.dto.*;
+import online.dhbw_studentprojekt.dto.chatgpt.audio.ChatGPTAudioResponse;
+import nikomitk.mschatgpt.dto.audio.ChatGPTAudioRequest;
+import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionRequest;
+import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse;
+import online.dhbw_studentprojekt.dto.chatgpt.standard.*;
 import nikomitk.mschatgpt.model.Message;
 import nikomitk.mschatgpt.repository.MessageRepository;
+import nikomitk.mschatgpt.repository.PromptRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -16,27 +29,47 @@ public class ChatGPTService {
 
 
     private final MessageRepository messageRepository;
+    private final PromptRepository promptRepository;
     private final ChatGPTClient chatGPTClient;
 
-    public ChatGPTResponseChoice sendMessage(Request request, String chatId) {
+    public ChatGPTResponseChoice sendMessage(ChatMessageRequest request, String chatId) {
 
-        List<ChatGPTMessage> messages = new java.util.ArrayList<>(messageRepository.findByChatId(chatId).stream().map(m -> new ChatGPTMessage(m.getRole(), m.getContent())).toList());
+        ChatGPTMessage prompt = promptRepository.findByPromptId("message").stream()
+                .map(m -> new ChatGPTMessage(m.getRole(), m.getContent()))
+                .toList().getFirst();
 
-        Message newMessage = Message.builder().role("user").content(request.message()).chatId(chatId).build();
+        List<ChatGPTMessage> messages = new ArrayList<>(messageRepository.findByChatId(chatId).stream()
+                .map(m -> new ChatGPTMessage(m.getRole(), m.getContent()))
+                .toList());
+
+        messages.addFirst(prompt);
+        messages.add(1, new ChatGPTMessage("system", request.data()));
+
+        Message newMessage = Message.builder()
+                .role("user")
+                .content(request.message())
+                .chatId(chatId)
+                .build();
+
         messages.add(new ChatGPTMessage(newMessage.getRole(), newMessage.getContent()));
 
-        ChatGPTRequest chatGPTRequest = new ChatGPTRequest("gpt-4o", messages);
+        ChatGPTRequest chatGPTRequest = new ChatGPTRequest("gpt-4o-mini", messages);
         ChatGPTResponse response = chatGPTClient.sendMessage(chatGPTRequest);
         String chatGPTResponseMessage = response.choices().getFirst().message().content();
 
-        Message responseMessage = Message.builder().role("assistant").content(chatGPTResponseMessage).chatId(chatId).build();
+        Message responseMessage = Message.builder()
+                .role("assistant")
+                .content(chatGPTResponseMessage)
+                .chatId(chatId)
+                .build();
+
         messageRepository.save(newMessage);
         messageRepository.save(responseMessage);
 
         return response.choices().getFirst();
     }
 
-    public ChatGPTResponseChoice sendMessage(Request request) {
+    public ChatGPTResponseChoice sendMessage(ChatMessageRequest request) {
         String defaultChatId = "default";
         return sendMessage(request, defaultChatId);
     }
@@ -46,20 +79,41 @@ public class ChatGPTService {
         return chatGPTClient.sendAudio(request.file(), request.model(), request.language());
     }
 
-    public ChatGPTResponseChoice findIntention(ChatGPTMessage message) {
+    public ChatGPTIntentionResponse findIntention(ChatGPTMessage message) {
 
-        String intentChatId = "intent";
-        List<ChatGPTMessage> messages = new java.util.ArrayList<>(messageRepository.findByChatId(intentChatId).stream().map(m -> new ChatGPTMessage(m.getRole(), m.getContent())).toList());
+        LocalDate currentDate = LocalDate.now();
+        LocalTime currentTime = LocalTime.now();
+
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+        List<ChatGPTMessage> messages = new ArrayList<>(promptRepository.findByPromptId("intent").stream()
+                .map(m -> new ChatGPTMessage(m.getRole(), String.format(m.getContent(), currentDate.format(dateFormatter), currentTime.format(timeFormatter))))
+                .toList());
 
         messages.add(message);
 
-        ChatGPTRequest chatGPTRequest = new ChatGPTRequest("gpt-4o", messages);
-        ChatGPTResponse response = chatGPTClient.sendMessage(chatGPTRequest);
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> responseFormat;
 
-        return response.choices().getFirst();
+        try {
+            responseFormat = objectMapper.readValue(
+                    getClass().getClassLoader().getResourceAsStream("responseFormat.json"),
+                    new TypeReference<>() {}
+            );
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error reading response format", e);
+        }
 
+        ChatGPTIntentionRequest chatGPTRequest = new ChatGPTIntentionRequest("gpt-4o", messages, responseFormat);
+
+        try {
+            ChatGPTResponse strResponse = chatGPTClient.sendIntentionMessage(chatGPTRequest);
+            return objectMapper.readValue(strResponse.choices().getFirst().message().content(), ChatGPTIntentionResponse.class);
+        }
+        catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error reading response format", e);
+        }
 
     }
-
-
 }

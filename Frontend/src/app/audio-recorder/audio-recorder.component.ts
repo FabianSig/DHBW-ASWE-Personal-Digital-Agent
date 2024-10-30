@@ -29,12 +29,15 @@ export class AudioRecorderComponent {
       .then(audioBlob => {
         this.audioFile = audioBlob;
       })
+      .then(() => {
+        this.sendAudioToChatGPT();
+      })
       .catch(error => {
         console.error('Error stopping recording:', error);
       });
   }
 
-  sendAudioToChatGPT(): void {
+  private sendAudioToChatGPT(): void {
     if (!this.audioFile) {
       console.error('No audio file available');
       return;
