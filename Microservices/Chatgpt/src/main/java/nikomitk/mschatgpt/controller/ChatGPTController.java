@@ -15,7 +15,6 @@ import nikomitk.mschatgpt.dto.audio.ChatGPTAudioRequest;
 @RestController
 @RequestMapping("/api/chatgpt")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class ChatGPTController {
 
     private final ChatGPTService chatGPTService;
