@@ -1,7 +1,6 @@
 package fabiansig.controller;
 
 import online.dhbw_studentprojekt.dto.chatgpt.standard.MessageRequest;
-import fabiansig.dto.MessageResponse;
 import fabiansig.service.LogicService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

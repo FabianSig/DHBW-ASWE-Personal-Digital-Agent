@@ -21,6 +21,7 @@ public class RestClientConfig {
     @Value("${microservice.routing.ip}")
     private String mapsServiceUrl;
 
+
     @Bean
     public ChatGPTClient chatGPTClient() {
         RestClient restClient = RestClient.builder()
