@@ -28,7 +28,7 @@ public class SpeisekarteController {
     @Operation(summary = "Get the speisekarte for the given date")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Speisekarte getSpeisekarte(@io.swagger.v3.oas.annotations.Parameter(example = "dd-MM-yyyy") @RequestParam Optional<String> datum) {
+    public Speisekarte getSpeisekarte(@io.swagger.v3.oas.annotations.Parameter(example = "yyyy-MM-dd") @RequestParam Optional<String> datum) {
         return speisekarteService.getSpeisekarte(datum);
     }
 
