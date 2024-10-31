@@ -1,9 +1,6 @@
 package fabiansig.config;
 
-import fabiansig.client.ChatGPTClient;
-import fabiansig.client.MapsClient;
-import fabiansig.client.RaplaClient;
-import fabiansig.client.SpeisekarteClient;
+import fabiansig.client.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -26,9 +23,11 @@ public class RestClientConfig {
     @Value("${microservice.speisekarte.ip}")
     private String speisekarteServiceUrl;
 
-
     @Value("${microservice.rapla.ip}")
     private String raplaServiceUrl;
+
+    @Value("${microservice.prefs.ip}")
+    private String prefsServiceUrl;
 
     @Bean
     public ChatGPTClient chatGPTClient() {
@@ -71,5 +70,16 @@ public class RestClientConfig {
         RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
         HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(restClientAdapter).build();
         return httpServiceProxyFactory.createClient(RaplaClient.class);
+    }
+
+    @Bean
+    public PrefsClient prefsClient() {
+        RestClient restClient = RestClient.builder()
+                .baseUrl(prefsServiceUrl)
+                .build();
+
+        RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
+        HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(restClientAdapter).build();
+        return httpServiceProxyFactory.createClient(PrefsClient.class);
     }
 }
