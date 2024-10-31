@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ChatMessage} from '../interfaces/chat-message';
+import {ChatService} from '../services/chat.service';
 
 @Component({
   selector: 'app-message-box',
@@ -8,25 +9,12 @@ import {ChatMessage} from '../interfaces/chat-message';
   templateUrl: './message-box.component.html',
   styleUrl: './message-box.component.scss'
 })
-export class MessageBoxComponent {
+export class MessageBoxComponent implements OnInit {
   messages: ChatMessage[] = [];
-  private messageCounter: number = 0;
 
-  constructor() {}
+  constructor(private chatService: ChatService) {}
 
-  addGptMessage(message: string) {
-    this.messages.push({
-      id: this.messageCounter++,
-      text: message,
-      sender: 'chatgpt'
-    });
-  }
-
-  addUserMessage(message: string) {
-    this.messages.push({
-      id: this.messageCounter++,
-      text: message,
-      sender: 'user'
-    });
+  ngOnInit() {
+    this.messages = this.chatService.getMessages();
   }
 }

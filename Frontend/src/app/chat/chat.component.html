@@ -1,20 +1,9 @@
-<div class="d-flex flex-column align-items-center p-5 border-left border-right border-bottom border-black w-100">
-  <div>
-    @if (apiService.chatGPTResponse().length>1) {
-      <p>{{ apiService.chatGPTResponse() }}</p>
-    }
-  </div>
+<div class="d-flex flex-column align-items-center p-5 border-left border-right border-bottom border-black w-100 h-100">
+  <app-message-box class="w-75"></app-message-box>
 
-  <div>
-    @if (audioResponse) {
-      <p>{{ audioResponse.text }}</p>
-    }
-  </div>
-
-  <app-message-box></app-message-box>
+  <hr class="separator pb-3 mt-0">
 
   <div class="d-flex justify-content-center input-group">
-    <app-audio-recorder (audioResponseEmitter)="onAudioResponse($event)"></app-audio-recorder>
     <app-search-bar class="w-75"></app-search-bar>
   </div>
 

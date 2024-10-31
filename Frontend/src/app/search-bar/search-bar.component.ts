@@ -1,11 +1,15 @@
 import {Component} from '@angular/core';
 import {ApiService} from '../services/api.service';
-import {MessageBoxComponent} from '../message-box/message-box.component';
+import {AudioRecorderComponent} from '../audio-recorder/audio-recorder.component';
+import {AudioResponse} from '../interfaces/audio-response';
+import {ChatService} from '../services/chat.service';
 
 @Component({
   selector: 'app-search-bar',
   standalone: true,
-  imports: [],
+  imports: [
+    AudioRecorderComponent
+  ],
   templateUrl: './search-bar.component.html',
   styleUrl: './search-bar.component.scss'
 })
@@ -14,7 +18,7 @@ export class SearchBarComponent {
   searchTerm: string = '';
   error: string = '';
 
-  constructor(private apiService: ApiService, private messageBoxComponent: MessageBoxComponent) {
+  constructor(private apiService: ApiService, private chatService: ChatService) {
   }
 
   onSearch(event: any): void {
@@ -22,10 +26,13 @@ export class SearchBarComponent {
   }
 
   handleChatGPTSearch(): void {
+    this.chatService.addMessage(this.searchTerm, 'user');
     this.apiService.getChatGPTData(this.searchTerm).subscribe(response => {
-      this.messageBoxComponent.addGptMessage(response);
-      this.apiService.chatGPTResponse.set(response);
-      console.log(response);
+      this.chatService.addMessage(response, 'chatgpt');
     })
+  }
+
+  onAudioResponse(response: AudioResponse): void {
+    this.chatService.addMessage(response.text, 'user');
   }
 }

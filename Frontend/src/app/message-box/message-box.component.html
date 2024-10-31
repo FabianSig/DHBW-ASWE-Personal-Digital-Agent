@@ -1,9 +1,9 @@
-@for(message of messages; track message.id) {
-  @if(message.sender === 'user') {
-     <span>User: </span>
+<div id="chatBox" class="overflow-y-auto">
+  @for(message of messages; track message.id) {
+    <div class="d-flex {{ message.sender == 'user' ? 'justify-content-end' : 'justify-content-start' }}">
+      <div class="message-bubble text-break shadow {{ message.sender == 'user' ? 'sender' : 'receiver' }} d-inline-block mx-3 my-2 p-2 border rounded overflow-hidden">
+        <p class="mb-0">{{ message.text }}</p>
+     </div>
+   </div>
   }
-  @else {
-    <span>GPT: </span>
-  }
-  {{ message.id }}: {{ message.text }}
- }
+</div>
