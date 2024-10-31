@@ -93,7 +93,7 @@ public class Routes {
     public RouterFunction<ServerResponse> speisekarteServiceSwaggerRoute(){
         return route("speisekarte_service_swagger")
                 .route(RequestPredicates.path(speisekarteServiceSwaggerPath), HandlerFunctions.http(speisekarteServiceIp))
-                .filter(setPath("/api-docs")) //setPath rewrites the entire path of /aggregate/product-service/v3/api-docs to /api-docs
+                .filter(setPath("/api-docs"))
                 .build();
     }
 
