@@ -1,0 +1,20 @@
+  #chatBox {
+    min-height: 40vh;
+    max-height: 40vh;
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+  }
+
+  .message-bubble {
+    max-width: 70%;
+    position: relative;
+  }
+
+  .sender {
+    background-color: #cacefc;
+  }
+
+  .receiver {
+    background-color: #ebe8e8;
+  }
