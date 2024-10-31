@@ -1,4 +1,4 @@
-package sven.news.dto;
+package Chaligula.news.dto;
 
 public record News(String news, Main main) {
     

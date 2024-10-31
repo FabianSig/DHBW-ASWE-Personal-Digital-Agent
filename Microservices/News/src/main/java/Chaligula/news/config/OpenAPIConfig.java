@@ -1,4 +1,4 @@
-package sven.news.config;
+package Chaligula.news.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

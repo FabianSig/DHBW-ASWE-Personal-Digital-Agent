@@ -1,8 +1,8 @@
-package sven.news.service;
+package Chaligula.news.service;
 
 import org.springframework.stereotype.Service;
-import sven.news.client.NewsClient;
-import sven.news.dto.News;
+import Chaligula.news.client.NewsClient;
+import Chaligula.news.dto.News;
 
 
 @Service

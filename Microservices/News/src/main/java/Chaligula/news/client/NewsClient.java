@@ -1,6 +1,6 @@
-package sven.news.client;
+package Chaligula.news.client;
 
-import sven.news.dto.News;
+import Chaligula.news.dto.News;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.service.annotation.PostExchange;
 

@@ -1,4 +1,4 @@
-package sven.news;
+package Chaligula.news;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
