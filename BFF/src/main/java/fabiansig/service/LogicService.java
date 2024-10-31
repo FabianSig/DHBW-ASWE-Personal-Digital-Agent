@@ -2,10 +2,12 @@ package fabiansig.service;
 
 import fabiansig.client.ChatGPTClient;
 import fabiansig.client.MapsClient;
+import fabiansig.client.PrefsClient;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.MessageRequest;
+import online.dhbw_studentprojekt.dto.prefs.Preference;
 import online.dhbw_studentprojekt.dto.routing.custom.RouteAddressRequest;
 import online.dhbw_studentprojekt.dto.routing.routing.RouteResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ public class LogicService {
     private static final Logger log = LoggerFactory.getLogger(LogicService.class);
     private final ChatGPTClient chatGPTClient;
     private final MapsClient mapsClient;
+    private final PrefsClient prefsClient;
 
     public String sendResponseMessage(MessageRequest message) {
 
@@ -71,4 +74,16 @@ public class LogicService {
         }
     }
 
+    public String getMorningRoutine() {
+        // Get prefs for news and stocks
+        String newsTopic = prefsClient.getPreference("news-topics").value().getFirst();
+
+        // Get news
+
+        // Get stocks
+
+
+        // Get Text for news and stocks
+
+    }
 }

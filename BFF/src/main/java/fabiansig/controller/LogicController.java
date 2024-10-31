@@ -15,9 +15,14 @@ public class LogicController {
     private final LogicService logicService;
 
     @PostMapping("/message")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.OK)
     public String sendMessage(@RequestBody MessageRequest request) {
         return logicService.sendResponseMessage(request);
     }
 
+    @GetMapping("/morning")
+    @ResponseStatus(HttpStatus.OK)
+    public String getMorningRoutine(){
+        return logicService.getMorningRoutine();
+    }
 }
