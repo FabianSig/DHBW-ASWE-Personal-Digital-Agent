@@ -4,8 +4,6 @@ import {SearchBarComponent} from './search-bar/search-bar.component';
 import {MenuComponent} from './menu/menu.component';
 import {MenuResponse} from './interfaces/menu-response';
 import {AudioRecorderComponent} from './audio-recorder/audio-recorder.component';
-import {ChatGPTResponse} from './interfaces/chat-gptresponse';
-import {AudioResponse} from './interfaces/audio-response';
 import {AlarmClockComponent} from './alarm-clock/alarm-clock.component';
 import {PreferencesComponent} from './preferences/preferences.component';
 import {HeaderComponent} from './header/header.component';
@@ -22,6 +20,8 @@ import {AuthPopupComponent} from './auth-popup/auth-popup.component';
 })
 export class AppComponent implements OnInit {
   menuResponse?: MenuResponse;
+  chatFullscreen = true;
+  preferencesOpen = false;
 
   onMenuResponse(response: MenuResponse): void {
     this.menuResponse = response;
@@ -51,5 +51,13 @@ export class AppComponent implements OnInit {
     if (popupElement) {
       popupElement.classList.remove('hidden');
     }
+  }
+
+  changeChatFullscreen() {
+    this.chatFullscreen = !this.chatFullscreen;
+  }
+
+  changePreferencesOpen() {
+    this.preferencesOpen = !this.preferencesOpen;
   }
 }
