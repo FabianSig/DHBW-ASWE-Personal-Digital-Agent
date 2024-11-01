@@ -1,5 +1,6 @@
 package fabiansig.controller;
 
+import fabiansig.service.TriggerService;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.MessageRequest;
 import fabiansig.service.LogicService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.List;
 public class LogicController {
 
     private final LogicService logicService;
+    private final TriggerService triggerService;
 
     @PostMapping("/message")
     @ResponseStatus(HttpStatus.ACCEPTED)
@@ -22,8 +24,15 @@ public class LogicController {
         return logicService.sendResponseMessage(request);
     }
 
+    @PostMapping("/trigger/{date}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public List<String> getTrigger(@RequestParam String date) {
+        return triggerService.getTrigger(date);
+    }
 
-
-
-
+    @PostMapping("/trigger")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public List<String> getTrigger() {
+        return triggerService.getTrigger();
+    }
 }
