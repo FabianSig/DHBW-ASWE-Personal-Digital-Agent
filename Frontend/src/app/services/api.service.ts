@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 
@@ -6,15 +6,15 @@ import {environment} from '../../environments/environment';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrlChatgpt = environment.apiUrlChatgpt;
-  private apiUrlSpeisekarte = environment.apiUrlSpeisekarte;
-  private apiUrlAudio = environment.apiUrlAudio;
+  private apiUrlChatgpt = "http://localhost:8080" + environment.apiUrlLogic;
+  private apiUrlSpeisekarte = "http://localhost:8080" + environment.apiUrlSpeisekarte;
+  private apiUrlAudio = "http://localhost:8080" + environment.apiUrlAudio;
 
   constructor(private http: HttpClient) {}
 
   getChatGPTData(query: string) {
     const body = { message: query };
-    return this.http.post(this.apiUrlChatgpt, body );
+    return this.http.post<string>(this.apiUrlChatgpt, body , { responseType: 'text' as 'json' });
   }
 
   getMenuData(menuDate: string) {
