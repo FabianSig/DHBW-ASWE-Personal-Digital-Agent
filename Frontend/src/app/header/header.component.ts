@@ -11,7 +11,7 @@ import {CarouselComponent} from '../carousel/carousel.component';
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-  title = 'Personal-Digital-Agent-Frontend';
+  title = 'Assistify AI';
   day = '';
   time = '';
   private timerId: any;
