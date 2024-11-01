@@ -12,5 +12,5 @@ public interface StockClient {
     Stock getSingleStock(@RequestParam String symbol);
 
     @GetExchange("/api/stock/multiple")
-    List<Stock> getMultipleStock(@RequestParam String[] symbol);
+    List<Stock> getMultipleStock(@RequestParam List<String> symbol);
 }

@@ -85,13 +85,11 @@ public class LogicService {
 
         // Get news
 
-        // Get stocks
-        String[] stockSymbolsArray = stockSymbols.toArray(new String[0]);
-        List<Stock> stocks = stockClient.getMultipleStock(stockSymbolsArray);
-
-
+        // Get stocks;
+        List<Stock> stocks = stockClient.getMultipleStock(stockSymbols);
 
         // Get Text for news and stocks
+        String response = chatGPTClient.getResponse();
         return "nein";
     }
 
