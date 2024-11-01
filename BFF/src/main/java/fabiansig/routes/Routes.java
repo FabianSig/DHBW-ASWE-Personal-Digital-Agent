@@ -120,4 +120,27 @@ public class Routes {
                 .build();
     }
 
+    @Value("${microservice.stock.path}")
+    private String stockServicePath;
+
+    @Value("${microservice.stock.ip}")
+    private String stockServiceIp;
+
+    @Bean
+    public RouterFunction<ServerResponse> stockServiceRoute() {
+        return GatewayRouterFunctions.route("stock_service")
+                .route(RequestPredicates.path(stockServicePath), HandlerFunctions.http(stockServiceIp))
+                .build();
+    }
+
+    @Value("${springdoc.swagger-ui.urls[4].url}")
+    private String stockServiceSwaggerPath;
+
+    @Bean
+    public RouterFunction<ServerResponse> stockServiceSwaggerRoute(){
+        return route("stock_service_swagger")
+                .route(RequestPredicates.path(stockServiceSwaggerPath), HandlerFunctions.http(stockServiceIp))
+                .filter(setPath("/api-docs"))
+                .build();
+    }
 }
