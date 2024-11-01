@@ -2,10 +2,12 @@ package fabiansig.service;
 
 import fabiansig.client.ChatGPTClient;
 import fabiansig.client.MapsClient;
+import fabiansig.client.RaplaClient;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.MessageRequest;
+import online.dhbw_studentprojekt.dto.rapla.RaplaResponse;
 import online.dhbw_studentprojekt.dto.routing.custom.RouteAddressRequest;
 import online.dhbw_studentprojekt.dto.routing.routing.RouteResponse;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -70,5 +73,7 @@ public class LogicService {
             return "Error: Could not process routing information.";
         }
     }
+
+
 
 }
