@@ -18,6 +18,19 @@ services:
       - 8084:8080
     environment:
       - SPRING_PROFILES_ACTIVE=local
+    depends_on:
+      - mongodb
+
+  chatgpt:
+    build:
+      context: ../Microservices/Chatgpt
+      dockerfile: Dockerfile
+    ports:
+      - 8085:8080
+    environment:
+      - API_KEY=${OPENAI_API_KEY}
+      - OUR_API_KEY=${OUR_API_KEY}
+      - MONGODB_PASSWORD=${MONGODB_PASSWORD}
 
   mongodb:
     image: mongo:7.0.5
