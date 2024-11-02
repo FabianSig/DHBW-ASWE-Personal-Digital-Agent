@@ -1,11 +1,14 @@
 import {Component,} from '@angular/core';
 import {ApiService} from '../services/api.service';
 import {MenuResponse} from '../interfaces/menu-response';
+import {NgForOf} from '@angular/common';
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [],
+  imports: [
+    NgForOf
+  ],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.scss'
 })

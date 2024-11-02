@@ -1,9 +1,20 @@
 export interface MenuResponse {
-  vorspeisen: string,
-  veganerRenner: string,
-  hauptgericht: string,
-  beilagen: string,
-  salat: string,
-  dessert: string,
-  buffet: string,
+  vorspeisen: Speise[];
+  veganerRenner: Speise[];
+  hauptgericht: Speise[];
+  beilagen: Speise[];
+  salat: Speise[];
+  dessert: Speise[];
+  buffet: Speise[];
+}
+
+export interface Speise {
+  name: string;
+  allergene: string[];
+  naehrwerte: Naehrwert[];
+}
+
+export interface Naehrwert {
+  name: string;
+  menge: string;
 }

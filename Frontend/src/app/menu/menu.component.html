@@ -5,12 +5,14 @@
 
 @if (menuResponse) {
   <h2>Menu:</h2>
-  <p><strong>vorspeise:</strong> {{ menuResponse.vorspeisen }}</p>
-  <p><strong>veganerRenner:</strong> {{ menuResponse.veganerRenner }}</p>
-  <p><strong>hauptgericht:</strong> {{ menuResponse.hauptgericht }}</p>
-  <p><strong>beilagen:</strong> {{ menuResponse.beilagen }}</p>
-  <p><strong>salat:</strong> {{ menuResponse.salat }}</p>
-  <p><strong>dessert:</strong> {{ menuResponse.dessert }}</p>
-  <p><strong>buffet:</strong> {{ menuResponse.buffet }}</p>
+  <div *ngFor="let vorspeise of menuResponse.vorspeisen">
+    <p><strong>Vorspeise:</strong> {{ vorspeise.name }}</p>
+    <p>Allergene: {{ vorspeise.allergene.join(', ') }}</p>
+    <ul>
+      <li *ngFor="let naehrwert of vorspeise.naehrwerte">
+        {{ naehrwert.name }}: {{ naehrwert.menge }}
+      </li>
+    </ul>
+  </div>
 }
 
