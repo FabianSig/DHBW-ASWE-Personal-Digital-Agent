@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import {SearchBarComponent} from './search-bar/search-bar.component';
 import {MenuComponent} from './menu/menu.component';
-import {MenuResponse} from './interfaces/menu-response';
 import {AudioRecorderComponent} from './audio-recorder/audio-recorder.component';
 import {AlarmClockComponent} from './alarm-clock/alarm-clock.component';
 import {PreferencesComponent} from './preferences/preferences.component';
@@ -19,13 +18,8 @@ import {AuthPopupComponent} from './auth-popup/auth-popup.component';
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
-  menuResponse?: MenuResponse;
   chatFullscreen = true;
   preferencesOpen = false;
-
-  onMenuResponse(response: MenuResponse): void {
-    this.menuResponse = response;
-  }
 
   ngOnInit() {
     this.checkForAuthKey();

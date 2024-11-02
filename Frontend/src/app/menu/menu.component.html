@@ -1,4 +1,16 @@
 <h2>Menu</h2>
 <input class="menu-input-date" type="date" #menuInput>
-<button (click)="handleMenu(menuInput)">Show menu</button>
+<button (click)="handleMenu(menuInput) ">Show menu</button>
+
+
+@if (menuResponse) {
+  <h2>Menu:</h2>
+  <p><strong>vorspeise:</strong> {{ menuResponse.vorspeisen }}</p>
+  <p><strong>veganerRenner:</strong> {{ menuResponse.veganerRenner }}</p>
+  <p><strong>hauptgericht:</strong> {{ menuResponse.hauptgericht }}</p>
+  <p><strong>beilagen:</strong> {{ menuResponse.beilagen }}</p>
+  <p><strong>salat:</strong> {{ menuResponse.salat }}</p>
+  <p><strong>dessert:</strong> {{ menuResponse.dessert }}</p>
+  <p><strong>buffet:</strong> {{ menuResponse.buffet }}</p>
+}
 

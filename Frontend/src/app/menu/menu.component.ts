@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component,} from '@angular/core';
 import {ApiService} from '../services/api.service';
 import {MenuResponse} from '../interfaces/menu-response';
 
@@ -10,7 +10,7 @@ import {MenuResponse} from '../interfaces/menu-response';
   styleUrl: './menu.component.scss'
 })
 export class MenuComponent {
-  @Output() menuResponseEmitter = new EventEmitter<MenuResponse>();
+  menuResponse?: MenuResponse;
 
   constructor(private apiService: ApiService) {}
 
@@ -18,7 +18,7 @@ export class MenuComponent {
     this.apiService.getMenuData(menuDate.value).subscribe({
       next: (res) => {
         console.log(res);
-        this.menuResponseEmitter.emit(res as MenuResponse);
+        this.menuResponse = res as MenuResponse
       },
       error: (error) => {
         console.error('Error occurred:', error);

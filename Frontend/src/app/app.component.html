@@ -24,22 +24,10 @@
 
   <app-chat></app-chat>
 
-  @if(!chatFullscreen) {
-    <app-menu (menuResponseEmitter)="onMenuResponse($event)"></app-menu>
-
-    @if (menuResponse) {
-      <h2>Menu:</h2>
-      <p><strong>vorspeise:</strong> {{ menuResponse.vorspeisen }}</p>
-      <p><strong>veganerRenner:</strong> {{ menuResponse.veganerRenner }}</p>
-      <p><strong>hauptgericht:</strong> {{ menuResponse.hauptgericht }}</p>
-      <p><strong>beilagen:</strong> {{ menuResponse.beilagen }}</p>
-      <p><strong>salat:</strong> {{ menuResponse.salat }}</p>
-      <p><strong>dessert:</strong> {{ menuResponse.dessert }}</p>
-      <p><strong>buffet:</strong> {{ menuResponse.buffet }}</p>
-    }
+  <app-menu></app-menu>
 
     <app-alarm-clock></app-alarm-clock>
-  }
+
 } @else {
   <button class="ms-3 mt-3" (click)="changePreferencesOpen()">
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear-fill" viewBox="0 0 16 16">
