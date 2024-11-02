@@ -7,6 +7,7 @@ import fabiansig.client.StockClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse;
+import online.dhbw_studentprojekt.dto.chatgpt.morning.MorningRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.MessageRequest;
@@ -80,6 +81,8 @@ public class LogicService {
     public String getMorningRoutine() {
         // Get prefs for news and stocks
         String newsTopic = prefsClient.getPreference("news-topics").value().getFirst();
+        List<String> newsHeadlines = List.of("Frieden im nahen Osten", "Mit diesem Trick können Hausbesitzer MILLIONEN sparen!", "Ärzte schockiert: 5 Jähriger junge aus Bietigheim-Bissingen erfindet Krebs-Impfung");
+
 
         List<String> stockSymbols = prefsClient.getPreference("stock-symbols").value();
 
@@ -89,8 +92,8 @@ public class LogicService {
         List<Stock> stocks = stockClient.getMultipleStock(stockSymbols);
 
         // Get Text for news and stocks
-        String response = chatGPTClient.getResponse();
-        return "nein";
+        MorningRequest request = new MorningRequest(newsHeadlines.getFirst(), newsHeadlines.get(1), newsHeadlines.get(2), stocks);
+        return chatGPTClient.getMorningRoutine(request).message().content();
     }
 
 }

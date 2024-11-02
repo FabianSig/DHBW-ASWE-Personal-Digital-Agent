@@ -1,6 +1,7 @@
 package fabiansig.client;
 
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse;
+import online.dhbw_studentprojekt.dto.chatgpt.morning.MorningRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,4 +14,7 @@ public interface ChatGPTClient {
 
     @PostExchange("api/chatgpt/message/{chatId}")
     ChatGPTResponseChoice getResponse(@RequestBody ChatMessageRequest message, @PathVariable String chatId);
+
+    @PostExchange("/api/chatgpt/morning")
+    ChatGPTResponseChoice getMorningRoutine(@RequestBody MorningRequest request);
 }
