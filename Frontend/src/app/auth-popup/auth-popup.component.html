@@ -1,0 +1,15 @@
+<div class="popup-overlay">
+  <div class="popup-content">
+    <h2>Enter Authentication Key</h2>
+    <form (ngSubmit)="submitKey()">
+      <input
+        type="text"
+        [(ngModel)]="authKey"
+        name="authKey"
+        placeholder="Enter your authentication key"
+        required
+      />
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+</div>

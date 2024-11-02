@@ -1,0 +1,11 @@
+services:
+  mongodb:
+    image: mongo:7.0.5
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: prefs-service
+    volumes:
+      - ./data:/data/db

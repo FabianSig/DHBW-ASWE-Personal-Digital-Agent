@@ -1,14 +1,19 @@
-#searchbars {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
+button {
+  background: none;
+  border: none;
+  padding: 0;
 }
 
-.searchbar-container {
-  margin-bottom: 10px;
+button svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
 }
 
-.searchbar {
-  margin-right: 5px;
+input {
+  width: 100%;
+  padding: 10px 10px;
+  border: 2px solid lightgrey;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
