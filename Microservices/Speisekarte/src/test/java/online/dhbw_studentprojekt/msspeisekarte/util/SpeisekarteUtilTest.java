@@ -1,6 +1,6 @@
-package nikomitk.personaldigitalagentmsspeisekarte.util;
+package online.dhbw_studentprojekt.msspeisekarte.util;
 
-import nikomitk.personaldigitalagentmsspeisekarte.dto.Speisekarte;
+import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
