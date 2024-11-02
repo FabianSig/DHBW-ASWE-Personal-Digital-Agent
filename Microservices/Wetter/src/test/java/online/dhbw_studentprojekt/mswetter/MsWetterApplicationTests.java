@@ -1,10 +1,10 @@
-package online.dhbw_studentprojekt.dhbwaswepersonaldigitalagentmswetter;
+package online.dhbw_studentprojekt.mswetter;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DhbwAswePersonalDigitalAgentMsWetterApplicationTests {
+class MsWetterApplicationTests {
 
 	@Test
 	void contextLoads() {
