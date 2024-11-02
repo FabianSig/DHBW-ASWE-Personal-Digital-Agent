@@ -4,11 +4,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import nikomitk.mschatgpt.client.ChatGPTClient;
+import nikomitk.mschatgpt.model.Prompt;
 import online.dhbw_studentprojekt.dto.chatgpt.audio.ChatGPTAudioResponse;
 import nikomitk.mschatgpt.dto.audio.ChatGPTAudioRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse;
+import online.dhbw_studentprojekt.dto.chatgpt.morning.MorningRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.*;
+import online.dhbw_studentprojekt.dto.stock.Stock;
 import nikomitk.mschatgpt.model.Message;
 import nikomitk.mschatgpt.repository.MessageRepository;
 import nikomitk.mschatgpt.repository.PromptRepository;
@@ -116,4 +119,20 @@ public class ChatGPTService {
         }
 
     }
+
+    public ChatGPTResponseChoice getMorning(MorningRequest request) {
+
+        Prompt prompt = promptRepository.findFirstByPromptId("morning");
+
+        String content = String.format(prompt.getContent(), request.firstHeadline(), request.secondHeadline(), request.thirdHeadline(), request.stocks().stream().map(Stock::toString).toList());
+        ChatGPTMessage promptMessage = new ChatGPTMessage(prompt.getRole(), content);
+
+        List<ChatGPTMessage> messages = List.of(promptMessage);
+        ChatGPTRequest chatGPTRequest = new ChatGPTRequest("gpt-4o-mini", messages);
+        ChatGPTResponse response = chatGPTClient.sendMessage(chatGPTRequest);
+
+        return response.choices().getFirst();
+
+    }
+
 }
