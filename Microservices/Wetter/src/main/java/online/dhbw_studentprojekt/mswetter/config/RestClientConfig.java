@@ -1,6 +1,6 @@
-package online.dhbw_studentprojekt.dhbwaswepersonaldigitalagentmswetter.config;
+package online.dhbw_studentprojekt.mswetter.config;
 
-import online.dhbw_studentprojekt.dhbwaswepersonaldigitalagentmswetter.client.WetterClient;
+import online.dhbw_studentprojekt.mswetter.client.WetterClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

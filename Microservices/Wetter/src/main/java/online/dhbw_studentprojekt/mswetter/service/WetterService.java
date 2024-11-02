@@ -1,7 +1,7 @@
-package online.dhbw_studentprojekt.dhbwaswepersonaldigitalagentmswetter.service;
+package online.dhbw_studentprojekt.mswetter.service;
 
-import online.dhbw_studentprojekt.dhbwaswepersonaldigitalagentmswetter.client.WetterClient;
-import online.dhbw_studentprojekt.dhbwaswepersonaldigitalagentmswetter.dto.Wetter;
+import online.dhbw_studentprojekt.mswetter.client.WetterClient;
+import online.dhbw_studentprojekt.dto.wetter.Wetter;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
