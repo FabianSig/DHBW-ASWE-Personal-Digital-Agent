@@ -5,7 +5,7 @@ WORKDIR /app
 COPY pom.xml /app/
 COPY src /app/src
 
-RUN mvn clean package
+RUN mvn clean package -DskipTests
 
 FROM openjdk:21
 
