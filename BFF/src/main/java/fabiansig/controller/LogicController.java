@@ -23,7 +23,7 @@ public class LogicController {
     private final SpeisekarteService speisekarteService;
 
     @PostMapping("/message")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.OK)
     public String sendMessage(@RequestBody MessageRequest request) {
         return logicService.sendResponseMessage(request);
     }
@@ -46,4 +46,9 @@ public class LogicController {
         return speisekarteService.getSpeisekarteWithFilteredAllergene(request.date(), request.allergene());
     }
 
+    @GetMapping("/morning")
+    @ResponseStatus(HttpStatus.OK)
+    public String getMorningRoutine(){
+        return logicService.getMorningRoutine();
+    }
 }

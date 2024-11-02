@@ -3,16 +3,19 @@ package fabiansig.service;
 import fabiansig.client.ChatGPTClient;
 import fabiansig.client.MapsClient;
 import fabiansig.client.RaplaClient;
+import fabiansig.client.PrefsClient;
+import fabiansig.client.StockClient;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse;
+import online.dhbw_studentprojekt.dto.chatgpt.morning.MorningRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.MessageRequest;
 import online.dhbw_studentprojekt.dto.rapla.RaplaResponse;
 import online.dhbw_studentprojekt.dto.routing.custom.RouteAddressRequest;
 import online.dhbw_studentprojekt.dto.routing.routing.RouteResponse;
-import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import online.dhbw_studentprojekt.dto.stock.Stock;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,11 +23,13 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class LogicService {
 
-    private static final Logger log = LoggerFactory.getLogger(LogicService.class);
     private final ChatGPTClient chatGPTClient;
     private final MapsClient mapsClient;
+    private final PrefsClient prefsClient;
+    private final StockClient stockClient;
 
     public String sendResponseMessage(MessageRequest message) {
 
@@ -42,6 +47,7 @@ public class LogicService {
     }
 
     private String getResponseMessageForRoutingAddressRequest(MessageRequest message, Map<String, String> attributes) {
+
         try {
             String origin = attributes.get("origin");
             String destination = attributes.get("destination");
@@ -74,6 +80,22 @@ public class LogicService {
         }
     }
 
+    public String getMorningRoutine() {
+        // Get prefs for news and stocks
+        String newsTopic = prefsClient.getPreference("news-topics").value().getFirst();
+        List<String> newsHeadlines = List.of("Frieden im nahen Osten", "Mit diesem Trick können Hausbesitzer MILLIONEN sparen!", "Ärzte schockiert: 5 Jähriger junge aus Bietigheim-Bissingen erfindet Krebs-Impfung");
 
+
+        List<String> stockSymbols = prefsClient.getPreference("stock-symbols").value();
+
+        // Get news
+
+        // Get stocks;
+        List<Stock> stocks = stockClient.getMultipleStock(stockSymbols);
+
+        // Get Text for news and stocks
+        MorningRequest request = new MorningRequest(newsHeadlines.getFirst(), newsHeadlines.get(1), newsHeadlines.get(2), stocks);
+        return chatGPTClient.getMorningRoutine(request).message().content();
+    }
 
 }
