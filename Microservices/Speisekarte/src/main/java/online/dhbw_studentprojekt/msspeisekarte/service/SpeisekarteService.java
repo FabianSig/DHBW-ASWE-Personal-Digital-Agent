@@ -1,9 +1,9 @@
-package nikomitk.personaldigitalagentmsspeisekarte.service;
+package online.dhbw_studentprojekt.msspeisekarte.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nikomitk.personaldigitalagentmsspeisekarte.client.SpeisekarteClient;
-import nikomitk.personaldigitalagentmsspeisekarte.dto.Speisekarte;
+import online.dhbw_studentprojekt.msspeisekarte.client.SpeisekarteClient;
+import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.function.Predicate.not;
-import static nikomitk.personaldigitalagentmsspeisekarte.util.SpeisekarteUtils.*;
+import static online.dhbw_studentprojekt.msspeisekarte.util.SpeisekarteUtils.*;
 
 @Service
 @Slf4j

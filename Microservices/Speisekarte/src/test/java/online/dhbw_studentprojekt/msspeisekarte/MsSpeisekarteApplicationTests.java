@@ -1,10 +1,10 @@
-package nikomitk.personaldigitalagentmsspeisekarte;
+package online.dhbw_studentprojekt.msspeisekarte;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class PersonalDigitalAgentMsSpeisekarteApplicationTests {
+class MsSpeisekarteApplicationTests {
 
     @Test
     void contextLoads() {

@@ -1,4 +1,4 @@
-package nikomitk.personaldigitalagentmsspeisekarte.client;
+package online.dhbw_studentprojekt.msspeisekarte.client;
 
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestBody;

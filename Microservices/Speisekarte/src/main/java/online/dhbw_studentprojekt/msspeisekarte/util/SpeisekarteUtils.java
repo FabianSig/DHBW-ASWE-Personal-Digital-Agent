@@ -1,7 +1,7 @@
-package nikomitk.personaldigitalagentmsspeisekarte.util;
+package online.dhbw_studentprojekt.msspeisekarte.util;
 
 import lombok.experimental.UtilityClass;
-import nikomitk.personaldigitalagentmsspeisekarte.dto.Speisekarte;
+import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 
 import java.util.ArrayList;
 import java.util.Arrays;

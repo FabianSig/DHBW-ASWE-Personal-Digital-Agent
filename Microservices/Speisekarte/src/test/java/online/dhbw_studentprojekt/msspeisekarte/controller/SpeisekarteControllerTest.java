@@ -1,53 +1,42 @@
-package nikomitk.personaldigitalagentmsspeisekarte.service;
+package online.dhbw_studentprojekt.msspeisekarte.controller;
 
-import nikomitk.personaldigitalagentmsspeisekarte.client.SpeisekarteClient;
-import nikomitk.personaldigitalagentmsspeisekarte.dto.Speisekarte;
+import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
+import online.dhbw_studentprojekt.msspeisekarte.service.SpeisekarteService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*; // For .param
+
+
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-public class SpeisekarteServiceTest {
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@WebMvcTest(SpeisekarteController.class)
+public class SpeisekarteControllerTest {
 
-    @Mock
-    private SpeisekarteClient speisekarteClient;
+    @Autowired
+    private MockMvc mockMvc;
 
-    @InjectMocks
+    @MockBean
     private SpeisekarteService speisekarteService;
 
     @BeforeEach
     void setUp() {
-        initMockHtml();
         initSpeisekarte();
     }
 
     private Speisekarte speisekarte;
-    private String mockHtml;
-    private void initMockHtml(){
-        mockHtml = "";
-        Path filePath = Paths.get("src/test/resources/response_for_25_10.html");
-        try {
-            mockHtml = Files.readString(filePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void initSpeisekarte(){
         speisekarte = new Speisekarte(
@@ -173,85 +162,57 @@ public class SpeisekarteServiceTest {
                 )
         );
     }
-
     @Test
-    void testGetSpeisekarte_ValidWeekday() {
+    void testGetSpeisekarte_ValidDate() throws Exception {
         // Arrange
-        String testDate = "2024-10-25"; // a valid weekday date
+        String testDate = "2024-10-25";
 
-        // Mocking Client Behavior
-        when(speisekarteClient.getSpeisekarte(any())).thenReturn(mockHtml);
-
-        // Act
-        Speisekarte result = speisekarteService.getSpeisekarte(Optional.of(testDate));
-
-        // Assert
-        assertNotNull(result, "Speisekarte should not be null for a weekday");
-        verify(speisekarteClient, times(1)).getSpeisekarte(any());
-        assertEquals(speisekarte, result);
-    }
-
-    @Test
-    void testGetSpeisekarte_WeekendDate() {
-        // Arrange
-        String weekendDate = "2024-10-26"; // a weekend day date
+        when(speisekarteService.getSpeisekarte(Optional.of(testDate))).thenReturn(speisekarte);
 
         // Act & Assert
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
-                () -> speisekarteService.getSpeisekarte(Optional.of(weekendDate)),
-                "Expected ResponseStatusException for weekend dates");
+        mockMvc.perform(get("/api/speisekarte")
+                        .param("datum", testDate)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                // Verify some fields in the JSON response using jsonPath -> no Object Mapper
+                .andExpect(jsonPath("$.vorspeisen[0].name").value(speisekarte.vorspeisen().get(0).name()))
+                .andExpect(jsonPath("$.veganerRenner[0].name").value(speisekarte.veganerRenner().get(0).name()))
+                .andExpect(jsonPath("$.hauptgericht[0].name").value(speisekarte.hauptgericht().get(0).name()))
+                .andExpect(jsonPath("$.beilagen[0].name").value(speisekarte.beilagen().get(0).name()))
+                .andExpect(jsonPath("$.salat[0].name").value(speisekarte.salat().get(0).name()))
+                .andExpect(jsonPath("$.dessert[0].name").value(speisekarte.dessert().get(0).name()))
+                .andExpect(jsonPath("$.buffet[0].name").value(speisekarte.buffet().get(0).name()));
+    }
+    @Test
+    void testGetSpeisekarte_NoDate() throws Exception {
+        // Arrange
+        when(speisekarteService.getSpeisekarte(Optional.empty())).thenReturn(speisekarte);
 
-        assertEquals("404 NOT_FOUND \"Am Wochenende gibt es keine Speisekarte\"", exception.getMessage());
-        verify(speisekarteClient, never()).getSpeisekarte(any());
+        // Act & Assert
+        mockMvc.perform(get("/api/speisekarte")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.vorspeisen[0].name").value(speisekarte.vorspeisen().get(0).name()))
+                .andExpect(jsonPath("$.veganerRenner[0].name").value(speisekarte.veganerRenner().get(0).name()))
+                .andExpect(jsonPath("$.hauptgericht[0].name").value(speisekarte.hauptgericht().get(0).name()))
+                .andExpect(jsonPath("$.beilagen[0].name").value(speisekarte.beilagen().get(0).name()))
+                .andExpect(jsonPath("$.salat[0].name").value(speisekarte.salat().get(0).name()))
+                .andExpect(jsonPath("$.dessert[0].name").value(speisekarte.dessert().get(0).name()))
+                .andExpect(jsonPath("$.buffet[0].name").value(speisekarte.buffet().get(0).name()));
     }
 
     @Test
-    void testGetSpeisekarte_NoDateProvided() {
+    void testGetSpeisekarte_WeekendDate() throws Exception {
         // Arrange
-        when(speisekarteClient.getSpeisekarte(any())).thenReturn(mockHtml);
+        String invalidDate = "2024-10-27"; // Weekend Date -> invalid date
+        when(speisekarteService.getSpeisekarte(Optional.of(invalidDate))).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Am Wochenende gibt es keine Speisekarte"));
 
-        // Act
-        Speisekarte result = speisekarteService.getSpeisekarte(Optional.empty());
-
-        // Assert
-        assertNotNull(result, "Speisekarte should not be null when no date is provided");
-        verify(speisekarteClient, times(1)).getSpeisekarte(any());
-        assertEquals(speisekarte, result);
+        // Act & Assert
+        mockMvc.perform(get("/api/speisekarte")
+                        .param("datum", invalidDate)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound()); // Expect a 404 Not Found
     }
-
-    // The following tests for prepareFormData Method
-    // Commented out because of private method
-    // Decide later if needed
-    // either refactor to be public method or test indirectly
-/*
-    @Test
-    void testPrepareFormData_Weekday() {
-        // Arrange
-        String testDate = "2024-10-29";
-        MultiValueMap<String, String> formData = SpeisekarteService.prepareFormData(testDate);
-
-        // Assert
-        assertEquals("make_spl", formData.getFirst("func"));
-        assertEquals("16", formData.getFirst("locId"));
-        assertEquals("de", formData.getFirst("lang"));
-        assertEquals(testDate, formData.getFirst("date"));
-        assertNotNull(formData.getFirst("startThisWeek"));
-        assertNotNull(formData.getFirst("startNextWeek"));
-    }
-
-    @Test
-    void testPrepareFormData_EdgeCase() {
-        // Arrange
-        String testDate = "2024-01-01"; // A Monday at the start of the year
-        MultiValueMap<String, String> formData = SpeisekarteService.prepareFormData(testDate);
-
-        // Assert
-        assertEquals("make_spl", formData.getFirst("func"));
-        assertEquals("16", formData.getFirst("locId"));
-        assertEquals("de", formData.getFirst("lang"));
-        assertEquals(testDate, formData.getFirst("date"));
-        assertNotNull(formData.getFirst("startThisWeek"));
-        assertNotNull(formData.getFirst("startNextWeek"));
-    }
- */
 }
