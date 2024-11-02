@@ -1,12 +1,13 @@
-<div class="d-flex justify-content-between align-items-center header mb-5">
-  <div class="d-flex align-items-center justify-content-center p-5 border border-black h-100">
-    <p>{{ title }}</p>
+<div class="d-flex justify-content-between align-items-center header p-2 shadow">
+  <div class="d-flex align-items-center justify-content-center p-3 m-3 title-section">
+    <p class="m-0 text-white fw-bold">{{ title }}</p>
   </div>
-  <div class="border-top border-bottom border-black w-100 h-100">
+
+  <div class="flex-grow-1 mx-3 text-white">
     <app-carousel></app-carousel>
   </div>
-  <div class="d-flex align-items-center justify-content-center p-5 border border-black h-100">
-    {{ day }}
-    {{ time }}
+
+  <div class="d-flex align-items-center justify-content-center p-3 m-3 datetime-section ">
+    <span class="m-0 text-white fw-bold">{{ day }}, {{ time }}</span>
   </div>
 </div>
