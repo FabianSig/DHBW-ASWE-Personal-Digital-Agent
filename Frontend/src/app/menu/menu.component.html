@@ -5,14 +5,17 @@
 
 @if (menuResponse) {
   <h2>Menu:</h2>
-  <div *ngFor="let vorspeise of menuResponse.vorspeisen">
+  @for(vorspeise of menuResponse.vorspeisen; track $index) {
     <p><strong>Vorspeise:</strong> {{ vorspeise.name }}</p>
     <p>Allergene: {{ vorspeise.allergene.join(', ') }}</p>
     <ul>
-      <li *ngFor="let naehrwert of vorspeise.naehrwerte">
-        {{ naehrwert.name }}: {{ naehrwert.menge }}
-      </li>
+
+        @for(naehrwert of vorspeise.naehrwerte; track $index) {
+          <li>
+            {{ naehrwert.name }}: {{ naehrwert.menge }}
+          </li>
+        }
     </ul>
-  </div>
+  }
 }
 
