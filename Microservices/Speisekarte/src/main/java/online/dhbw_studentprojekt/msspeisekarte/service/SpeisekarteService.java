@@ -2,9 +2,8 @@ package online.dhbw_studentprojekt.msspeisekarte.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import online.dhbw_studentprojekt.dto.speisekarte.SpeisekarteAllergeneRequest;
-import online.dhbw_studentprojekt.msspeisekarte.client.SpeisekarteClient;
 import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
+import online.dhbw_studentprojekt.msspeisekarte.client.SpeisekarteClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -17,7 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.function.Predicate.not;
-import static online.dhbw_studentprojekt.msspeisekarte.util.SpeisekarteUtils.*;
+import static online.dhbw_studentprojekt.msspeisekarte.util.SpeisekarteUtils.extractMenu;
 
 @Service
 @Slf4j
@@ -27,6 +26,7 @@ public class SpeisekarteService {
     private final SpeisekarteClient speisekarteClient;
 
     private static MultiValueMap<String, String> prepareFormData(String datum) {
+
         final int todayDayOfWeek = LocalDate.now().getDayOfWeek().getValue();
 
         final String startThisWeek = todayDayOfWeek <= 3 ? LocalDate.now().minusDays(todayDayOfWeek).toString() : LocalDate.now().plusDays(7L - todayDayOfWeek).toString();
@@ -44,7 +44,15 @@ public class SpeisekarteService {
         return formData;
     }
 
+    private static List<Speisekarte.Speise> filterMeals(List<Speisekarte.Speise> meals, List<String> allergene) {
+
+        return meals.stream()
+                .filter(meal -> meal.allergene().stream().noneMatch(allergene::contains))
+                .collect(Collectors.toList());
+    }
+
     public Speisekarte getSpeisekarte(Optional<String> datumParam) {
+
         final String datum = datumParam.filter(not(String::isBlank)).orElse(LocalDate.now().toString());
 
         if (LocalDate.parse(datum).getDayOfWeek().getValue() > 5) {
@@ -56,26 +64,19 @@ public class SpeisekarteService {
         return extractMenu(websiteHtml);
     }
 
-    public Speisekarte getSpeisekarteWithFilteredAllergene(Optional<String> date, SpeisekarteAllergeneRequest allergene) {
+    public Speisekarte getSpeisekarteWithFilteredAllergene(Optional<String> date, List<String> allergene) {
 
         Speisekarte speisekarte = this.getSpeisekarte(date);
 
         return new Speisekarte(
-                filterMeals(speisekarte.vorspeisen(), allergene.allergene()),
-                filterMeals(speisekarte.veganerRenner(), allergene.allergene()),
-                filterMeals(speisekarte.hauptgericht(), allergene.allergene()),
-                filterMeals(speisekarte.beilagen(), allergene.allergene()),
-                filterMeals(speisekarte.salat(), allergene.allergene()),
-                filterMeals(speisekarte.dessert(), allergene.allergene()),
-                filterMeals(speisekarte.buffet(), allergene.allergene())
+                filterMeals(speisekarte.vorspeisen(), allergene),
+                filterMeals(speisekarte.veganerRenner(), allergene),
+                filterMeals(speisekarte.hauptgericht(), allergene),
+                filterMeals(speisekarte.beilagen(), allergene),
+                filterMeals(speisekarte.salat(), allergene),
+                filterMeals(speisekarte.dessert(), allergene),
+                filterMeals(speisekarte.buffet(), allergene)
         );
     }
-
-    private static List<Speisekarte.Speise> filterMeals(List<Speisekarte.Speise> meals, List<String> allergene) {
-        return meals.stream()
-                .filter(meal -> meal.allergene().stream().noneMatch(allergene::contains))
-                .collect(Collectors.toList());
-    }
-
 
 }
