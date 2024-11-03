@@ -7,6 +7,7 @@ import fabiansig.service.RoutingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.service.annotation.PostExchange;
 
 @RestController
 @RequestMapping("/api/routing")
@@ -26,6 +27,11 @@ public class RoutingController {
     public RouteResponse getRoutingByAddress(@RequestBody RouteAddressRequest request) {
         return routingService.getRouteByAddress(request);
     }
+
+    @PostMapping("/directions")
+    String getDirections(@RequestBody RouteAddressRequest request){
+        return routingService.getDirections(request);
+    };
 
 
 }

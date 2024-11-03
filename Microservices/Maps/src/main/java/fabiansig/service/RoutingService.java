@@ -1,6 +1,7 @@
 package fabiansig.service;
 
 import fabiansig.clients.MapsClient;
+import fabiansig.clients.MapsDirectionClient;
 import fabiansig.dto.custom.RouteAddressRequest;
 import fabiansig.dto.geocoding.GeoCodingResponse;
 import fabiansig.dto.geocoding.Result;
@@ -13,11 +14,12 @@ import org.springframework.stereotype.Service;
 public class RoutingService {
 
 
-    private final MapsClient routingClient;
+    private final MapsClient mapsClient;
+    private final MapsDirectionClient mapsDirectionClient;
     private final GeoCodingService geoCodingService;
 
     public RouteResponse getRoute(RouteRequest routeRequest) {
-        return routingClient.getRoute(routeRequest);
+        return mapsClient.getRoute(routeRequest);
     }
 
     public RouteResponse getRouteByAddress(RouteAddressRequest routeAddressRequest) {
@@ -39,10 +41,29 @@ public class RoutingService {
         ));
     }
 
+    public String getDirections(RouteAddressRequest request) {
+
+        GeoCodingResponse originResponse = geoCodingService.getGeoCoding(request.origin());
+        GeoCodingResponse destinationResponse = geoCodingService.getGeoCoding(request.destination());
+
+        return mapsDirectionClient.getDirections(extractPlaceId(originResponse),
+                extractPlaceId(destinationResponse),
+                System.getenv("API_KEY"),
+                request.travelMode());
+    }
+
     private static LatLng extractCoordinates(GeoCodingResponse response) {
         if (response.results() != null && !response.results().isEmpty()) {
             Result result = response.results().getFirst();
             return new LatLng(new Location(result.geometry().location().lat(), result.geometry().location().lng()));
+        }
+        throw new IllegalStateException("No results found in geocoding response.");
+    }
+
+    private String extractPlaceId(GeoCodingResponse response) {
+        if (response.results() != null && !response.results().isEmpty()) {
+            Result result = response.results().getFirst();
+            return "place_id:" + result.place_id();
         }
         throw new IllegalStateException("No results found in geocoding response.");
     }

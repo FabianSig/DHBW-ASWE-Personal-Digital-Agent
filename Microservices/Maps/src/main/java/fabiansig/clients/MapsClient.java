@@ -9,5 +9,4 @@ public interface MapsClient {
 
     @PostExchange("directions/v2:computeRoutes")
     RouteResponse getRoute(@RequestBody RouteRequest request);
-
 }

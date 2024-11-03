@@ -2,6 +2,7 @@ package fabiansig.config;
 
 import fabiansig.clients.GeoCodingClient;
 import fabiansig.clients.MapsClient;
+import fabiansig.clients.MapsDirectionClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -45,5 +46,16 @@ public class RestClientConfig {
         RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
         HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(restClientAdapter).build();
         return httpServiceProxyFactory.createClient(GeoCodingClient.class);
+    }
+
+    @Bean
+    public MapsDirectionClient mapsDirectionClient() {
+        RestClient restClient = RestClient.builder()
+                .baseUrl(mapsGoogleServiceUrl)
+                .build();
+
+        RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
+        HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(restClientAdapter).build();
+        return httpServiceProxyFactory.createClient(MapsDirectionClient.class);
     }
 }
