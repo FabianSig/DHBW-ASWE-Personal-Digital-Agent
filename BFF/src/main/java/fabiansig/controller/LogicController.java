@@ -1,5 +1,6 @@
 package fabiansig.controller;
 
+import fabiansig.service.RoutineService;
 import fabiansig.service.TriggerService;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.MessageRequest;
 import fabiansig.service.LogicService;
@@ -18,6 +19,7 @@ public class LogicController {
 
     private final LogicService logicService;
     private final TriggerService triggerService;
+    private final RoutineService routineService;
 
     @PostMapping("/message")
     @ResponseStatus(HttpStatus.OK)
@@ -34,6 +36,12 @@ public class LogicController {
     @GetMapping("/morning")
     @ResponseStatus(HttpStatus.OK)
     public String getMorningRoutine(){
-        return logicService.getMorningRoutine();
+        return routineService.getMorningRoutine();
+    }
+
+    @GetMapping("/mittag")
+    @ResponseStatus(HttpStatus.OK)
+    public String getMittagRoutine(){
+        return routineService.getMittagRoutine();
     }
 }
