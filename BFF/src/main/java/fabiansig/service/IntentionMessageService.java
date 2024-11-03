@@ -20,7 +20,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class LogicService {
+public class IntentionMessageService {
 
     private final ChatGPTClient chatGPTClient;
     private final MapsClient mapsClient;
