@@ -29,6 +29,9 @@ public class RestClientConfig {
     @Value("${microservice.prefs.ip}")
     private String prefsServiceUrl;
 
+    @Value("${microservice.stock.ip}")
+    private String stockServiceUrl;
+
     @Bean
     public ChatGPTClient chatGPTClient() {
         RestClient restClient = RestClient.builder()
@@ -81,5 +84,16 @@ public class RestClientConfig {
         RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
         HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(restClientAdapter).build();
         return httpServiceProxyFactory.createClient(PrefsClient.class);
+    }
+
+    @Bean
+    public StockClient stockClient() {
+        RestClient restClient = RestClient.builder()
+                .baseUrl(stockServiceUrl)
+                .build();
+
+        RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
+        HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(restClientAdapter).build();
+        return httpServiceProxyFactory.createClient(StockClient.class);
     }
 }
