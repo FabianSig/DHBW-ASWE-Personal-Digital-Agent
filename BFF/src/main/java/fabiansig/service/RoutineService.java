@@ -13,9 +13,9 @@ import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 import online.dhbw_studentprojekt.dto.stock.Stock;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -50,9 +50,15 @@ public class RoutineService {
 
     public String getMittagRoutine(){
 
+        LocalDate today = LocalDate.now();
+
+        // Wenn Wochenende, dann auf Montag setzen
+        today = (today.getDayOfWeek() == DayOfWeek.SATURDAY) ? today.plusDays(2) :
+                (today.getDayOfWeek() == DayOfWeek.SUNDAY) ? today.plusDays(1) : today;
+
         List<String> allergene = new ArrayList<>(prefsClient.getPreference("allergene").value());
 
-        Speisekarte speisekarte = speisekarteClient.getSpeisekarteWithFilteredAllergene(LocalDate.now().toString(), allergene);
+        Speisekarte speisekarte = speisekarteClient.getSpeisekarteWithFilteredAllergene(today.toString(), allergene);
 
         String prompt = "Bitte begrüße mich da es Mittagszeit ist und gebe ein Beispiel Menü für das Mittagessen aus.";
 
