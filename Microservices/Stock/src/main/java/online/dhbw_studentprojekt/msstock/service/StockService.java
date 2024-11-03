@@ -29,6 +29,8 @@ public class StockService {
         if (stockCSV.contains("Error Message")) {
             // this garbage api doesn't return a proper error code
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid symbol");
+        } else if(stockCSV.contains("Thank you")) {
+            throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "API rate limit exceeded");
         }
         try {
             CSVParser parser = CSVFormat.DEFAULT.builder()

@@ -12,6 +12,7 @@ import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse
 import online.dhbw_studentprojekt.dto.chatgpt.morning.MorningRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.*;
 import online.dhbw_studentprojekt.dto.stock.Stock;
+import online.dhbw_studentprojekt.dto.chatgpt.standard.*;
 import nikomitk.mschatgpt.model.Message;
 import nikomitk.mschatgpt.repository.MessageRepository;
 import nikomitk.mschatgpt.repository.PromptRepository;
@@ -35,26 +36,18 @@ public class ChatGPTService {
     private final PromptRepository promptRepository;
     private final ChatGPTClient chatGPTClient;
 
-    public ChatGPTResponseChoice sendMessage(ChatMessageRequest request, String chatId, String extraPromptId) {
+    public ChatGPTResponseChoice sendMessage(ChatMessageRequest request, String chatId) {
 
+        ChatGPTMessage prompt = promptRepository.findByPromptId("message").stream()
+                .map(m -> new ChatGPTMessage(m.getRole(), m.getContent()))
+                .toList().getFirst();
 
         List<ChatGPTMessage> messages = new ArrayList<>(messageRepository.findByChatId(chatId).stream()
                 .map(m -> new ChatGPTMessage(m.getRole(), m.getContent()))
                 .toList());
 
-        ChatGPTMessage messagePrompt = promptRepository.findByPromptId("message").stream()
-                .map(m -> new ChatGPTMessage(m.getRole(), m.getContent()))
-                .toList().getFirst();
-
-        messages.addFirst(messagePrompt);
+        messages.addFirst(prompt);
         messages.add(1, new ChatGPTMessage("system", request.data()));
-
-        if(extraPromptId != null && !extraPromptId.isEmpty()){
-            ChatGPTMessage extraPrompt = promptRepository.findByPromptId(extraPromptId).stream()
-                    .map(m -> new ChatGPTMessage(m.getRole(), m.getContent()))
-                    .toList().getFirst();
-            messages.add(2, extraPrompt);
-        }
 
         Message newMessage = Message.builder()
                 .role("user")
@@ -80,9 +73,9 @@ public class ChatGPTService {
         return response.choices().getFirst();
     }
 
-    public ChatGPTResponseChoice sendMessage(ChatMessageRequest request, String extraPromptId) {
+    public ChatGPTResponseChoice sendMessage(ChatMessageRequest request) {
         String defaultChatId = "default";
-        return sendMessage(request, defaultChatId, extraPromptId);
+        return sendMessage(request, defaultChatId);
     }
 
     public ChatGPTAudioResponse sendAudio(ChatGPTAudioRequest request) {

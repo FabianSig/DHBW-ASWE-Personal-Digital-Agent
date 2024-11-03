@@ -1,0 +1,44 @@
+# build the dockerfiles from the microservices
+# and run the containers
+
+services:
+  stock:
+    build:
+      context: ../Microservices/Stock
+      dockerfile: Dockerfile
+    ports:
+      - 8083:8080
+    environment:
+      - API_KEY=${STOCK_API_KEY}
+  prefs:
+    build:
+      context: ../Microservices/Prefs
+      dockerfile: Dockerfile
+    ports:
+      - 8084:8080
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+    depends_on:
+      - mongodb
+
+  chatgpt:
+    build:
+      context: ../Microservices/Chatgpt
+      dockerfile: Dockerfile
+    ports:
+      - 8085:8080
+    environment:
+      - API_KEY=${OPENAI_API_KEY}
+      - OUR_API_KEY=${OUR_API_KEY}
+      - MONGODB_PASSWORD=${MONGODB_PASSWORD}
+
+  mongodb:
+    image: mongo:7.0.5
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: pda
+    volumes:
+      - ./data:/data/db
