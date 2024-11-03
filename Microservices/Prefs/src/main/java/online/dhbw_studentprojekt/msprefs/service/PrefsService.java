@@ -23,4 +23,8 @@ public class PrefsService {
         prefsRepository.save(pref);
     }
 
+    public void deletePref(String id) {
+        prefsRepository.deleteById(id);
+    }
+
 }

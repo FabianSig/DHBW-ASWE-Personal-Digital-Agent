@@ -26,4 +26,10 @@ public class PrefsController {
     public void createPref(@RequestBody Preference preference){
         prefsService.createPref(preference);
     }
+
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePref(@RequestParam String id){
+        prefsService.deletePref(id);
+    }
 }
