@@ -10,6 +10,7 @@ import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.MessageRequest;
 import online.dhbw_studentprojekt.dto.routing.custom.RouteAddressRequest;
 import online.dhbw_studentprojekt.dto.routing.routing.RouteResponse;
+import online.dhbw_studentprojekt.dto.speisekarte.SpeisekarteAllergeneRequest;
 import online.dhbw_studentprojekt.dto.stock.Stock;
 import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 import org.springframework.stereotype.Service;
@@ -54,10 +55,10 @@ public class LogicService {
             if(date == null){
                 date= new Date().toString();
             }
-            List<String> allergene = List.of(attributes.get("allergene").split(";"));
 
-            //TODO prefs anbindung für allergene
-            Speisekarte speisekarte = speisekarteClient.getSpeisekarteWithFilteredAllergene(null, null);
+            SpeisekarteAllergeneRequest speisekarteAllergeneRequest = new SpeisekarteAllergeneRequest(prefsClient.getPreference("allergene").value());
+
+            Speisekarte speisekarte = speisekarteClient.getSpeisekarteWithFilteredAllergene(date, speisekarteAllergeneRequest);
 
             if (speisekarte == null) {
                 log.error("Speisekarte is null.");
