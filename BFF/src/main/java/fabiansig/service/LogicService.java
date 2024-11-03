@@ -2,7 +2,6 @@ package fabiansig.service;
 
 import fabiansig.client.ChatGPTClient;
 import fabiansig.client.MapsClient;
-import fabiansig.client.RaplaClient;
 import fabiansig.client.PrefsClient;
 import fabiansig.client.StockClient;
 import lombok.RequiredArgsConstructor;
@@ -12,14 +11,10 @@ import online.dhbw_studentprojekt.dto.chatgpt.morning.MorningRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.MessageRequest;
-import online.dhbw_studentprojekt.dto.rapla.RaplaResponse;
 import online.dhbw_studentprojekt.dto.routing.custom.RouteAddressRequest;
 import online.dhbw_studentprojekt.dto.routing.routing.RouteResponse;
 import online.dhbw_studentprojekt.dto.stock.Stock;
-import lombok.RequiredArgsConstructor;
 import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -31,7 +26,6 @@ import java.util.Map;
 @Slf4j
 public class LogicService {
 
-    private static final Logger log = LoggerFactory.getLogger(LogicService.class);
     private final ChatGPTClient chatGPTClient;
     private final MapsClient mapsClient;
     private final SpeisekarteService speisekarteService;
