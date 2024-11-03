@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
+import online.dhbw_studentprojekt.dto.speisekarte.SpeisekarteAllergeneRequest;
 import online.dhbw_studentprojekt.msspeisekarte.service.SpeisekarteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,13 @@ public class SpeisekarteController {
     @ResponseStatus(HttpStatus.OK)
     public Speisekarte getSpeisekarte(@io.swagger.v3.oas.annotations.Parameter(example = "yyyy-MM-dd") @RequestParam Optional<String> datum) {
         return speisekarteService.getSpeisekarte(datum);
+    }
+
+    @Operation(summary = "Get the speisekarte for the given date, with filtered allergene")
+    @GetMapping("/allergene")
+    @ResponseStatus(HttpStatus.OK)
+    public Speisekarte getSpeisekarteWithFilteredAllergene(@io.swagger.v3.oas.annotations.Parameter(example = "yyyy-MM-dd") @RequestParam Optional<String> datum, @RequestBody SpeisekarteAllergeneRequest allergene) {
+        return speisekarteService.getSpeisekarteWithFilteredAllergene(datum, allergene);
     }
 
 }

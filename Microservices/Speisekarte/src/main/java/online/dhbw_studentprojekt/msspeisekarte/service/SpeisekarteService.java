@@ -2,6 +2,7 @@ package online.dhbw_studentprojekt.msspeisekarte.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import online.dhbw_studentprojekt.dto.speisekarte.SpeisekarteAllergeneRequest;
 import online.dhbw_studentprojekt.msspeisekarte.client.SpeisekarteClient;
 import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.util.function.Predicate.not;
 import static online.dhbw_studentprojekt.msspeisekarte.util.SpeisekarteUtils.*;
@@ -52,6 +54,27 @@ public class SpeisekarteService {
         final String websiteHtml = speisekarteClient.getSpeisekarte(prepareFormData(datum));
 
         return extractMenu(websiteHtml);
+    }
+
+    public Speisekarte getSpeisekarteWithFilteredAllergene(Optional<String> date, SpeisekarteAllergeneRequest allergene) {
+
+        Speisekarte speisekarte = this.getSpeisekarte(date);
+
+        return new Speisekarte(
+                filterMeals(speisekarte.vorspeisen(), allergene.allergene()),
+                filterMeals(speisekarte.veganerRenner(), allergene.allergene()),
+                filterMeals(speisekarte.hauptgericht(), allergene.allergene()),
+                filterMeals(speisekarte.beilagen(), allergene.allergene()),
+                filterMeals(speisekarte.salat(), allergene.allergene()),
+                filterMeals(speisekarte.dessert(), allergene.allergene()),
+                filterMeals(speisekarte.buffet(), allergene.allergene())
+        );
+    }
+
+    private static List<Speisekarte.Speise> filterMeals(List<Speisekarte.Speise> meals, List<String> allergene) {
+        return meals.stream()
+                .filter(meal -> meal.allergene().stream().noneMatch(allergene::contains))
+                .collect(Collectors.toList());
     }
 
 
