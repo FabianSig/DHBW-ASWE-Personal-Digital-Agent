@@ -53,8 +53,9 @@ public class RoutineService {
         LocalDate today = LocalDate.now();
 
         // Wenn Wochenende, dann auf Montag setzen
-        today = (today.getDayOfWeek() == DayOfWeek.SATURDAY) ? today.plusDays(2) :
-                (today.getDayOfWeek() == DayOfWeek.SUNDAY) ? today.plusDays(1) : today;
+        if(today.getDayOfWeek().getValue() > 5) {
+            today = today.plusDays(7L - today.getDayOfWeek().getValue());
+        }
 
         List<String> allergene = new ArrayList<>(prefsClient.getPreference("allergene").value());
 
