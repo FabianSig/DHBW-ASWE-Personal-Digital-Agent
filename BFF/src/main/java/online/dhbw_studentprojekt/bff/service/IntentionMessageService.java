@@ -67,7 +67,7 @@ public class IntentionMessageService {
 
             ChatMessageRequest chatRequest = new ChatMessageRequest(message.message(),
                     "Speisekarte:" + speisekarte);
-            ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, "test");
+            ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, "test", "message");
 
             return gptResponse.message().content();
         } catch (Exception e) {
@@ -96,7 +96,7 @@ public class IntentionMessageService {
 
             ChatMessageRequest chatRequest = new ChatMessageRequest(message.message(),
                     "time to get there " + response.routes().getFirst().duration());
-            ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, "test");
+            ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, "test", "message");
 
             if (gptResponse == null || gptResponse.message() == null) {
                 log.error("ChatGPT response or message is null.");

@@ -63,7 +63,7 @@ public class RoutineService {
 
         ChatMessageRequest chatRequest = new ChatMessageRequest(prompt,
                 "Speisekarte:" + speisekarte);
-        ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, "routine");
+        ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, "routine", "message");
 
         return gptResponse.message().content();
     }
