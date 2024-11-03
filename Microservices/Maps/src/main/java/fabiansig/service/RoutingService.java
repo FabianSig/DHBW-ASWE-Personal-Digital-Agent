@@ -1,6 +1,6 @@
 package fabiansig.service;
 
-import fabiansig.clients.RoutingClient;
+import fabiansig.clients.MapsClient;
 import fabiansig.dto.custom.RouteAddressRequest;
 import fabiansig.dto.geocoding.GeoCodingResponse;
 import fabiansig.dto.geocoding.Result;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class RoutingService {
 
 
-    private final RoutingClient routingClient;
+    private final MapsClient routingClient;
     private final GeoCodingService geoCodingService;
 
     public RouteResponse getRoute(RouteRequest routeRequest) {
