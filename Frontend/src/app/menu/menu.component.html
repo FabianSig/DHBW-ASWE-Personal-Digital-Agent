@@ -2,20 +2,7 @@
 <input class="menu-input-date" type="date" #menuInput>
 <button (click)="handleMenu(menuInput) ">Show menu</button>
 
-
-@if (menuResponse) {
-  <h2>Menu:</h2>
-  @for(vorspeise of menuResponse.vorspeisen; track $index) {
-    <p><strong>Vorspeise:</strong> {{ vorspeise.name }}</p>
-    <p>Allergene: {{ vorspeise.allergene.join(', ') }}</p>
-    <ul>
-
-        @for(naehrwert of vorspeise.naehrwerte; track $index) {
-          <li>
-            {{ naehrwert.name }}: {{ naehrwert.menge }}
-          </li>
-        }
-    </ul>
-  }
+@if(menuResponse) {
+  <app-menu-carousel [menuResponse]="menuResponse"></app-menu-carousel>
 }
 

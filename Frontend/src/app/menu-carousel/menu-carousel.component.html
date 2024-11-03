@@ -1,0 +1,24 @@
+<carousel [interval]="1000" [noPause]="true" [showIndicators]="true">
+  @for(category of categories; track $index) {
+    <slide>
+
+      <h3>{{ category.title }}</h3>
+
+      <ng-container>
+        @for(speise of getCategoryItems(category.key); track $index) {
+          <p><strong>{{ speise.name }}</strong></p>
+          <p>Allergene: {{ speise.allergene.join(', ') }}</p>
+          <ul>
+            <li>
+              @for(naehrwert of speise.naehrwerte; track $index) {
+              {{ naehrwert.name }}: {{ naehrwert.menge }}
+              }
+            </li>
+          </ul>
+        }
+      </ng-container>
+
+    </slide>
+  }
+  </carousel>
+
