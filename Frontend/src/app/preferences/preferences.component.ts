@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {ApiService} from '../services/api.service';
 
 @Component({
   selector: 'app-preferences',
@@ -14,7 +15,7 @@ export class PreferencesComponent {
   preferencesForm: FormGroup;
   preferencesJson = '';
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private apiService: ApiService) {
     this.preferencesForm = this.fb.group({
       transportation: this.fb.group({
         onFoot: false,
@@ -28,12 +29,25 @@ export class PreferencesComponent {
         zip: '',
         country: ''
       }),
-      reminder: ''
+      reminder: '',
+      alarm: this.fb.group({
+        alarmDate: '',
+        alarmTime: ''
+      })
     });
   }
 
   onSubmit() {
     const formData = this.preferencesForm.value;
     this.preferencesJson = JSON.stringify(formData);
+
+    // set alarm
+    const alarmId = "wecker-" + formData.alarm.alarmDate;
+    const alarmValue = formData.alarm.alarmDate + "T" + formData.alarm.alarmTime + ":00"  ;
+
+    this.apiService.setAlarmPreference(alarmId, alarmValue).subscribe(response => {
+      console.log(response);
+      //this.chatService.addMessage(response, 'chatgpt');
+    })
   }
 }
