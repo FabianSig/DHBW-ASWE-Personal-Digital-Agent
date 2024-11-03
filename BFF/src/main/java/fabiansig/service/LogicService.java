@@ -1,9 +1,6 @@
 package fabiansig.service;
 
-import fabiansig.client.ChatGPTClient;
-import fabiansig.client.MapsClient;
-import fabiansig.client.PrefsClient;
-import fabiansig.client.StockClient;
+import fabiansig.client.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse;
@@ -28,7 +25,7 @@ public class LogicService {
 
     private final ChatGPTClient chatGPTClient;
     private final MapsClient mapsClient;
-    private final SpeisekarteService speisekarteService;
+    private final SpeisekarteClient speisekarteClient;
     private final PrefsClient prefsClient;
     private final StockClient stockClient;
 
@@ -59,7 +56,8 @@ public class LogicService {
             }
             List<String> allergene = List.of(attributes.get("allergene").split(";"));
 
-            Speisekarte speisekarte = speisekarteService.getSpeisekarteWithFilteredAllergene(date, allergene);
+            //TODO prefs anbindung für allergene
+            Speisekarte speisekarte = speisekarteClient.getSpeisekarteWithFilteredAllergene(null, null);
 
             if (speisekarte == null) {
                 log.error("Speisekarte is null.");
