@@ -1,3 +1,13 @@
 .header {
-  height: 200px;
+  background-color: #3F3F95;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.title-section, .datetime-section {
+  background-color: #2D2D5E;
+  border-radius: 6px;
+}
+
+.fw-bold {
+  font-weight: 600;
 }

@@ -1,37 +1,38 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import {Component} from '@angular/core';
 import {ApiService} from '../services/api.service';
-import {ChatGPTResponse} from '../interfaces/chat-gptresponse';
+import {AudioRecorderComponent} from '../audio-recorder/audio-recorder.component';
+import {AudioResponse} from '../interfaces/audio-response';
+import {ChatService} from '../services/chat.service';
 
 @Component({
   selector: 'app-search-bar',
   standalone: true,
-  imports: [],
+  imports: [
+    AudioRecorderComponent
+  ],
   templateUrl: './search-bar.component.html',
   styleUrl: './search-bar.component.scss'
 })
 export class SearchBarComponent {
-  @Output() chatGPTResponseEmitter = new EventEmitter<ChatGPTResponse>();
 
   searchTerm: string = '';
   error: string = '';
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private chatService: ChatService) {
+  }
 
   onSearch(event: any): void {
     this.searchTerm = event.target.value;
   }
 
   handleChatGPTSearch(): void {
-    this.apiService.getChatGPTData(this.searchTerm).subscribe({
-      next: (res) => {
-        this.chatGPTResponseEmitter.emit(res as ChatGPTResponse);
-      },
-      error: (error) => {
-        if (error.status === 401) {
-          this.error = "Provide a valid API key.";
-        }
-        console.error('Error occurred:', error);
-      }
-    });
+    this.chatService.addMessage(this.searchTerm, 'user');
+    this.apiService.getChatGPTData(this.searchTerm).subscribe(response => {
+      this.chatService.addMessage(response, 'chatgpt');
+    })
+  }
+
+  onAudioResponse(response: AudioResponse): void {
+    this.chatService.addMessage(response.text, 'user');
   }
 }

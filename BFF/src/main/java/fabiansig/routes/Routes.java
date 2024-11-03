@@ -97,4 +97,50 @@ public class Routes {
                 .build();
     }
 
+    @Value("${microservice.prefs.path}")
+    private String prefsServicePath;
+    @Value("${microservice.prefs.ip}")
+    private String prefsServiceIp;
+
+    @Bean
+    public RouterFunction<ServerResponse> prefsServiceRoute() {
+        return GatewayRouterFunctions.route("prefs_service")
+                .route(RequestPredicates.path(prefsServicePath), HandlerFunctions.http(prefsServiceIp))
+                .build();
+    }
+
+    @Value("${springdoc.swagger-ui.urls[2].url}")
+    private String prefsServiceSwaggerPath;
+
+    @Bean
+    public RouterFunction<ServerResponse> prefsServiceSwaggerRoute(){
+        return route("prefs_service_swagger")
+                .route(RequestPredicates.path(prefsServiceSwaggerPath), HandlerFunctions.http(prefsServiceIp))
+                .filter(setPath("/api-docs"))
+                .build();
+    }
+
+    @Value("${microservice.stock.path}")
+    private String stockServicePath;
+
+    @Value("${microservice.stock.ip}")
+    private String stockServiceIp;
+
+    @Bean
+    public RouterFunction<ServerResponse> stockServiceRoute() {
+        return GatewayRouterFunctions.route("stock_service")
+                .route(RequestPredicates.path(stockServicePath), HandlerFunctions.http(stockServiceIp))
+                .build();
+    }
+
+    @Value("${springdoc.swagger-ui.urls[4].url}")
+    private String stockServiceSwaggerPath;
+
+    @Bean
+    public RouterFunction<ServerResponse> stockServiceSwaggerRoute(){
+        return route("stock_service_swagger")
+                .route(RequestPredicates.path(stockServiceSwaggerPath), HandlerFunctions.http(stockServiceIp))
+                .filter(setPath("/api-docs"))
+                .build();
+    }
 }
