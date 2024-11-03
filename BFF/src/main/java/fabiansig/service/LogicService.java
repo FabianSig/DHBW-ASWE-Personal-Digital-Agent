@@ -15,6 +15,7 @@ import online.dhbw_studentprojekt.dto.stock.Stock;
 import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -56,9 +57,9 @@ public class LogicService {
                 date= new Date().toString();
             }
 
-            SpeisekarteAllergeneRequest speisekarteAllergeneRequest = new SpeisekarteAllergeneRequest(prefsClient.getPreference("allergene").value());
+            List<String> allergene = new ArrayList<>(prefsClient.getPreference("allergene").value());
 
-            Speisekarte speisekarte = speisekarteClient.getSpeisekarteWithFilteredAllergene(date, speisekarteAllergeneRequest);
+            Speisekarte speisekarte = speisekarteClient.getSpeisekarteWithFilteredAllergene(date, allergene);
 
             if (speisekarte == null) {
                 log.error("Speisekarte is null.");
