@@ -35,18 +35,26 @@ public class ChatGPTService {
     private final PromptRepository promptRepository;
     private final ChatGPTClient chatGPTClient;
 
-    public ChatGPTResponseChoice sendMessage(ChatMessageRequest request, String chatId) {
+    public ChatGPTResponseChoice sendMessage(ChatMessageRequest request, String chatId, String extraPromptId) {
 
-        ChatGPTMessage prompt = promptRepository.findByPromptId("message").stream()
-                .map(m -> new ChatGPTMessage(m.getRole(), m.getContent()))
-                .toList().getFirst();
 
         List<ChatGPTMessage> messages = new ArrayList<>(messageRepository.findByChatId(chatId).stream()
                 .map(m -> new ChatGPTMessage(m.getRole(), m.getContent()))
                 .toList());
 
-        messages.addFirst(prompt);
+        ChatGPTMessage messagePrompt = promptRepository.findByPromptId("message").stream()
+                .map(m -> new ChatGPTMessage(m.getRole(), m.getContent()))
+                .toList().getFirst();
+
+        messages.addFirst(messagePrompt);
         messages.add(1, new ChatGPTMessage("system", request.data()));
+
+        if(extraPromptId != null && !extraPromptId.isEmpty()){
+            ChatGPTMessage extraPrompt = promptRepository.findByPromptId(extraPromptId).stream()
+                    .map(m -> new ChatGPTMessage(m.getRole(), m.getContent()))
+                    .toList().getFirst();
+            messages.add(2, extraPrompt);
+        }
 
         Message newMessage = Message.builder()
                 .role("user")
@@ -72,9 +80,9 @@ public class ChatGPTService {
         return response.choices().getFirst();
     }
 
-    public ChatGPTResponseChoice sendMessage(ChatMessageRequest request) {
+    public ChatGPTResponseChoice sendMessage(ChatMessageRequest request, String extraPromptId) {
         String defaultChatId = "default";
-        return sendMessage(request, defaultChatId);
+        return sendMessage(request, defaultChatId, extraPromptId);
     }
 
     public ChatGPTAudioResponse sendAudio(ChatGPTAudioRequest request) {
