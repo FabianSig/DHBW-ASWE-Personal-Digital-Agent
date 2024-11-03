@@ -81,13 +81,15 @@ public class IntentionMessageService {
         try {
             String origin = attributes.get("origin");
             String destination = attributes.get("destination");
+            String travelMode = attributes.get("travelmode");
 
             if (origin == null || destination == null) {
                 log.error("Origin or destination is null. Origin: {}, Destination: {}", origin, destination);
                 return "Bitte gebe einen gültigen Start- bzw Zielort an.";
             }
-            RouteAddressRequest routeAddressRequest = new RouteAddressRequest(origin, destination, "TRANSIT");
-            RouteResponse response = mapsClient.getRouting(routeAddressRequest);
+
+            RouteResponse response = mapsClient.getRouting(new RouteAddressRequest(origin, destination, travelMode.toUpperCase()));
+            String directionResponse = mapsClient.getDirections(new RouteAddressRequest(origin, destination, travelMode.toUpperCase()));
 
             if (response == null || response.routes().isEmpty()) {
                 log.error("Maps API response is empty or null.");
@@ -95,8 +97,9 @@ public class IntentionMessageService {
             }
 
             ChatMessageRequest chatRequest = new ChatMessageRequest(message.message(),
-                    "time to get there " + response.routes().getFirst().duration());
-            ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, "test", "message");
+                    "time to get there " + response.routes().getFirst().duration() + "\n"
+                            + "additional data about the route: " + directionResponse);
+            ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, "test", "maps");
 
             if (gptResponse == null || gptResponse.message() == null) {
                 log.error("ChatGPT response or message is null.");
