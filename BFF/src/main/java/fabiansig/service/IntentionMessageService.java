@@ -27,7 +27,6 @@ public class IntentionMessageService {
     private final SpeisekarteClient speisekarteClient;
     private final PrefsClient prefsClient;
 
-
     public String sendResponseMessage(MessageRequest message) {
 
         ChatGPTIntentionResponse intResponse = chatGPTClient.getIntention(message.message());
@@ -39,7 +38,7 @@ public class IntentionMessageService {
         if (intResponse.route().equals("/api/routing/address")) {
             return getResponseMessageForRoutingAddressRequest(message, attributes);
         }
-        if(intResponse.route().equals("/api/logic/speisekarte")){
+        if (intResponse.route().equals("/api/logic/speisekarte")) {
             return getResponseMessageForSpeisekarteRequest(message, attributes);
         }
 
@@ -50,8 +49,8 @@ public class IntentionMessageService {
 
         try {
             String date = attributes.get("date");
-            if(date == null){
-                date= new Date().toString();
+            if (date == null) {
+                date = new Date().toString();
             }
 
             List<String> allergene = new ArrayList<>(prefsClient.getPreference("allergene").value());
@@ -75,6 +74,7 @@ public class IntentionMessageService {
     }
 
     private String getResponseMessageForRoutingAddressRequest(MessageRequest message, Map<String, String> attributes) {
+
         try {
             String origin = attributes.get("origin");
             String destination = attributes.get("destination");
@@ -106,4 +106,5 @@ public class IntentionMessageService {
             return "Error: Could not process routing information.";
         }
     }
+
 }

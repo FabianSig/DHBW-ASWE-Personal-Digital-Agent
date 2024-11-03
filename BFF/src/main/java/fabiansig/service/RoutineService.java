@@ -1,14 +1,12 @@
 package fabiansig.service;
 
-import fabiansig.client.ChatGPTClient;
-import fabiansig.client.PrefsClient;
-import fabiansig.client.SpeisekarteClient;
-import fabiansig.client.StockClient;
+import fabiansig.client.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import online.dhbw_studentprojekt.dto.chatgpt.morning.MorningRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
+import online.dhbw_studentprojekt.dto.news.Article;
 import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 import online.dhbw_studentprojekt.dto.stock.Stock;
 import org.springframework.stereotype.Service;
@@ -29,18 +27,19 @@ public class RoutineService {
     private final StockClient stockClient;
     private final ChatGPTClient chatGPTClient;
     private final SpeisekarteClient speisekarteClient;
+    private final NewsClient newsClient;
 
     public String getMorningRoutine() {
         // Get prefs for news and stocks
         String newsTopic = prefsClient.getPreference("news-topics").value().getFirst();
-        List<String> newsHeadlines = List.of("Frieden im nahen Osten", "Mit diesem Trick können Hausbesitzer MILLIONEN sparen!", "Ärzte schockiert: 5 Jähriger junge aus Bietigheim-Bissingen erfindet Krebs-Impfung");
-
+        int newsCount = Integer.parseInt(prefsClient.getPreference("news-count").value().getFirst());
 
         List<String> stockSymbols = prefsClient.getPreference("stock-symbols").value();
 
         // Get news
+        List<String> newsHeadlines = newsClient.getNews(newsTopic, newsCount).stream().map(Article::title).toList();
 
-        // Get stocks;
+        // Get stocks
         List<Stock> stocks = stockClient.getMultipleStock(stockSymbols);
 
         // Get Text for news and stocks
@@ -48,7 +47,7 @@ public class RoutineService {
         return chatGPTClient.getMorningRoutine(request).message().content();
     }
 
-    public String getMittagRoutine(){
+    public String getMittagRoutine() {
 
         LocalDate today = LocalDate.now();
 
@@ -69,4 +68,5 @@ public class RoutineService {
 
         return gptResponse.message().content();
     }
+
 }

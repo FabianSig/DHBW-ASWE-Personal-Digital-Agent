@@ -12,7 +12,6 @@ import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse
 import online.dhbw_studentprojekt.dto.chatgpt.morning.MorningRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.*;
 import online.dhbw_studentprojekt.dto.stock.Stock;
-import online.dhbw_studentprojekt.dto.chatgpt.standard.*;
 import nikomitk.mschatgpt.model.Message;
 import nikomitk.mschatgpt.repository.MessageRepository;
 import nikomitk.mschatgpt.repository.PromptRepository;
