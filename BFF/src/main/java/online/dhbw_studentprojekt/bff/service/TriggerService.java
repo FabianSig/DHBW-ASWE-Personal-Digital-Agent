@@ -1,7 +1,7 @@
-package fabiansig.service;
+package online.dhbw_studentprojekt.bff.service;
 
-import fabiansig.client.PrefsClient;
-import fabiansig.client.RaplaClient;
+import online.dhbw_studentprojekt.bff.client.PrefsClient;
+import online.dhbw_studentprojekt.bff.client.RaplaClient;
 import lombok.RequiredArgsConstructor;
 import online.dhbw_studentprojekt.dto.rapla.RaplaResponse;
 import online.dhbw_studentprojekt.dto.trigger.TriggerResponse;

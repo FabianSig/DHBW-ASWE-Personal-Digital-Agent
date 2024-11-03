@@ -1,9 +1,9 @@
-package fabiansig.controller;
+package online.dhbw_studentprojekt.bff.controller;
 
-import fabiansig.service.RoutineService;
-import fabiansig.service.TriggerService;
+import online.dhbw_studentprojekt.bff.service.RoutineService;
+import online.dhbw_studentprojekt.bff.service.TriggerService;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.MessageRequest;
-import fabiansig.service.IntentionMessageService;
+import online.dhbw_studentprojekt.bff.service.IntentionMessageService;
 import lombok.RequiredArgsConstructor;
 import online.dhbw_studentprojekt.dto.trigger.TriggerResponse;
 import org.springframework.http.HttpStatus;

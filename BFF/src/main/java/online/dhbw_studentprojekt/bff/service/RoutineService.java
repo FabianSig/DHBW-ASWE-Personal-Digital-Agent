@@ -1,8 +1,8 @@
-package fabiansig.service;
+package online.dhbw_studentprojekt.bff.service;
 
-import fabiansig.client.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import online.dhbw_studentprojekt.bff.client.*;
 import online.dhbw_studentprojekt.dto.chatgpt.morning.MorningRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
@@ -11,7 +11,6 @@ import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 import online.dhbw_studentprojekt.dto.stock.Stock;
 import org.springframework.stereotype.Service;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +51,7 @@ public class RoutineService {
         LocalDate today = LocalDate.now();
 
         // Wenn Wochenende, dann auf Montag setzen
-        if(today.getDayOfWeek().getValue() > 5) {
+        if (today.getDayOfWeek().getValue() > 5) {
             today = today.plusDays(7L - today.getDayOfWeek().getValue());
         }
 

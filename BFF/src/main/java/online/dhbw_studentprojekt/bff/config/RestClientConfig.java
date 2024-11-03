@@ -1,7 +1,7 @@
-package fabiansig.config;
+package online.dhbw_studentprojekt.bff.config;
 
-import fabiansig.client.*;
 import lombok.extern.slf4j.Slf4j;
+import online.dhbw_studentprojekt.bff.client.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,6 +37,7 @@ public class RestClientConfig {
 
     @Bean
     public ChatGPTClient chatGPTClient() {
+
         RestClient restClient = RestClient.builder()
                 .baseUrl(chatGPTServiceUrl)
                 .defaultHeader("Authorization", System.getenv("API_KEY"))
@@ -49,6 +50,7 @@ public class RestClientConfig {
 
     @Bean
     public MapsClient mapsClient() {
+
         RestClient restClient = RestClient.builder()
                 .baseUrl(mapsServiceUrl)
                 .build();
@@ -57,8 +59,10 @@ public class RestClientConfig {
         HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(restClientAdapter).build();
         return httpServiceProxyFactory.createClient(MapsClient.class);
     }
+
     @Bean
     public SpeisekarteClient speisekarteClient() {
+
         RestClient restClient = RestClient.builder()
                 .baseUrl(speisekarteServiceUrl)
                 .build();
@@ -67,8 +71,10 @@ public class RestClientConfig {
         HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(restClientAdapter).build();
         return httpServiceProxyFactory.createClient(SpeisekarteClient.class);
     }
+
     @Bean
     public RaplaClient raplaClient() {
+
         RestClient restClient = RestClient.builder()
                 .baseUrl(raplaServiceUrl)
                 .build();
@@ -80,6 +86,7 @@ public class RestClientConfig {
 
     @Bean
     public PrefsClient prefsClient() {
+
         RestClient restClient = RestClient.builder()
                 .baseUrl(prefsServiceUrl)
                 .build();
@@ -91,6 +98,7 @@ public class RestClientConfig {
 
     @Bean
     public StockClient stockClient() {
+
         RestClient restClient = RestClient.builder()
                 .baseUrl(stockServiceUrl)
                 .build();
@@ -102,6 +110,7 @@ public class RestClientConfig {
 
     @Bean
     public NewsClient newsClient() {
+
         RestClient restClient = RestClient.builder()
                 .baseUrl(newsServiceUrl)
                 .build();
@@ -110,4 +119,5 @@ public class RestClientConfig {
         HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(restClientAdapter).build();
         return httpServiceProxyFactory.createClient(NewsClient.class);
     }
+
 }

@@ -1,8 +1,11 @@
-package fabiansig.service;
+package online.dhbw_studentprojekt.bff.service;
 
-import fabiansig.client.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import online.dhbw_studentprojekt.bff.client.ChatGPTClient;
+import online.dhbw_studentprojekt.bff.client.MapsClient;
+import online.dhbw_studentprojekt.bff.client.PrefsClient;
+import online.dhbw_studentprojekt.bff.client.SpeisekarteClient;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;

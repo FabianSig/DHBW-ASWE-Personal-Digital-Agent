@@ -1,4 +1,4 @@
-package fabiansig.config;
+package online.dhbw_studentprojekt.bff.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

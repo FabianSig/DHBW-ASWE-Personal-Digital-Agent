@@ -1,4 +1,4 @@
-package fabiansig.client;
+package online.dhbw_studentprojekt.bff.client;
 
 
 import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;

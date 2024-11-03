@@ -1,10 +1,8 @@
-package fabiansig.client;
+package online.dhbw_studentprojekt.bff.client;
 
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.GetExchange;
 import online.dhbw_studentprojekt.dto.rapla.RaplaResponse;
-
-import java.util.List;
 
 public interface RaplaClient {
 
