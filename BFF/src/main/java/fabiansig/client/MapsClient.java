@@ -8,4 +8,7 @@ import org.springframework.web.service.annotation.PostExchange;
 public interface MapsClient {
     @PostExchange("api/routing/address")
     RouteResponse getRouting(@RequestBody RouteAddressRequest request);
+
+    @PostExchange("api/routing/directions")
+    String getDirections(@RequestBody RouteAddressRequest request);
 }

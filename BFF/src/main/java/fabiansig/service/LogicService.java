@@ -113,6 +113,7 @@ public class LogicService {
             }
             RouteAddressRequest routeAddressRequest = new RouteAddressRequest(origin, destination, "TRANSIT");
             RouteResponse response = mapsClient.getRouting(routeAddressRequest);
+            String directionsResponse = mapsClient.getDirections(routeAddressRequest);
 
             if (response == null || response.routes().isEmpty()) {
                 log.error("Maps API response is empty or null.");
@@ -120,8 +121,9 @@ public class LogicService {
             }
 
             ChatMessageRequest chatRequest = new ChatMessageRequest(message.message(),
-                    "time to get there " + response.routes().getFirst().duration());
-            ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, "test");
+                    "time to get there " + response.routes().getFirst().duration() + "\n" +
+                            "additional data about the route: " + directionsResponse);
+            ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, "test", "maps");
 
             if (gptResponse == null || gptResponse.message() == null) {
                 log.error("ChatGPT response or message is null.");
