@@ -11,10 +11,12 @@ import online.dhbw_studentprojekt.dto.rapla.RaplaResponse;
 import online.dhbw_studentprojekt.dto.routing.custom.RouteAddressRequest;
 import online.dhbw_studentprojekt.dto.routing.routing.RouteResponse;
 import lombok.RequiredArgsConstructor;
+import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +27,7 @@ public class LogicService {
     private static final Logger log = LoggerFactory.getLogger(LogicService.class);
     private final ChatGPTClient chatGPTClient;
     private final MapsClient mapsClient;
+    private final SpeisekarteService speisekarteService;
 
     public String sendResponseMessage(MessageRequest message) {
 
@@ -37,8 +40,65 @@ public class LogicService {
         if (intResponse.route().equals("/api/routing/address")) {
             return getResponseMessageForRoutingAddressRequest(message, attributes);
         }
+        if(intResponse.route().equals("/api/logic/speisekarte")){
+            return getResponseMessageForSpeisekarteRequest(attributes);
+        }
 
         return "Entschuldigung, das habe ich nicht verstanden. Bitte versuche es erneut.";
+    }
+
+    private String getResponseMessageForSpeisekarteRequest(Map<String, String> attributes) {
+
+        try {
+            String date = attributes.get("date");
+            if(date == null){
+                date= new Date().toString();
+            }
+            List<String> allergene = List.of(attributes.get("allergene").split(";"));
+
+            Speisekarte speisekarte = speisekarteService.getSpeisekarteWithFilteredAllergene(date, allergene);
+
+            if (speisekarte == null) {
+                log.error("Speisekarte is null.");
+                return "Error: Could not retrieve speisekarte information.";
+            }
+
+            StringBuilder response = new StringBuilder();
+            response.append("Hier ist die Speisekarte für den ").append(date).append(":\n\n");
+
+            response.append("Vorspeisen:\n");
+            speisekarte.vorspeisen().forEach(meal -> response.append(meal.name()).append("\n"));
+            response.append("\n");
+
+            response.append("Veganer Renner:\n");
+            speisekarte.veganerRenner().forEach(meal -> response.append(meal.name()).append("\n"));
+            response.append("\n");
+
+            response.append("Hauptgericht:\n");
+            speisekarte.hauptgericht().forEach(meal -> response.append(meal.name()).append("\n"));
+            response.append("\n");
+
+            response.append("Beilagen:\n");
+            speisekarte.beilagen().forEach(meal -> response.append(meal.name()).append("\n"));
+            response.append("\n");
+
+            response.append("Salat:\n");
+            speisekarte.salat().forEach(meal -> response.append(meal.name()).append("\n"));
+            response.append("\n");
+
+            response.append("Dessert:\n");
+            speisekarte.dessert().forEach(meal -> response.append(meal.name()).append("\n"));
+            response.append("\n");
+
+            response.append("Buffet:\n");
+            speisekarte.buffet().forEach(meal -> response.append(meal.name()).append("\n"));
+            response.append("\n");
+
+            return response.toString();
+        } catch (Exception e) {
+            log.error("Error during speisekarte request: ", e);
+            return "Error: Could not process speisekarte information.";
+        }
     }
 
     private String getResponseMessageForRoutingAddressRequest(MessageRequest message, Map<String, String> attributes) {
