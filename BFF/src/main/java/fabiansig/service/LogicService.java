@@ -10,9 +10,8 @@ import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.MessageRequest;
 import online.dhbw_studentprojekt.dto.routing.custom.RouteAddressRequest;
 import online.dhbw_studentprojekt.dto.routing.routing.RouteResponse;
-import online.dhbw_studentprojekt.dto.speisekarte.SpeisekarteAllergeneRequest;
-import online.dhbw_studentprojekt.dto.stock.Stock;
 import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
+import online.dhbw_studentprojekt.dto.stock.Stock;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -41,7 +40,7 @@ public class LogicService {
         if (intResponse.route().equals("/api/routing/address")) {
             return getResponseMessageForRoutingAddressRequest(message, attributes);
         }
-        if(intResponse.route().equals("/api/logic/speisekarte")){
+        if (intResponse.route().equals("/api/logic/speisekarte")) {
             return getResponseMessageForSpeisekarteRequest(attributes);
         }
 
@@ -52,13 +51,13 @@ public class LogicService {
 
         try {
             String date = attributes.get("date");
-            if(date == null){
-                date= new Date().toString();
+            if (date == null) {
+                date = new Date().toString();
             }
 
-            SpeisekarteAllergeneRequest speisekarteAllergeneRequest = new SpeisekarteAllergeneRequest(prefsClient.getPreference("allergene").value());
+            List<String> allergene = prefsClient.getPreference("allergene").value();
 
-            Speisekarte speisekarte = speisekarteClient.getSpeisekarteWithFilteredAllergene(date, speisekarteAllergeneRequest);
+            Speisekarte speisekarte = speisekarteClient.getSpeisekarteWithFilteredAllergene(date, allergene);
 
             if (speisekarte == null) {
                 log.error("Speisekarte is null.");
@@ -68,33 +67,13 @@ public class LogicService {
             StringBuilder response = new StringBuilder();
             response.append("Hier ist die Speisekarte für den ").append(date).append(":\n\n");
 
-            response.append("Vorspeisen:\n");
-            speisekarte.vorspeisen().forEach(meal -> response.append(meal.name()).append("\n"));
-            response.append("\n");
-
-            response.append("Veganer Renner:\n");
-            speisekarte.veganerRenner().forEach(meal -> response.append(meal.name()).append("\n"));
-            response.append("\n");
-
-            response.append("Hauptgericht:\n");
-            speisekarte.hauptgericht().forEach(meal -> response.append(meal.name()).append("\n"));
-            response.append("\n");
-
-            response.append("Beilagen:\n");
-            speisekarte.beilagen().forEach(meal -> response.append(meal.name()).append("\n"));
-            response.append("\n");
-
-            response.append("Salat:\n");
-            speisekarte.salat().forEach(meal -> response.append(meal.name()).append("\n"));
-            response.append("\n");
-
-            response.append("Dessert:\n");
-            speisekarte.dessert().forEach(meal -> response.append(meal.name()).append("\n"));
-            response.append("\n");
-
-            response.append("Buffet:\n");
-            speisekarte.buffet().forEach(meal -> response.append(meal.name()).append("\n"));
-            response.append("\n");
+            appendMeals(response, "Vorspeisen", speisekarte.vorspeisen());
+            appendMeals(response, "Veganer Renner", speisekarte.veganerRenner());
+            appendMeals(response, "Hauptgericht", speisekarte.hauptgericht());
+            appendMeals(response, "Beilagen", speisekarte.beilagen());
+            appendMeals(response, "Salat", speisekarte.salat());
+            appendMeals(response, "Dessert", speisekarte.dessert());
+            appendMeals(response, "Buffet", speisekarte.buffet());
 
             return response.toString();
         } catch (Exception e) {
@@ -103,7 +82,15 @@ public class LogicService {
         }
     }
 
+    private void appendMeals(StringBuilder response, String mealType, List<Speisekarte.Speise> meals) {
+
+        response.append(mealType).append(":\n");
+        meals.forEach(meal -> response.append(meal.name()).append("\n"));
+        response.append("\n");
+    }
+
     private String getResponseMessageForRoutingAddressRequest(MessageRequest message, Map<String, String> attributes) {
+
         try {
             String origin = attributes.get("origin");
             String destination = attributes.get("destination");
