@@ -1,11 +1,13 @@
 package fabiansig.client;
 
-import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.GetExchange;
+import online.dhbw_studentprojekt.dto.rapla.RaplaResponse;
+
+import java.util.List;
 
 public interface RaplaClient {
 
-    @GetExchange()
-    Speisekarte getSpeisekarte(@RequestParam String date);
+    @GetExchange("/")
+    RaplaResponse getLectureTimes(@RequestParam("date") String date);
 }

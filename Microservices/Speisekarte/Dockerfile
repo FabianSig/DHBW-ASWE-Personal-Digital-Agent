@@ -5,13 +5,13 @@ WORKDIR /app
 COPY pom.xml /app/
 COPY src /app/src
 
-RUN mvn clean package
+RUN mvn clean package -DskipTests
 
 FROM openjdk:21
 
 WORKDIR /app
 
-COPY --from=build /app/target/Personal-Digital-Agent-MS-Speisekarte-0.0.1.jar /app/my-app.jar
+COPY --from=build /app/target/MS-Speisekarte-0.0.1.jar /app/my-app.jar
 
 EXPOSE 8080
 

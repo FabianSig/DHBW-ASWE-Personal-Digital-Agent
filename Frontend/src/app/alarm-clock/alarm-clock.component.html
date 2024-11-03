@@ -1,11 +1,14 @@
-<h2>Alarm Clock</h2>
-<input type="datetime-local" #alarmInput>
-<button (click)="setAlarm(alarmInput)">Set Alarm</button>
+<div class="d-flex flex-column align-items-center p-5 mt-5 w-75 h-100 bg-light border rounded shadow mx-auto">
+  <h1 class="text-center mb-4">Alarm Clock</h1>
+  <input class="mb-3" type="datetime-local" #alarmInput>
+  <button class="btn mb-3" type="submit" (click)="setAlarm(alarmInput)">Alarm setzen</button>
 
-<h3>Scheduled Alarms:</h3>
-<ul>
-  @for (alarm of getAlarms(); track alarm) {
-    <li>{{ alarm }}</li>
-  }
-</ul>
+  <h2 class="text-secondary text-center">Geplante Alarme:</h2>
+  <div class="alarm-list">
+    @for (alarm of getAlarms(); track alarm) {
+      <p class="text-center">{{ alarm }}</p>
+      <hr class="separator mt-2 mb-2">
+    }
+  </div>
+</div>
 
