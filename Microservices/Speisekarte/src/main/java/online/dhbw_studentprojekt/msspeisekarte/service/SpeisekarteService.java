@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.function.Predicate.not;
-import static online.dhbw_studentprojekt.msspeisekarte.util.SpeisekarteUtils.extractMenu;
+import static online.dhbw_studentprojekt.msspeisekarte.util.SpeisekarteUtils.*;
 
 @Service
 @Slf4j
