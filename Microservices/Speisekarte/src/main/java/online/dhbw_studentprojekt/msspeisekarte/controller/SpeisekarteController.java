@@ -34,7 +34,7 @@ public class SpeisekarteController {
     }
 
     @Operation(summary = "Get the speisekarte for the given date, with filtered allergene")
-    @GetMapping("/allergene")
+    @PostMapping("/allergene")
     @ResponseStatus(HttpStatus.OK)
     public Speisekarte getSpeisekarteWithFilteredAllergene(@io.swagger.v3.oas.annotations.Parameter(example = "yyyy-MM-dd") @RequestParam Optional<String> datum, @RequestBody SpeisekarteAllergeneRequest allergene) {
         return speisekarteService.getSpeisekarteWithFilteredAllergene(datum, allergene);
