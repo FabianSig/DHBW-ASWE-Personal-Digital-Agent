@@ -42,13 +42,13 @@ public class LogicService {
             return getResponseMessageForRoutingAddressRequest(message, attributes);
         }
         if(intResponse.route().equals("/api/logic/speisekarte")){
-            return getResponseMessageForSpeisekarteRequest(attributes);
+            return getResponseMessageForSpeisekarteRequest(message, attributes);
         }
 
         return "Entschuldigung, das habe ich nicht verstanden. Bitte versuche es erneut.";
     }
 
-    private String getResponseMessageForSpeisekarteRequest(Map<String, String> attributes) {
+    private String getResponseMessageForSpeisekarteRequest(MessageRequest message, Map<String, String> attributes) {
 
         try {
             String date = attributes.get("date");
@@ -65,38 +65,11 @@ public class LogicService {
                 return "Error: Could not retrieve speisekarte information.";
             }
 
-            StringBuilder response = new StringBuilder();
-            response.append("Hier ist die Speisekarte für den ").append(date).append(":\n\n");
+            ChatMessageRequest chatRequest = new ChatMessageRequest(message.message(),
+                    "Speisekarte:" + speisekarte);
+            ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, "test");
 
-            response.append("Vorspeisen:\n");
-            speisekarte.vorspeisen().forEach(meal -> response.append(meal.name()).append("\n"));
-            response.append("\n");
-
-            response.append("Veganer Renner:\n");
-            speisekarte.veganerRenner().forEach(meal -> response.append(meal.name()).append("\n"));
-            response.append("\n");
-
-            response.append("Hauptgericht:\n");
-            speisekarte.hauptgericht().forEach(meal -> response.append(meal.name()).append("\n"));
-            response.append("\n");
-
-            response.append("Beilagen:\n");
-            speisekarte.beilagen().forEach(meal -> response.append(meal.name()).append("\n"));
-            response.append("\n");
-
-            response.append("Salat:\n");
-            speisekarte.salat().forEach(meal -> response.append(meal.name()).append("\n"));
-            response.append("\n");
-
-            response.append("Dessert:\n");
-            speisekarte.dessert().forEach(meal -> response.append(meal.name()).append("\n"));
-            response.append("\n");
-
-            response.append("Buffet:\n");
-            speisekarte.buffet().forEach(meal -> response.append(meal.name()).append("\n"));
-            response.append("\n");
-
-            return response.toString();
+            return gptResponse.message().content();
         } catch (Exception e) {
             log.error("Error during speisekarte request: ", e);
             return "Error: Could not process speisekarte information.";

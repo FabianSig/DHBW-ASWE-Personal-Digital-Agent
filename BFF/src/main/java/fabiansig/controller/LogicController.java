@@ -4,6 +4,7 @@ import fabiansig.service.TriggerService;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.MessageRequest;
 import fabiansig.service.LogicService;
 import lombok.RequiredArgsConstructor;
+import online.dhbw_studentprojekt.dto.trigger.TriggerResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,16 +25,10 @@ public class LogicController {
         return logicService.sendResponseMessage(request);
     }
 
-    @PostMapping("/trigger/{date}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public List<String> getTrigger(@RequestParam String date) {
+    @GetMapping("/trigger")
+    @ResponseStatus(HttpStatus.OK)
+    public TriggerResponse getTrigger(@RequestParam String date) {
         return triggerService.getTrigger(date);
-    }
-
-    @PostMapping("/trigger")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public List<String> getTrigger() {
-        return triggerService.getTrigger();
     }
 
     @GetMapping("/morning")
