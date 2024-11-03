@@ -4,15 +4,14 @@ import fabiansig.client.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse;
-import online.dhbw_studentprojekt.dto.chatgpt.morning.MorningRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.MessageRequest;
 import online.dhbw_studentprojekt.dto.routing.custom.RouteAddressRequest;
 import online.dhbw_studentprojekt.dto.routing.routing.RouteResponse;
-import online.dhbw_studentprojekt.dto.stock.Stock;
-import org.springframework.stereotype.Service;
 import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,7 +38,7 @@ public class IntentionMessageService {
         if (intResponse.route().equals("/api/routing/address")) {
             return getResponseMessageForRoutingAddressRequest(message, attributes);
         }
-        if(intResponse.route().equals("/api/logic/speisekarte")){
+        if (intResponse.route().equals("/api/logic/speisekarte")) {
             return getResponseMessageForSpeisekarteRequest(message, attributes);
         }
 
@@ -50,8 +49,8 @@ public class IntentionMessageService {
 
         try {
             String date = attributes.get("date");
-            if(date == null){
-                date= new Date().toString();
+            if (date == null) {
+                date = new Date().toString();
             }
 
             List<String> allergene = new ArrayList<>(prefsClient.getPreference("allergene").value());
