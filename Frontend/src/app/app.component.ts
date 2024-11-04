@@ -21,6 +21,7 @@ import {AuthPopupComponent} from './auth-popup/auth-popup.component';
 export class AppComponent implements OnInit {
   menuResponse?: MenuResponse;
   chatFullscreen = true;
+  preferencesOpen = false;
 
   onMenuResponse(response: MenuResponse): void {
     this.menuResponse = response;
@@ -54,5 +55,9 @@ export class AppComponent implements OnInit {
 
   changeChatFullscreen() {
     this.chatFullscreen = !this.chatFullscreen;
+  }
+
+  changePreferencesOpen() {
+    this.preferencesOpen = !this.preferencesOpen;
   }
 }

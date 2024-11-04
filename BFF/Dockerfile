@@ -11,7 +11,7 @@ FROM openjdk:21
 
 WORKDIR /app
 
-COPY --from=build /app/target/DHBW-ASWE-Personal-Digital-Agent-BFF-0.0.1-SNAPSHOT.jar /app/my-app.jar
+COPY --from=build /app/target/PDA-BFF-0.0.1-SNAPSHOT.jar /app/my-app.jar
 
 EXPOSE 8080
 

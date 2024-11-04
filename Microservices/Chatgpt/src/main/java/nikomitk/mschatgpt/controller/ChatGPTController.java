@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nikomitk.mschatgpt.service.ChatGPTService;
 import online.dhbw_studentprojekt.dto.chatgpt.audio.ChatGPTAudioResponse;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse;
+import online.dhbw_studentprojekt.dto.chatgpt.morning.MorningRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTMessage;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
@@ -20,29 +21,35 @@ public class ChatGPTController {
     private final ChatGPTService chatGPTService;
 
     @PostMapping("/message/{chatId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public ChatGPTResponseChoice sendMessage(@RequestBody ChatMessageRequest request, @PathVariable String chatId) {
-
-        return chatGPTService.sendMessage(request, chatId);
+    @ResponseStatus(HttpStatus.OK)
+    public ChatGPTResponseChoice sendMessage(@RequestBody ChatMessageRequest request, @PathVariable String chatId, @RequestParam(required = false) String extraPromptId) {
+        return chatGPTService.sendMessage(request, chatId, extraPromptId);
     }
 
     @PostMapping("/message")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public ChatGPTResponseChoice sendMessage(@RequestBody ChatMessageRequest request) {
-        return chatGPTService.sendMessage(request);
+    @ResponseStatus(HttpStatus.OK)
+    public ChatGPTResponseChoice sendMessage(@RequestBody ChatMessageRequest request, @RequestParam(required = false) String extraPromptId) {
+        return chatGPTService.sendMessage(request, extraPromptId);
     }
 
     @PostMapping("/audio")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.OK)
     public ChatGPTAudioResponse sendAudio(@RequestPart("file") MultipartFile file) {
         ChatGPTAudioRequest audioRequest = new ChatGPTAudioRequest(file, "whisper-1", "de");
         return chatGPTService.sendAudio(audioRequest);
     }
 
     @PostMapping("/intention")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.OK)
     public ChatGPTIntentionResponse findIntention(@RequestBody String message) {
         ChatGPTMessage chatGPTMessage = new ChatGPTMessage("user", message);
         return chatGPTService.findIntention(chatGPTMessage);
     }
+    
+    @PostMapping("/morning")
+    @ResponseStatus(HttpStatus.OK)
+    public ChatGPTResponseChoice getMorning(@RequestBody  MorningRequest request) {
+        return chatGPTService.getMorning(request);
+    }
+    
 }
