@@ -15,8 +15,8 @@ import online.dhbw_studentprojekt.dto.routing.routing.RouteResponse;
 import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +53,7 @@ public class IntentionMessageService {
         try {
             String date = attributes.get("date");
             if (date == null) {
-                date = new Date().toString();
+                date = LocalDate.now().toString();
             }
 
             List<String> allergene = new ArrayList<>(prefsClient.getPreference("allergene").value());
