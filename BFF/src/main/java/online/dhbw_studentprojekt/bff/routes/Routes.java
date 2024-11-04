@@ -1,4 +1,4 @@
-package fabiansig.routes;
+package online.dhbw_studentprojekt.bff.routes;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.server.mvc.handler.GatewayRouterFunctions;
