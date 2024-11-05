@@ -22,15 +22,14 @@ public class ChatGPTController {
 
     @PostMapping("/message/{chatId}")
     @ResponseStatus(HttpStatus.OK)
-    public ChatGPTResponseChoice sendMessage(@RequestBody ChatMessageRequest request, @PathVariable String chatId) {
-
-        return chatGPTService.sendMessage(request, chatId);
+    public ChatGPTResponseChoice sendMessage(@RequestBody ChatMessageRequest request, @PathVariable String chatId, @RequestParam(required = false) String extraPromptId) {
+        return chatGPTService.sendMessage(request, chatId, extraPromptId);
     }
 
     @PostMapping("/message")
     @ResponseStatus(HttpStatus.OK)
-    public ChatGPTResponseChoice sendMessage(@RequestBody ChatMessageRequest request) {
-        return chatGPTService.sendMessage(request);
+    public ChatGPTResponseChoice sendMessage(@RequestBody ChatMessageRequest request, @RequestParam(required = false) String extraPromptId) {
+        return chatGPTService.sendMessage(request, extraPromptId);
     }
 
     @PostMapping("/audio")

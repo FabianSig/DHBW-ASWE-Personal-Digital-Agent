@@ -1,10 +1,8 @@
 HELP.md
 target/
-*.class
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-.env
 
 ### STS ###
 .apt_generated
@@ -33,10 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-/.env
-
-### Local DB files ###
-*.wt
-WiredTiger*
-*.bson
-*mongod.lock
