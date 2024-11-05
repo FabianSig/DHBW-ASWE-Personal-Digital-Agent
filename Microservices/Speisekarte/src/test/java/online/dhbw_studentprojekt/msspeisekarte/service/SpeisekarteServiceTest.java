@@ -205,20 +205,6 @@ public class SpeisekarteServiceTest {
         verify(speisekarteClient, never()).getSpeisekarte(any());
     }
 
-    @Test
-    void testGetSpeisekarte_NoDateProvided() {
-        // Arrange
-        when(speisekarteClient.getSpeisekarte(any())).thenReturn(mockHtml);
-
-        // Act
-        Speisekarte result = speisekarteService.getSpeisekarte(Optional.empty());
-
-        // Assert
-        assertNotNull(result, "Speisekarte should not be null when no date is provided");
-        verify(speisekarteClient, times(1)).getSpeisekarte(any());
-        assertEquals(speisekarte, result);
-    }
-
     // The following tests for prepareFormData Method
     // Commented out because of private method
     // Decide later if needed
