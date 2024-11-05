@@ -14,7 +14,6 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 @RequestMapping("/api/news")
 @Slf4j
 public class NewsController {

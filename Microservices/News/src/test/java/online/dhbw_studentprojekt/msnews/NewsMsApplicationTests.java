@@ -1,4 +1,4 @@
-package online.dhbw_studentprojekt;
+package online.dhbw_studentprojekt.msnews;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

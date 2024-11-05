@@ -66,6 +66,15 @@ services:
     environment:
         - API_KEY=${WEATHER_API_KEY}
 
+  news:
+    build:
+        context: ../Microservices/News
+        dockerfile: Dockerfile
+    ports:
+        - 8082:8080
+    environment:
+        - API_KEY=${NEWS_API_KEY}
+
   mongodb:
     image: mongo:7.0.5
     ports:
