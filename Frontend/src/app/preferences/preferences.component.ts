@@ -45,9 +45,8 @@ export class PreferencesComponent {
     const alarmId = "wecker-" + formData.alarm.alarmDate;
     const alarmValue = formData.alarm.alarmDate + "T" + formData.alarm.alarmTime + ":00"  ;
 
-    this.apiService.setAlarmPreference(alarmId, alarmValue).subscribe(response => {
-      console.log(response);
-      //this.chatService.addMessage(response, 'chatgpt');
+    this.apiService.setAlarmPreference(alarmId, alarmValue).subscribe(() => {
+      console.log("Wecker gestellt");
     })
   }
 }
