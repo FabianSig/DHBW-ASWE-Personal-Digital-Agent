@@ -6,11 +6,8 @@ import online.dhbw_studentprojekt.msnews.client.NewsClient;
 import online.dhbw_studentprojekt.msnews.dto.News;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
-import static java.util.function.Predicate.not;
 
 
 @Service
@@ -21,6 +18,7 @@ public class NewsService {
 
 
     public List<Article> getNews(String topic, Optional<Integer> count) {
+
         News news = newsClient.getNews(topic);
         return news.articles().subList(0, Math.min(count.orElse(100), news.articles().size()));
     }

@@ -14,17 +14,18 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins="*")
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/news")
 @Slf4j
 public class NewsController {
 
     private final NewsService newsService;
-    
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Article> getNews(@RequestParam(required = false) String topic, @RequestParam(required = false) Optional<Integer> count){
+    public List<Article> getNews(@RequestParam(required = false) String topic, @RequestParam(required = false) Optional<Integer> count) {
+
         return newsService.getNews(topic, count);
     }
-    
+
 }
