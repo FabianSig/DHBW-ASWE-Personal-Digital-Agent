@@ -33,6 +33,23 @@ export class PreferencesComponent {
       alarm: this.fb.group({
         alarmDate: '',
         alarmTime: ''
+      }),
+      allergens: this.fb.group({
+        Ei: false,
+        En: false,
+        Fi: false,
+        GID: false,
+        GIG: false,
+        GIH: false,
+        GIKW: false,
+        GIR: false,
+        GIW: false,
+        Kr: false,
+        La: false,
+        Lu: false,
+        NuC: false,
+        NuH: false,
+        NuM: false
       })
     });
   }
@@ -47,6 +64,13 @@ export class PreferencesComponent {
 
     this.apiService.setAlarmPreference(alarmId, alarmValue).subscribe(() => {
       console.log("Wecker gestellt");
+    })
+
+    // set allergene
+    const allergens = Object.keys(formData.allergens).filter(key => formData.allergens[key]);
+    console.log(allergens)
+    this.apiService.setAllergenePreference(allergens).subscribe(() => {
+      console.log("Allergene gesetzt");
     })
   }
 }

@@ -31,9 +31,12 @@ export class ApiService {
   }
 
   setAlarmPreference(alarmDate: string, alarmTime: string) {
-    console.log(alarmDate + " hehe " + alarmTime);
-
     const body = { id: alarmDate, value: [alarmTime]};
+    return this.http.post(this.apiUrlPrefs, body);
+  }
+
+  setAllergenePreference(allergene: string[]) {
+    const body = { id: "allergene", value: allergene};
     return this.http.post(this.apiUrlPrefs, body);
   }
 }
