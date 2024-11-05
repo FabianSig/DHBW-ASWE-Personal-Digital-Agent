@@ -143,4 +143,28 @@ public class Routes {
                 .filter(setPath("/api-docs"))
                 .build();
     }
+
+    @Value("${microservice.news.ip}")
+    private String newsServiceIp;
+
+    @Value("${microservice.news.path}")
+    private String newsServicePath;
+
+    @Bean
+    public RouterFunction<ServerResponse> newsServiceRoute() {
+        return route("news_service")
+                .route(RequestPredicates.path(newsServicePath), HandlerFunctions.http(newsServiceIp))
+                .build();
+    }
+
+    @Value("${springdoc.swagger-ui.urls[5].url}")
+    private String newsServiceSwaggerPath;
+
+    @Bean
+    public RouterFunction<ServerResponse> newsServiceSwaggerRoute(){
+        return route("news_service_swagger")
+                .route(RequestPredicates.path(newsServiceSwaggerPath), HandlerFunctions.http(newsServiceIp))
+                .filter(setPath("/api-docs"))
+                .build();
+    }
 }

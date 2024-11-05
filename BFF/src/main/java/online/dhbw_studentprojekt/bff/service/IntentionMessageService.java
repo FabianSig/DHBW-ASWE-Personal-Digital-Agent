@@ -2,16 +2,15 @@ package online.dhbw_studentprojekt.bff.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import online.dhbw_studentprojekt.bff.client.ChatGPTClient;
-import online.dhbw_studentprojekt.bff.client.MapsClient;
-import online.dhbw_studentprojekt.bff.client.PrefsClient;
-import online.dhbw_studentprojekt.bff.client.SpeisekarteClient;
+import online.dhbw_studentprojekt.bff.client.*;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse;
+import online.dhbw_studentprojekt.dto.chatgpt.morning.MorningRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.MessageRequest;
 import online.dhbw_studentprojekt.dto.routing.custom.RouteAddressRequest;
 import online.dhbw_studentprojekt.dto.routing.routing.RouteResponse;
+import online.dhbw_studentprojekt.dto.stock.Stock;
 import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +28,7 @@ public class IntentionMessageService {
     private final MapsClient mapsClient;
     private final SpeisekarteClient speisekarteClient;
     private final PrefsClient prefsClient;
+    private final StockClient stockClient;
 
     public String sendResponseMessage(MessageRequest message) {
 
@@ -77,7 +77,6 @@ public class IntentionMessageService {
     }
 
     private String getResponseMessageForRoutingAddressRequest(MessageRequest message, Map<String, String> attributes) {
-
         try {
             String origin = attributes.get("origin");
             String destination = attributes.get("destination");
@@ -89,7 +88,7 @@ public class IntentionMessageService {
             }
 
             RouteResponse response = mapsClient.getRouting(new RouteAddressRequest(origin, destination, travelMode.toUpperCase()));
-            String directionResponse = mapsClient.getDirections(new RouteAddressRequest(origin, destination, travelMode.toUpperCase()));
+            String directionResponse = mapsClient.getDirections(new RouteAddressRequest(origin, destination, travelMode.toLowerCase()));
 
             if (response == null || response.routes().isEmpty()) {
                 log.error("Maps API response is empty or null.");
