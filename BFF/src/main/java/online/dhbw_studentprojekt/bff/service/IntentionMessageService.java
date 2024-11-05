@@ -89,7 +89,7 @@ public class IntentionMessageService {
             }
 
             RouteResponse response = mapsClient.getRouting(new RouteAddressRequest(origin, destination, travelMode.toUpperCase()));
-            String directionResponse = mapsClient.getDirections(new RouteAddressRequest(origin, destination, travelMode.toUpperCase()));
+            String directionResponse = mapsClient.getDirections(new RouteAddressRequest(origin, destination, travelMode.toLowerCase()));
 
             if (response == null || response.routes().isEmpty()) {
                 log.error("Maps API response is empty or null.");
