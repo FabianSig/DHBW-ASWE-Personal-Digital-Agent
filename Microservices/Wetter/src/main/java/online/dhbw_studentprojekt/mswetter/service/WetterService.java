@@ -15,7 +15,7 @@ public class WetterService {
         this.wetterClient = wetterClient;
     }
 
-    public Wetter getWetter(Optional<String> datumParam) {
+    public Wetter getWetter() {
         return wetterClient.getWetter();
     }
 
