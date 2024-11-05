@@ -9,6 +9,7 @@ export class ApiService {
   private apiUrlChatgpt = "http://localhost:8080" + environment.apiUrlLogic;
   private apiUrlSpeisekarte = "http://localhost:8080" + environment.apiUrlSpeisekarte;
   private apiUrlAudio = "http://localhost:8080" + environment.apiUrlAudio;
+  private apiUrlPrefs = "http://localhost:8080" + environment.apiUrlPrefs;
 
   constructor(private http: HttpClient) {}
 
@@ -27,5 +28,15 @@ export class ApiService {
     const formData = new FormData();
     formData.append('file', audioFile, 'recording.ogg');
     return this.http.post(this.apiUrlAudio, formData );
+  }
+
+  setAlarmPreference(alarmDate: string, alarmTime: string) {
+    const body = { id: alarmDate, value: [alarmTime]};
+    return this.http.post(this.apiUrlPrefs, body);
+  }
+
+  setAllergenePreference(allergene: string[]) {
+    const body = { id: "allergene", value: allergene};
+    return this.http.post(this.apiUrlPrefs, body);
   }
 }
