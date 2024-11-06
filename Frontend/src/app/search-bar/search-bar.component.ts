@@ -3,6 +3,7 @@ import {ApiService} from '../services/api.service';
 import {AudioRecorderComponent} from '../audio-recorder/audio-recorder.component';
 import {AudioResponse} from '../interfaces/audio-response';
 import {ChatService} from '../services/chat.service';
+import {TtsService} from '../services/tts.service';
 
 @Component({
   selector: 'app-search-bar',
@@ -18,7 +19,7 @@ export class SearchBarComponent {
   searchTerm: string = '';
   error: string = '';
 
-  constructor(private apiService: ApiService, private chatService: ChatService) {
+  constructor(private apiService: ApiService, private chatService: ChatService, private ttsService: TtsService) {
   }
 
   onSearch(event: any): void {
@@ -29,6 +30,7 @@ export class SearchBarComponent {
     this.chatService.addMessage(this.searchTerm, 'user');
     this.apiService.getChatGPTData(this.searchTerm).subscribe(response => {
       this.chatService.addMessage(response, 'chatgpt');
+      this.ttsService.speak(response);
     })
   }
 
