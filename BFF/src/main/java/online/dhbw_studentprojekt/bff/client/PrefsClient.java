@@ -6,10 +6,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.PostExchange;
 
+import java.util.Optional;
+
 public interface PrefsClient {
 
     @GetExchange(url = "/api/prefs")
-    Preference getPreference(@RequestParam String id);
+    Optional<Preference> getPreference(@RequestParam String id);
 
 
     @PostExchange(url = "/api/prefs")

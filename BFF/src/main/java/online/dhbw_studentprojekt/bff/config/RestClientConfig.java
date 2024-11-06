@@ -89,6 +89,7 @@ public class RestClientConfig {
 
         RestClient restClient = RestClient.builder()
                 .baseUrl(prefsServiceUrl)
+                .defaultHeader("Authorization", System.getenv("API_KEY"))
                 .build();
 
         RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
