@@ -2,6 +2,15 @@
 # and run the containers
 
 services:
+  bff:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+  
   stock:
     build:
       context: ../Microservices/Stock
@@ -31,6 +40,40 @@ services:
       - API_KEY=${OPENAI_API_KEY}
       - OUR_API_KEY=${OUR_API_KEY}
       - MONGODB_PASSWORD=${MONGODB_PASSWORD}
+
+  maps:
+    build:
+      context: ../Microservices/Maps
+      dockerfile: Dockerfile
+    ports:
+      - 8086:8080
+    environment:
+      - API_KEY=${MAPS_API_KEY}
+
+  speisekarte:
+    build:
+        context: ../Microservices/Speisekarte
+        dockerfile: Dockerfile
+    ports:
+        - 8087:8080
+
+  wetter:
+    build:
+        context: ../Microservices/Wetter
+        dockerfile: Dockerfile
+    ports:
+        - 8088:8080
+    environment:
+        - API_KEY=${WEATHER_API_KEY}
+
+  news:
+    build:
+        context: ../Microservices/News
+        dockerfile: Dockerfile
+    ports:
+        - 8082:8080
+    environment:
+        - API_KEY=${NEWS_API_KEY}
 
   mongodb:
     image: mongo:7.0.5
