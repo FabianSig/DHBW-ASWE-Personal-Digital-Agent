@@ -6,7 +6,7 @@ import online.dhbw_studentprojekt.msprefs.service.PrefsService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/prefs")
@@ -17,13 +17,23 @@ public class PrefsController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Preference getPref(@RequestParam String id) {
+    public Optional<online.dhbw_studentprojekt.msprefs.model.Preference> getPref(@RequestParam String id) {
+
         return prefsService.getPref(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createPref(@RequestBody Preference preference){
+    public void createPref(@RequestBody Preference preference) {
+
         prefsService.createPref(preference);
     }
+
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePref(@RequestParam String id) {
+
+        prefsService.deletePref(id);
+    }
+
 }

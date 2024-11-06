@@ -6,6 +6,6 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
-      MONGO_INITDB_DATABASE: prefs-service
+      MONGO_INITDB_DATABASE: pda
     volumes:
       - ./data:/data/db
