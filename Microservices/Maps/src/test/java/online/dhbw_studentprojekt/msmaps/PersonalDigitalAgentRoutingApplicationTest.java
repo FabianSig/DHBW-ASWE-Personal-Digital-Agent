@@ -1,4 +1,4 @@
-package fabiansig;
+package online.dhbw_studentprojekt.msmaps;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
