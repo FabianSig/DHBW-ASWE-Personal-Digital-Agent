@@ -1,7 +1,7 @@
 package online.dhbw_studentprojekt.msprefs.service;
 
 import lombok.RequiredArgsConstructor;
-import online.dhbw_studentprojekt.dto.prefs.Preference;
+import online.dhbw_studentprojekt.msprefs.model.Preference;
 import online.dhbw_studentprojekt.msprefs.repository.PrefsRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,15 +13,15 @@ public class PrefsService {
 
     private final PrefsRepository prefsRepository;
 
-    public Optional<online.dhbw_studentprojekt.msprefs.model.Preference> getPref(String id) {
+    public Optional<Preference> getPref(String id) {
 
         return prefsRepository.findById(id);
     }
 
 
-    public void createPref(Preference preference) {
+    public void createPref(online.dhbw_studentprojekt.dto.prefs.Preference preference) {
 
-        online.dhbw_studentprojekt.msprefs.model.Preference pref = new online.dhbw_studentprojekt.msprefs.model.Preference(preference.id(), preference.value());
+        online.dhbw_studentprojekt.msprefs.model.Preference pref = new Preference(preference.id(), preference.value());
         prefsRepository.save(pref);
     }
 
