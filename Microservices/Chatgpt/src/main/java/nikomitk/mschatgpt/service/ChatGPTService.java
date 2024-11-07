@@ -4,21 +4,24 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import nikomitk.mschatgpt.client.ChatGPTClient;
-import nikomitk.mschatgpt.model.Prompt;
-import online.dhbw_studentprojekt.dto.chatgpt.audio.ChatGPTAudioResponse;
 import nikomitk.mschatgpt.dto.audio.ChatGPTAudioRequest;
+import nikomitk.mschatgpt.model.Message;
+import nikomitk.mschatgpt.model.Prompt;
+import nikomitk.mschatgpt.repository.MessageRepository;
+import nikomitk.mschatgpt.repository.PromptRepository;
+import online.dhbw_studentprojekt.dto.chatgpt.audio.ChatGPTAudioResponse;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse;
 import online.dhbw_studentprojekt.dto.chatgpt.morning.MorningRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.*;
 import online.dhbw_studentprojekt.dto.stock.Stock;
-import nikomitk.mschatgpt.model.Message;
-import nikomitk.mschatgpt.repository.MessageRepository;
-import nikomitk.mschatgpt.repository.PromptRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -31,17 +34,22 @@ import java.util.Map;
 public class ChatGPTService {
 
 
+    private static final String GPT_MODEL = "gpt-4o-mini";
     private final MessageRepository messageRepository;
     private final PromptRepository promptRepository;
     private final ChatGPTClient chatGPTClient;
 
+    public ChatGPTResponseChoice sendMessage(ChatMessageRequest request, String extraPromptId) {
+
+        String defaultChatId = "default";
+        return sendMessage(request, defaultChatId, extraPromptId);
+    }
+
     public ChatGPTResponseChoice sendMessage(ChatMessageRequest request, String chatId, String extraPromptId) {
 
-
-
-        ChatGPTMessage prompt = promptRepository.findByPromptId("message").stream()
+        ChatGPTMessage prompt = promptRepository.findFirstByPromptId("message")
                 .map(m -> new ChatGPTMessage(m.getRole(), m.getContent()))
-                .toList().getFirst();
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Prompt not found"));
 
         List<ChatGPTMessage> messages = new ArrayList<>(messageRepository.findByChatId(chatId).stream()
                 .map(m -> new ChatGPTMessage(m.getRole(), m.getContent()))
@@ -50,11 +58,10 @@ public class ChatGPTService {
         messages.addFirst(prompt);
         messages.add(1, new ChatGPTMessage("system", request.data()));
 
-        if(extraPromptId != null && !extraPromptId.isEmpty()) {
-            ChatGPTMessage extraPrompt = promptRepository.findByPromptId(extraPromptId).stream()
+        if (StringUtils.hasText(extraPromptId)) {
+            promptRepository.findFirstByPromptId(extraPromptId)
                     .map(m -> new ChatGPTMessage(m.getRole(), m.getContent()))
-                    .toList().getFirst();
-            messages.add(1, extraPrompt);
+                    .ifPresent(m -> messages.add(1, m));
         }
 
         Message newMessage = Message.builder()
@@ -65,7 +72,7 @@ public class ChatGPTService {
 
         messages.add(new ChatGPTMessage(newMessage.getRole(), newMessage.getContent()));
 
-        ChatGPTRequest chatGPTRequest = new ChatGPTRequest("gpt-4o-mini", messages);
+        ChatGPTRequest chatGPTRequest = new ChatGPTRequest(GPT_MODEL, messages);
         ChatGPTResponse response = chatGPTClient.sendMessage(chatGPTRequest);
         String chatGPTResponseMessage = response.choices().getFirst().message().content();
 
@@ -81,11 +88,6 @@ public class ChatGPTService {
         return response.choices().getFirst();
     }
 
-    public ChatGPTResponseChoice sendMessage(ChatMessageRequest request, String extraPromptId) {
-        String defaultChatId = "default";
-        return sendMessage(request, defaultChatId, extraPromptId);
-    }
-
     public ChatGPTAudioResponse sendAudio(ChatGPTAudioRequest request) {
 
         return chatGPTClient.sendAudio(request.file(), request.model(), request.language());
@@ -93,37 +95,31 @@ public class ChatGPTService {
 
     public ChatGPTIntentionResponse findIntention(ChatGPTMessage message) {
 
-        LocalDate currentDate = LocalDate.now();
-        LocalTime currentTime = LocalTime.now();
+        final String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        final String currentTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
 
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-
-        List<ChatGPTMessage> messages = new ArrayList<>(promptRepository.findByPromptId("intent").stream()
-                .map(m -> new ChatGPTMessage(m.getRole(), String.format(m.getContent(), currentDate.format(dateFormatter), currentTime.format(timeFormatter))))
+        final List<ChatGPTMessage> messages = new ArrayList<>(promptRepository.findByPromptId("intent").stream()
+                .map(m -> new ChatGPTMessage(m.getRole(), String.format(m.getContent(), currentDate, currentTime)))
                 .toList());
 
         messages.add(message);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Object> responseFormat;
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final Map<String, Object> responseFormat;
 
-        try {
-            responseFormat = objectMapper.readValue(
-                    getClass().getClassLoader().getResourceAsStream("responseFormat.json"),
-                    new TypeReference<>() {}
-            );
-        } catch (Exception e) {
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("responseFormat.json")) {
+            responseFormat = objectMapper.readValue(is, new TypeReference<>() {
+            });
+        } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error reading response format", e);
         }
 
-        ChatGPTIntentionRequest chatGPTRequest = new ChatGPTIntentionRequest("gpt-4o", messages, responseFormat);
+        final ChatGPTIntentionRequest chatGPTRequest = new ChatGPTIntentionRequest(GPT_MODEL, messages, responseFormat);
 
         try {
-            ChatGPTResponse strResponse = chatGPTClient.sendIntentionMessage(chatGPTRequest);
-            return objectMapper.readValue(strResponse.choices().getFirst().message().content(), ChatGPTIntentionResponse.class);
-        }
-        catch (Exception e) {
+            String strResponse = chatGPTClient.sendIntentionMessage(chatGPTRequest).choices().getFirst().message().content();
+            return objectMapper.readValue(strResponse, ChatGPTIntentionResponse.class);
+        } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error reading response format", e);
         }
 
@@ -131,17 +127,16 @@ public class ChatGPTService {
 
     public ChatGPTResponseChoice getMorning(MorningRequest request) {
 
-        Prompt prompt = promptRepository.findFirstByPromptId("morning");
+        final Prompt prompt = promptRepository.findFirstByPromptId("morning")
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Prompt not found"));
 
-        String content = String.format(prompt.getContent(), request.firstHeadline(), request.secondHeadline(), request.thirdHeadline(), request.stocks().stream().map(Stock::toString).toList());
-        ChatGPTMessage promptMessage = new ChatGPTMessage(prompt.getRole(), content);
+        final String content = String.format(prompt.getContent(), request.firstHeadline(), request.secondHeadline(), request.thirdHeadline(), request.stocks().stream().map(Stock::toString).toList());
+        final ChatGPTMessage promptMessage = new ChatGPTMessage(prompt.getRole(), content);
 
-        List<ChatGPTMessage> messages = List.of(promptMessage);
-        ChatGPTRequest chatGPTRequest = new ChatGPTRequest("gpt-4o-mini", messages);
+        final ChatGPTRequest chatGPTRequest = new ChatGPTRequest(GPT_MODEL, List.of(promptMessage));
         ChatGPTResponse response = chatGPTClient.sendMessage(chatGPTRequest);
 
         return response.choices().getFirst();
-
     }
 
 }
