@@ -1,11 +1,11 @@
-package fabiansig.service;
+package online.dhbw_studentprojekt.msmaps.service;
 
-import fabiansig.clients.MapsClient;
-import fabiansig.clients.MapsDirectionClient;
-import fabiansig.dto.custom.RouteAddressRequest;
-import fabiansig.dto.geocoding.GeoCodingResponse;
-import fabiansig.dto.geocoding.Result;
-import fabiansig.dto.routing.*;
+import online.dhbw_studentprojekt.msmaps.clients.MapsClient;
+import online.dhbw_studentprojekt.msmaps.clients.RoutingClient;
+import online.dhbw_studentprojekt.dto.routing.custom.RouteAddressRequest;
+import online.dhbw_studentprojekt.dto.routing.geocoding.GeoCodingResponse;
+import online.dhbw_studentprojekt.dto.routing.geocoding.Result;
+import online.dhbw_studentprojekt.dto.routing.routing.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,14 +13,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RoutingService {
 
-
+    private final RoutingClient routingClient;
     private final MapsClient mapsClient;
-    private final MapsDirectionClient mapsDirectionClient;
     private final GeoCodingService geoCodingService;
-
-    public RouteResponse getRoute(RouteRequest routeRequest) {
-        return mapsClient.getRoute(routeRequest);
-    }
 
     public RouteResponse getRouteByAddress(RouteAddressRequest routeAddressRequest) {
 
@@ -41,18 +36,13 @@ public class RoutingService {
         ));
     }
 
-    public String getDirections(RouteAddressRequest request) {
+    public RouteResponse getRoute(RouteRequest routeRequest) {
 
-        GeoCodingResponse originResponse = geoCodingService.getGeoCoding(request.origin());
-        GeoCodingResponse destinationResponse = geoCodingService.getGeoCoding(request.destination());
-
-        return mapsDirectionClient.getDirections(extractPlaceId(originResponse),
-                extractPlaceId(destinationResponse),
-                System.getenv("API_KEY"),
-                request.travelMode());
+        return routingClient.getRoute(routeRequest);
     }
 
     private static LatLng extractCoordinates(GeoCodingResponse response) {
+
         if (response.results() != null && !response.results().isEmpty()) {
             Result result = response.results().getFirst();
             return new LatLng(new Location(result.geometry().location().lat(), result.geometry().location().lng()));
@@ -60,11 +50,24 @@ public class RoutingService {
         throw new IllegalStateException("No results found in geocoding response.");
     }
 
+    public String getDirections(RouteAddressRequest request) {
+
+        GeoCodingResponse originResponse = geoCodingService.getGeoCoding(request.origin());
+        GeoCodingResponse destinationResponse = geoCodingService.getGeoCoding(request.destination());
+
+        return mapsClient.getDirections(extractPlaceId(originResponse),
+                extractPlaceId(destinationResponse),
+                System.getenv("API_KEY"),
+                request.travelMode());
+    }
+
     private String extractPlaceId(GeoCodingResponse response) {
+
         if (response.results() != null && !response.results().isEmpty()) {
             Result result = response.results().getFirst();
             return "place_id:" + result.place_id();
         }
         throw new IllegalStateException("No results found in geocoding response.");
     }
+
 }

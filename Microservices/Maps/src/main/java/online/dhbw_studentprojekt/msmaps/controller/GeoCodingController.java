@@ -1,7 +1,7 @@
-package fabiansig.controller;
+package online.dhbw_studentprojekt.msmaps.controller;
 
-import fabiansig.dto.geocoding.GeoCodingResponse;
-import fabiansig.service.GeoCodingService;
+import online.dhbw_studentprojekt.dto.routing.geocoding.GeoCodingResponse;
+import online.dhbw_studentprojekt.msmaps.service.GeoCodingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
