@@ -1,4 +1,4 @@
-package online.dhbw_studentprojekt.mswetter.config;
+package online.dhbw_studentprojekt.msmaps.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -9,10 +9,10 @@ import org.springframework.context.annotation.Configuration;
 public class OpenAPIConfig {
 
     @Bean
-    public OpenAPI wetterServiceAPI() {
+    public OpenAPI routingServiceAPI() {
         return new OpenAPI()
-                .info(new Info().title("Wetter Service API")
-                        .description("A microservice that calls the OpenWeatherMap API to get the weather forecast.")
+                .info(new Info().title("Routing Service API")
+                        .description("A microservice that calls the google maps api to get the best route between two points.")
                         .version("v0.0.1"));
     }
 
