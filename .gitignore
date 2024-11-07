@@ -39,3 +39,4 @@ build/
 *.wt
 WiredTiger*
 *.bson
+*mongod.lock

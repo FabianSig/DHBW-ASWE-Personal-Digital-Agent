@@ -19,8 +19,8 @@ public class WetterController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Wetter getWetter(@io.swagger.v3.oas.annotations.Parameter(example = "dd-MM-yyyy") @RequestParam Optional<String> datum) {
-        return wetterService.getWetter(datum);
+    public Wetter getWetter() {
+        return wetterService.getWetter();
     }
 
 }
