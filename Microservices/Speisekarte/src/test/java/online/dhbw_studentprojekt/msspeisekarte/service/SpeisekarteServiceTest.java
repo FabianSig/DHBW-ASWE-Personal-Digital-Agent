@@ -238,6 +238,24 @@ public class SpeisekarteServiceTest {
         assertEquals(expectedFilteredSpeisekarte, result, "Filtered Speisekarte does not match expected result");
     }
 
+    @Test
+    void testGetSpeisekarteWithEmptyAllergenList() {
+        // Arrange
+        String testDate = "2024-10-25";
+        List<String> emptyAllergens = List.of(); // No allergens to filter
+
+        // Mocking Client Behavior
+        when(speisekarteClient.getSpeisekarte(any())).thenReturn(mockHtml);
+
+        // Act
+        Speisekarte result = speisekarteService.getSpeisekarteWithFilteredAllergene(Optional.of(testDate), emptyAllergens);
+
+        // Assert
+        assertNotNull(result, "Speisekarte should not be null for a weekday with no allergen filtering");
+        verify(speisekarteClient, times(1)).getSpeisekarte(any());
+        assertEquals(speisekarte, result, "Speisekarte should be unfiltered when allergen list is empty");
+    }
+
     // The following tests for prepareFormData Method
     // Commented out because of private method
     // Decide later if needed
