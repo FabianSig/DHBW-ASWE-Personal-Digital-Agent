@@ -205,6 +205,39 @@ public class SpeisekarteServiceTest {
         verify(speisekarteClient, never()).getSpeisekarte(any());
     }
 
+    @Test
+    void testGetSpeisekarteWithFilteredAllergene() {
+        // Arrange
+        String testDate = "2024-10-25";
+        List<String> allergensToFilter = List.of("S"); // filter out Speisen containing "S"
+
+        Speisekarte expectedFilteredSpeisekarte = new Speisekarte(
+                // filter out "Rote Linsensuppe"
+                List.of(),
+                // VeganerRenner - no change
+                speisekarte.veganerRenner(),
+                // Hauptgericht - no change
+                speisekarte.hauptgericht(),
+                // filter out "Gebratene Kartoffeln"
+                speisekarte.beilagen().subList(0,1),
+                // Salat, Dessert, and Buffet - no change as none contain "S"
+                speisekarte.salat(),
+                speisekarte.dessert(),
+                speisekarte.buffet()
+        );
+
+        // Mocking Client Behavior
+        when(speisekarteClient.getSpeisekarte(any())).thenReturn(mockHtml);
+
+        // Act
+        Speisekarte result = speisekarteService.getSpeisekarteWithFilteredAllergene(Optional.of(testDate), allergensToFilter);
+
+        // Assert
+        assertNotNull(result, "Speisekarte should not be null for a weekday with allergen filtering");
+        verify(speisekarteClient, times(1)).getSpeisekarte(any());
+        assertEquals(expectedFilteredSpeisekarte, result, "Filtered Speisekarte does not match expected result");
+    }
+
     // The following tests for prepareFormData Method
     // Commented out because of private method
     // Decide later if needed
