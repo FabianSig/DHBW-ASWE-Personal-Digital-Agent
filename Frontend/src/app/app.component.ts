@@ -10,6 +10,8 @@ import {HeaderComponent} from './header/header.component';
 import {ChatComponent} from './chat/chat.component';
 import {FormsModule} from '@angular/forms';
 import {AuthPopupComponent} from './auth-popup/auth-popup.component';
+import {TriggerService} from './services/trigger.service';
+import {ApiService} from './services/api.service';
 
 @Component({
   selector: 'app-root',
@@ -23,12 +25,19 @@ export class AppComponent implements OnInit {
   chatFullscreen = true;
   preferencesOpen = false;
 
+  constructor(private triggerService: TriggerService, private apiService: ApiService) {
+  }
+
   onMenuResponse(response: MenuResponse): void {
     this.menuResponse = response;
   }
 
   ngOnInit() {
     this.checkForAuthKey();
+    this.triggerService.setOffTrigger();
+    this.apiService.getTriggerData("2024-11-8").subscribe((data) =>{
+      console.log(data);
+    })
   }
 
   checkForAuthKey() {

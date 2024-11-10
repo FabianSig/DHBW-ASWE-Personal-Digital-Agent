@@ -64,6 +64,7 @@ export class PreferencesComponent {
 
     this.apiService.setAlarmPreference(alarmId, alarmValue).subscribe(() => {
       console.log("Wecker gestellt");
+      localStorage.setItem('wecker-time', formData.alarm.alarmTime);
     })
 
     // set allergene
