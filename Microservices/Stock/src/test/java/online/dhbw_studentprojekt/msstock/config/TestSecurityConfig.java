@@ -12,7 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class TestSecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain testSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
         // Disable security for test profile
 
         return httpSecurity.authorizeHttpRequests(authorize -> authorize.anyRequest()
