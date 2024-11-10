@@ -75,5 +75,30 @@ public class StockControllerTest {
                 .andExpect(result -> assertEquals("404 NOT_FOUND \"Invalid symbol\"",
                         result.getResolvedException().getMessage()));
     }
+
+    @Test
+    void testGetMultipleStock_ValidSymbols() throws Exception {
+        // Arrange
+        String[] symbols = {"AAPL", "GOOGL"};
+        Stock stockAAPL = new Stock("AAPL",
+                new Stock.DataPoint("2024-11-07", "150.0", "155.0", "149.0", "153.0"),
+                new Stock.DataPoint("2024-11-06", "145.0", "152.0", "144.0", "150.0"));
+        Stock stockGOOGL = new Stock("GOOGL",
+                new Stock.DataPoint("2024-11-07", "2800.0", "2820.0", "2780.0", "2815.0"),
+                new Stock.DataPoint("2024-11-06", "2750.0", "2800.0", "2730.0", "2770.0"));
+        when(stockService.getMultiple(symbols)).thenReturn(List.of(stockAAPL, stockGOOGL));
+
+        // Act & Assert
+        mockMvc.perform(get("/api/stock/multiple")
+                        .param("symbol", symbols))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("AAPL"))
+                .andExpect(jsonPath("$[0].yesterday.open").value("150.0"))
+                .andExpect(jsonPath("$[0].yesteryesterday.open").value("145.0"))
+                .andExpect(jsonPath("$[1].name").value("GOOGL"))
+                .andExpect(jsonPath("$[1].yesterday.open").value("2800.0"))
+                .andExpect(jsonPath("$[1].yesteryesterday.open").value("2750.0"));
+    }
+
 }
 
