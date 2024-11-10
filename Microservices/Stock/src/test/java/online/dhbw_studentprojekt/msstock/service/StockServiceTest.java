@@ -64,5 +64,22 @@ public class StockServiceTest {
         verify(stockClient, times(1)).getStock(invalidSymbol);
     }
 
+    @Test
+    void testGetStock_RateLimitExceeded() {
+        // Arrange
+        String symbol = "AAPL";
+        String rateLimitResponse = "{\n" +
+                "    \"Information\": \"Thank you for using Alpha Vantage! Our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly remove all daily rate limits.\"\n" +
+                "}";
+        when(stockClient.getStock(symbol)).thenReturn(rateLimitResponse);
+
+        // Act & Assert
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> stockService.getStock(symbol),
+                "Expected ResponseStatusException for API rate limit exceeded");
+        assertEquals("429 TOO_MANY_REQUESTS \"API rate limit exceeded\"", exception.getMessage());
+        verify(stockClient, times(1)).getStock(symbol);
+    }
+
 }
 
