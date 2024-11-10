@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -81,5 +80,47 @@ public class StockServiceTest {
         verify(stockClient, times(1)).getStock(symbol);
     }
 
+    @Test
+    void testGetMultipleStocks_ValidSymbols() {
+        // Arrange
+        String[] symbols = {"AAPL", "GOOGL"};
+        String csvData = "timestamp,open,high,low,close,volume\n" +
+                "2024-11-07,150.0,155.0,149.0,153.0,100000\n" +
+                "2024-11-06,145.0,152.0,144.0,150.0,120000\n";
+        when(stockClient.getStock("AAPL")).thenReturn(csvData);
+        when(stockClient.getStock("GOOGL")).thenReturn(csvData);
+
+        // Act
+        List<Stock> stocks = stockService.getMultiple(symbols);
+
+        // Assert
+        assertNotNull(stocks);
+        assertEquals(2, stocks.size());
+        assertEquals("AAPL", stocks.get(0).name());
+        assertEquals("GOOGL", stocks.get(1).name());
+        verify(stockClient, times(1)).getStock("AAPL");
+        verify(stockClient, times(1)).getStock("GOOGL");
+    }
+
+    /* Implement a way to check for proper data then add test
+    @Test
+    void testGetStock_MalformedCSV() {
+        // Arrange
+        String symbol = "AAPL";
+        String malformedCsv = "timestamp,open,high,low,close,volume\n" +
+                "valid,response,without,proper,data\n" +
+                "valid,response,without,proper,data\n";
+        when(stockClient.getStock(symbol)).thenReturn(malformedCsv);
+
+        System.out.println(stockService.getStock(symbol).yesterday().open()); -> Would print out "response"
+
+        // Act & Assert
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> stockService.getStock(symbol),
+                "Expected ResponseStatusException for malformed CSV data");
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exception.getStatusCode());
+        verify(stockClient, times(1)).getStock(symbol);
+    }
+     */
 }
 
