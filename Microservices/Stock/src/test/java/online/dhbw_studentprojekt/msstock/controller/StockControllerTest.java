@@ -60,5 +60,20 @@ public class StockControllerTest {
                 .andExpect(jsonPath("$.yesteryesterday.close").value("150.0"));
     }
 
+    @Test
+    void testGetSingleStock_InvalidSymbol() throws Exception {
+        // Arrange
+        String invalidSymbol = "INVALID";
+        when(stockService.getStock(invalidSymbol)).thenThrow(
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid symbol"));
+
+        // Act & Assert
+        mockMvc.perform(get("/api/stock/single")
+                        .param("symbol", invalidSymbol))
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
+                .andExpect(result -> assertEquals("404 NOT_FOUND \"Invalid symbol\"",
+                        result.getResolvedException().getMessage()));
+    }
 }
 
