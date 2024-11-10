@@ -17,8 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -99,6 +98,23 @@ public class StockControllerTest {
                 .andExpect(jsonPath("$[1].yesterday.open").value("2800.0"))
                 .andExpect(jsonPath("$[1].yesteryesterday.open").value("2750.0"));
     }
+    @Test
+    void testGetMultipleStock_RateLimitExceeded() throws Exception {
+        // Arrange
+        String[] symbols = {"AAPL", "GOOGL"};
+        when(stockService.getMultiple(symbols)).thenThrow(
+                new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "API rate limit exceeded"));
 
+        // Act & Assert
+        mockMvc.perform(get("/api/stock/multiple")
+                        .param("symbol", symbols))
+                .andExpect(status().isTooManyRequests())
+                .andExpect(result -> {
+                    Exception resolvedException = result.getResolvedException();
+                    assertNotNull(resolvedException, "Resolved exception should not be null");
+                    assertTrue(resolvedException instanceof ResponseStatusException);
+                    assertEquals("429 TOO_MANY_REQUESTS \"API rate limit exceeded\"", resolvedException.getMessage());
+                });
+    }
 }
 
