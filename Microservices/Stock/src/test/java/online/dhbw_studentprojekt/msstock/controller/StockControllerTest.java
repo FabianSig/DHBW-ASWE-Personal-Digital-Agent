@@ -70,9 +70,12 @@ public class StockControllerTest {
         mockMvc.perform(get("/api/stock/single")
                         .param("symbol", invalidSymbol))
                 .andExpect(status().isNotFound())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                .andExpect(result -> assertEquals("404 NOT_FOUND \"Invalid symbol\"",
-                        result.getResolvedException().getMessage()));
+                .andExpect(result -> {
+                    Exception resolvedException = result.getResolvedException();
+                    assertNotNull(resolvedException, "Resolved exception should not be null");
+                    assertTrue(resolvedException instanceof ResponseStatusException);
+                    assertEquals("404 NOT_FOUND \"Invalid symbol\"", resolvedException.getMessage());
+                });
     }
 
     @Test
