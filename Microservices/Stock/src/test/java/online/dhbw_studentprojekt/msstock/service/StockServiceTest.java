@@ -47,5 +47,22 @@ public class StockServiceTest {
         verify(stockClient, times(1)).getStock(validSymbol);
     }
 
+    @Test
+    void testGetStock_InvalidSymbol() {
+        // Arrange
+        String invalidSymbol = "INVALID";
+        String errorResponse = "{\n" +
+                "    \"Error Message\": \"Invalid API call. Please retry or visit the documentation (https://www.alphavantage.co/documentation/) for TIME_SERIES_DAILY.\"\n" +
+                "}";
+        when(stockClient.getStock(invalidSymbol)).thenReturn(errorResponse);
+
+        // Act & Assert
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> stockService.getStock(invalidSymbol),
+                "Expected ResponseStatusException for invalid symbol");
+        assertEquals("404 NOT_FOUND \"Invalid symbol\"", exception.getMessage());
+        verify(stockClient, times(1)).getStock(invalidSymbol);
+    }
+
 }
 
