@@ -4,18 +4,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import online.dhbw_studentprojekt.bff.client.*;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse;
-import online.dhbw_studentprojekt.dto.chatgpt.morning.MorningRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.MessageRequest;
+import online.dhbw_studentprojekt.dto.prefs.Preference;
 import online.dhbw_studentprojekt.dto.routing.custom.RouteAddressRequest;
 import online.dhbw_studentprojekt.dto.routing.routing.RouteResponse;
-import online.dhbw_studentprojekt.dto.stock.Stock;
 import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -56,7 +55,9 @@ public class IntentionMessageService {
                 date = LocalDate.now().toString();
             }
 
-            List<String> allergene = new ArrayList<>(prefsClient.getPreference("allergene").value());
+            List<String> allergene = prefsClient.getPreference("allergene")
+                    .map(Preference::value)
+                    .orElse(Collections.emptyList());
 
             Speisekarte speisekarte = speisekarteClient.getSpeisekarteWithFilteredAllergene(date, allergene);
 
@@ -77,6 +78,7 @@ public class IntentionMessageService {
     }
 
     private String getResponseMessageForRoutingAddressRequest(MessageRequest message, Map<String, String> attributes) {
+
         try {
             String origin = attributes.get("origin");
             String destination = attributes.get("destination");
