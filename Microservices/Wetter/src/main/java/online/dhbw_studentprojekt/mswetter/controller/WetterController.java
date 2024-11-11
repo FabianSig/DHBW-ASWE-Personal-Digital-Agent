@@ -1,18 +1,17 @@
 package online.dhbw_studentprojekt.mswetter.controller;
 
+import lombok.RequiredArgsConstructor;
 import online.dhbw_studentprojekt.dto.wetter.Wetter;
 import online.dhbw_studentprojekt.mswetter.service.WetterService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/wetter")
-@Slf4j
 public class WetterController {
 
     private final WetterService wetterService;
@@ -20,6 +19,7 @@ public class WetterController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Wetter getWetter() {
+
         return wetterService.getWetter();
     }
 

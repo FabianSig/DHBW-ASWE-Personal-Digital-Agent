@@ -1,11 +1,11 @@
-package fabiansig.clients;
+package online.dhbw_studentprojekt.msmaps.clients;
 
-import fabiansig.dto.routing.RouteRequest;
-import fabiansig.dto.routing.RouteResponse;
+import online.dhbw_studentprojekt.dto.routing.routing.RouteRequest;
+import online.dhbw_studentprojekt.dto.routing.routing.RouteResponse;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.PostExchange;
 
-public interface MapsClient {
+public interface RoutingClient {
 
     @PostExchange("directions/v2:computeRoutes")
     RouteResponse getRoute(@RequestBody RouteRequest request);

@@ -12,7 +12,7 @@ public class OpenAPIConfig {
     public OpenAPI wetterServiceAPI() {
         return new OpenAPI()
                 .info(new Info().title("Wetter Service API")
-                        .description("A microservice that calls the OpenWeatherMap API to get the weather forecast for a given city and date.")
+                        .description("A microservice that calls the OpenWeatherMap API to get the weather forecast.")
                         .version("v0.0.1"));
     }
 
