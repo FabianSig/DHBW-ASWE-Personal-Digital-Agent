@@ -21,9 +21,13 @@ public class SpeisekarteService {
     public Speisekarte getSpeisekarteWithFilteredAllergene(Optional<String> date, List<String> allergene) {
 
         Speisekarte speisekarte = this.getSpeisekarte(date);
+        if (allergene == null || allergene.isEmpty()) {
+            return speisekarte;
+        }
 
         return filterSpeisekarte(speisekarte, allergene);
     }
+
 
     public Speisekarte getSpeisekarte(Optional<String> datumParam) {
 

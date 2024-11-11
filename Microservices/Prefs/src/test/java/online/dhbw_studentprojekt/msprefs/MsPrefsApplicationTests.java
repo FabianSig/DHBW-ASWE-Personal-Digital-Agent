@@ -9,9 +9,6 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.context.annotation.Import;
 import org.testcontainers.containers.MongoDBContainer;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
-
 @Import(TestcontainersConfiguration.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class MsPrefsApplicationTests {
@@ -19,21 +16,23 @@ class MsPrefsApplicationTests {
     @ServiceConnection
     static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:7.0.5");
 
+    static {
+        mongoDBContainer.start();
+    }
+
     @LocalServerPort
     private Integer port;
 
     @BeforeEach
     void setUp() {
+
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = port;
     }
 
-    static {
-        mongoDBContainer.start();
-    }
-
     @Test
     void contextLoads() {
+
     }
 
 //    @Test
@@ -43,7 +42,8 @@ class MsPrefsApplicationTests {
 //    }
 
     @Test
-    void shouldCreateProduct() {
+    void shouldCreatePref() {
+
         String requestBody = """
                 {
                     "id": "testpref",
@@ -56,10 +56,12 @@ class MsPrefsApplicationTests {
 
         RestAssured.given()
                 .contentType("application/json")
+                .header("Authorization", System.getenv("OUR_API_KEY"))
                 .body(requestBody)
                 .when()
                 .post("/api/prefs")
                 .then()
                 .statusCode(201);
     }
+
 }

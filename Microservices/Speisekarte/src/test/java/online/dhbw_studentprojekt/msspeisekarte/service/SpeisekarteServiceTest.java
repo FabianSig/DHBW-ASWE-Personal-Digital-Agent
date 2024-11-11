@@ -205,6 +205,89 @@ public class SpeisekarteServiceTest {
         verify(speisekarteClient, never()).getSpeisekarte(any());
     }
 
+    @Test
+    void testGetSpeisekarteWithFilteredAllergene() {
+        // Arrange
+        String testDate = "2024-10-25";
+        List<String> allergensToFilter = List.of("S"); // filter out Speisen containing "S"
+
+        Speisekarte expectedFilteredSpeisekarte = new Speisekarte(
+                // filter out "Rote Linsensuppe"
+                List.of(),
+                // VeganerRenner - no change
+                speisekarte.veganerRenner(),
+                // Hauptgericht - no change
+                speisekarte.hauptgericht(),
+                // filter out "Gebratene Kartoffeln"
+                speisekarte.beilagen().subList(0,1),
+                // Salat, Dessert, and Buffet - no change as none contain "S"
+                speisekarte.salat(),
+                speisekarte.dessert(),
+                speisekarte.buffet()
+        );
+
+        // Mocking Client Behavior
+        when(speisekarteClient.getSpeisekarte(any())).thenReturn(mockHtml);
+
+        // Act
+        Speisekarte result = speisekarteService.getSpeisekarteWithFilteredAllergene(Optional.of(testDate), allergensToFilter);
+
+        // Assert
+        assertNotNull(result, "Speisekarte should not be null for a weekday with allergen filtering");
+        verify(speisekarteClient, times(1)).getSpeisekarte(any());
+        assertEquals(expectedFilteredSpeisekarte, result, "Filtered Speisekarte does not match expected result");
+    }
+
+    @Test
+    void testGetSpeisekarteWithEmptyAllergenList() {
+        // Arrange
+        String testDate = "2024-10-25";
+        List<String> emptyAllergens = List.of(); // No allergens to filter
+
+        // Mocking Client Behavior
+        when(speisekarteClient.getSpeisekarte(any())).thenReturn(mockHtml);
+
+        // Act
+        Speisekarte result = speisekarteService.getSpeisekarteWithFilteredAllergene(Optional.of(testDate), emptyAllergens);
+
+        // Assert
+        assertNotNull(result, "Speisekarte should not be null for a weekday with no allergen filtering");
+        verify(speisekarteClient, times(1)).getSpeisekarte(any());
+        assertEquals(speisekarte, result, "Speisekarte should be unfiltered when allergen list is empty");
+    }
+
+    @Test
+    void testGetSpeisekarteWithMultipleAllergens() {
+        // Arrange
+        String testDate = "2024-10-25";
+        List<String> allergens = List.of("Gl", "S"); // Multiple allergens
+
+        // Mocking Client Behavior
+        when(speisekarteClient.getSpeisekarte(any())).thenReturn(mockHtml);
+
+        // Act
+        Speisekarte result = speisekarteService.getSpeisekarteWithFilteredAllergene(Optional.of(testDate), allergens);
+
+        // Assert
+        assertNotNull(result, "Speisekarte should not be null for a weekday");
+        verify(speisekarteClient, times(1)).getSpeisekarte(any());
+
+        // Ensure dishes containing either "Gl" or "S" are filtered out
+        assertTrue(result.vorspeisen().stream().noneMatch(s -> s.allergene().contains("Gl") || s.allergene().contains("S")),
+                "Vorspeisen should not contain any dishes with Gl or S allergens");
+        assertTrue(result.veganerRenner().stream().noneMatch(s -> s.allergene().contains("Gl") || s.allergene().contains("S")),
+                "VeganerRenner should not contain any dishes with Gl or S allergens");
+        assertTrue(result.hauptgericht().stream().noneMatch(s -> s.allergene().contains("Gl") || s.allergene().contains("S")),
+                "Hauptgericht should not contain any dishes with Gl or S allergens");
+        assertTrue(result.beilagen().stream().noneMatch(s -> s.allergene().contains("Gl") || s.allergene().contains("S")),
+                "Beilagen should not contain any dishes with Gl or S allergens");
+        assertTrue(result.salat().stream().noneMatch(s -> s.allergene().contains("Gl") || s.allergene().contains("S")),
+                "Salat should not contain any dishes with Gl or S allergens");
+        assertTrue(result.dessert().stream().noneMatch(s -> s.allergene().contains("Gl") || s.allergene().contains("S")),
+                "Dessert should not contain any dishes with Gl or S allergens");
+        assertTrue(result.buffet().stream().noneMatch(s -> s.allergene().contains("Gl") || s.allergene().contains("S")),
+                "Buffet should not contain any dishes with Gl or S allergens");
+    }
     // The following tests for prepareFormData Method
     // Commented out because of private method
     // Decide later if needed
