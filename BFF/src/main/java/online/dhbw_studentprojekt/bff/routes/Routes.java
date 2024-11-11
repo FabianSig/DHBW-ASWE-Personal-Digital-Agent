@@ -109,7 +109,7 @@ public class Routes {
                 .build();
     }
 
-    @Value("${springdoc.swagger-ui.urls[2].url}")
+    @Value("${springdoc.swagger-ui.urls[3].url}")
     private String prefsServiceSwaggerPath;
 
     @Bean

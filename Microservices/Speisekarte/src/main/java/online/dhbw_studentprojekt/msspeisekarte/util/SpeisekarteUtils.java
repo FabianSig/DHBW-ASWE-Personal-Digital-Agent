@@ -36,7 +36,7 @@ public class SpeisekarteUtils {
 
         return meals.stream()
                 .filter(meal -> meal.allergene().stream().noneMatch(allergene::contains))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public MultiValueMap<String, String> prepareFormData(Optional<String> datumParam) {
