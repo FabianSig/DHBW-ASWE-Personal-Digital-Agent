@@ -1,8 +1,8 @@
-package fabiansig.service;
+package online.dhbw_studentprojekt.msmaps.service;
 
 
-import fabiansig.clients.GeoCodingClient;
-import fabiansig.dto.geocoding.*;
+import online.dhbw_studentprojekt.dto.routing.geocoding.*;
+import online.dhbw_studentprojekt.msmaps.clients.MapsClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,20 +18,22 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class GeoCodingServiceTest {
+
     @Mock
-    private GeoCodingClient geoCodingClient;
+    private MapsClient geoCodingClient;
 
     @InjectMocks
     private GeoCodingService geoCodingService;
+    private GeoCodingResponse geoCodingResponse;
 
     @BeforeEach
     void setUp() {
+
         initGeoCodingResponse();
     }
 
-    private GeoCodingResponse geoCodingResponse;
+    private void initGeoCodingResponse() {
 
-    private void initGeoCodingResponse(){
         Location location = new Location(37.423021, -122.083739);
         Viewport viewport = new Viewport(
                 new Location(37.423021, -122.083739),
@@ -54,7 +56,8 @@ public class GeoCodingServiceTest {
     }
 
     @Test
-    void testGetGeoCoding(){
+    void testGetGeoCoding() {
+
         when(geoCodingClient.getGeoCoding(any(), any())).thenReturn(geoCodingResponse);
 
         // Act
@@ -71,4 +74,5 @@ public class GeoCodingServiceTest {
         assertThat(returnedResult.geometry().location().lng()).isEqualTo(-122.083739);
         verify(geoCodingClient, times(1)).getGeoCoding(any(), any());
     }
+
 }

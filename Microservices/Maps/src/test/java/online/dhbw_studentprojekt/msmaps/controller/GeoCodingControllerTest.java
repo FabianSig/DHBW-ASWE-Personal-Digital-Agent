@@ -1,8 +1,8 @@
-package fabiansig.controller;
+package online.dhbw_studentprojekt.msmaps.controller;
 
 
-import fabiansig.dto.geocoding.*;
-import fabiansig.service.GeoCodingService;
+import online.dhbw_studentprojekt.dto.routing.geocoding.*;
+import online.dhbw_studentprojekt.msmaps.service.GeoCodingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,24 +16,27 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(GeoCodingController.class)
 public class GeoCodingControllerTest {
+
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private GeoCodingService geoCodingService;
+    private GeoCodingResponse geoCodingResponse;
 
     @BeforeEach
     void setUp() {
+
         initGeoCodingResponse();
     }
 
-    private GeoCodingResponse geoCodingResponse;
+    private void initGeoCodingResponse() {
 
-    private void initGeoCodingResponse(){
         Location location = new Location(37.423021, -122.083739);
         Viewport viewport = new Viewport(
                 new Location(37.423021, -122.083739),
@@ -72,4 +75,5 @@ public class GeoCodingControllerTest {
         // Verify interaction
         verify(geoCodingService).getGeoCoding("1600 Amphitheatre Parkway");
     }
+
 }
