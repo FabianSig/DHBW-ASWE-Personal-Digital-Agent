@@ -33,7 +33,7 @@ public class WetterControllerTest {
         // Arrange
         Main main = new Main(20.5, 19.0, 15.0, 22.0);
         Wetter mockWetter = new Wetter("Stuttgart", main);
-        when(wetterService.getWetter(Optional.empty())).thenReturn(mockWetter);
+        when(wetterService.getWetter()).thenReturn(mockWetter);
 
         // Act & Assert
         mockMvc.perform(get("/api/wetter"))
@@ -44,6 +44,6 @@ public class WetterControllerTest {
                 .andExpect(jsonPath("$.main.temp_min").value(15.0))
                 .andExpect(jsonPath("$.main.temp_max").value(22.0));
 
-        verify(wetterService, times(1)).getWetter(Optional.empty());
+        verify(wetterService, times(1)).getWetter();
     }
 }

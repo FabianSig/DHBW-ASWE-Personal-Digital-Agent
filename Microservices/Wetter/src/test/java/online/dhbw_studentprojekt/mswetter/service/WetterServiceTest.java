@@ -31,7 +31,7 @@ public class WetterServiceTest {
         when(wetterClient.getWetter()).thenReturn(mockWetter);
 
         // Act
-        Wetter result = wetterService.getWetter(Optional.empty());
+        Wetter result = wetterService.getWetter();
 
         // Assert
         assertNotNull(result);
