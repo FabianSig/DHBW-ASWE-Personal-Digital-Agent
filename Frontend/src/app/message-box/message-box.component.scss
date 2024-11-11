@@ -4,6 +4,9 @@
     border-top: 1px solid #ddd;
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
+    box-shadow: 0 0 10px lightgrey;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
   }
 
   .message-bubble {
@@ -18,3 +21,4 @@
   .receiver {
     background-color: #ebe8e8;
   }
+

@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.4</version>
+		<version>3.3.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>fabiansig</groupId>
-	<artifactId>DHBW-ASWE-Personal-Digital-Agent-MS-Routing</artifactId>
+	<groupId>online.dhbw_studentprojekt</groupId>
+	<artifactId>MS-Maps</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>DHBW-ASWE-Personal-Digital-Agent-MS-Routing</name>
-	<description>DHBW-ASWE-Personal-Digital-Agent-MS-Routing</description>
+	<name>MS-Maps</name>
+	<description>DHBW-ASWE-Personal-Digital-Agent-MS-Maps</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -29,7 +29,18 @@
 	<properties>
 		<java.version>21</java.version>
 	</properties>
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
 	<dependencies>
+		<dependency>
+			<groupId>com.github.NikomitK</groupId>
+			<artifactId>dtolibrary</artifactId>
+			<version>1.10.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>

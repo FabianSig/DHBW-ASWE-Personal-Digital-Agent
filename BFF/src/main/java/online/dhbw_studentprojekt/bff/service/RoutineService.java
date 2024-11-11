@@ -7,12 +7,13 @@ import online.dhbw_studentprojekt.dto.chatgpt.morning.MorningRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
 import online.dhbw_studentprojekt.dto.news.Article;
+import online.dhbw_studentprojekt.dto.prefs.Preference;
 import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 import online.dhbw_studentprojekt.dto.stock.Stock;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -30,13 +31,24 @@ public class RoutineService {
 
     public String getMorningRoutine() {
         // Get prefs for news and stocks
-        String newsTopic = prefsClient.getPreference("news-topics").value().getFirst();
-        int newsCount = Integer.parseInt(prefsClient.getPreference("news-count").value().getFirst());
+        String newsTopic = prefsClient.getPreference("news-topics")
+                .map(pref -> pref.value().getFirst())
+                .orElse("");
 
-        List<String> stockSymbols = prefsClient.getPreference("stock-symbols").value();
+        int newsCount = prefsClient.getPreference("news-count")
+                .map(preference -> Integer.parseInt(preference.value().getFirst()))
+                .orElse(3);
+
+        List<String> stockSymbols = prefsClient.getPreference("stock-symbols")
+                .map(Preference::value)
+                .orElse(List.of("ALIZF", "GOOGL", "MSFT"));
 
         // Get news
-        List<String> newsHeadlines = newsClient.getNews(newsTopic, newsCount).stream().map(Article::title).toList();
+        List<String> newsHeadlines = new java.util.ArrayList<>(newsClient.getNews(newsTopic, newsCount).stream().map(Article::title).toList());
+        // Bugfix for chatgpt call
+        newsHeadlines.add(null);
+        newsHeadlines.add(null);
+        newsHeadlines.add(null);
 
         // Get stocks
         List<Stock> stocks = stockClient.getMultipleStock(stockSymbols);
@@ -55,7 +67,9 @@ public class RoutineService {
             today = today.plusDays(7L - today.getDayOfWeek().getValue());
         }
 
-        List<String> allergene = new ArrayList<>(prefsClient.getPreference("allergene").value());
+        List<String> allergene = prefsClient.getPreference("allergene")
+                .map(Preference::value)
+                .orElse(Collections.emptyList());
 
         Speisekarte speisekarte = speisekarteClient.getSpeisekarteWithFilteredAllergene(today.toString(), allergene);
 

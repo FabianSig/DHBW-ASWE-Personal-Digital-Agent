@@ -2,6 +2,7 @@ package online.dhbw_studentprojekt.msspeisekarte.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,7 +14,8 @@ public class OpenAPIConfig {
         return new OpenAPI()
                 .info(new Info().title("Speise Service API")
                         .description("A microservice that calls the api from the Studierendenwerk stuttgart to get the current menu at mensa central. Because this api is undocumented i had to reverse engineer the api calls.")
-                        .version("v0.0.1"));
+                        .version("v0.0.1"))
+                .addServersItem(new Server().url("http://localhost:8087"));
     }
 
 }
