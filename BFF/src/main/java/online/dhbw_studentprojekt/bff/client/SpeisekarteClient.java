@@ -12,5 +12,5 @@ public interface SpeisekarteClient {
     Speisekarte getSpeisekarte(@RequestParam String datum);
 
     @GetExchange("api/speisekarte/allergene")
-    Speisekarte getSpeisekarteWithFilteredAllergene(@RequestParam String datum, @RequestParam List<String> allergene);
+    Speisekarte getSpeisekarteWithFilteredAllergene(@RequestParam String datum, @RequestParam(required = false) List<String> allergene);
 }

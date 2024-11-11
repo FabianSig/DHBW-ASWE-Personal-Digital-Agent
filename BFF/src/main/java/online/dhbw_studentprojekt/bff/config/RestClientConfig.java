@@ -40,7 +40,7 @@ public class RestClientConfig {
 
         RestClient restClient = RestClient.builder()
                 .baseUrl(chatGPTServiceUrl)
-                .defaultHeader("Authorization", System.getenv("API_KEY"))
+                .defaultHeader("Authorization", System.getenv("OUR_API_KEY"))
                 .build();
 
         RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
@@ -53,7 +53,7 @@ public class RestClientConfig {
 
         RestClient restClient = RestClient.builder()
                 .baseUrl(mapsServiceUrl)
-                .defaultHeader("Authorization", System.getenv("API_KEY"))
+                .defaultHeader("Authorization", System.getenv("OUR_API_KEY"))
                 .build();
 
         RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
@@ -90,7 +90,7 @@ public class RestClientConfig {
 
         RestClient restClient = RestClient.builder()
                 .baseUrl(prefsServiceUrl)
-                .defaultHeader("Authorization", System.getenv("API_KEY"))
+                .defaultHeader("Authorization", System.getenv("OUR_API_KEY"))
                 .build();
 
         RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
@@ -103,7 +103,7 @@ public class RestClientConfig {
 
         RestClient restClient = RestClient.builder()
                 .baseUrl(stockServiceUrl)
-                .defaultHeader("Authorization", System.getenv("API_KEY"))
+                .defaultHeader("Authorization", System.getenv("OUR_API_KEY"))
                 .build();
 
         RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
@@ -116,7 +116,7 @@ public class RestClientConfig {
 
         RestClient restClient = RestClient.builder()
                 .baseUrl(newsServiceUrl)
-                .defaultHeader("Authorization", System.getenv("API_KEY"))
+                .defaultHeader("Authorization", System.getenv("OUR_API_KEY"))
                 .build();
 
         RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
