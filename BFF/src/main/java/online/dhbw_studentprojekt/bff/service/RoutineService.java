@@ -45,6 +45,7 @@ public class RoutineService {
 
         // Get news
         List<String> newsHeadlines = new java.util.ArrayList<>(newsClient.getNews(newsTopic, newsCount).stream().map(Article::title).toList());
+        // Bugfix for chatgpt call
         newsHeadlines.add(null);
         newsHeadlines.add(null);
         newsHeadlines.add(null);
