@@ -8,7 +8,7 @@ COPY pom.xml ${HOME}
 
 RUN --mount=type=cache,target=/root/.m2 mvn -f ${HOME}/pom.xml clean package -DskipTests
 
-FROM openjdk:21
+FROM openjdk:21-slim
 
 WORKDIR /app
 

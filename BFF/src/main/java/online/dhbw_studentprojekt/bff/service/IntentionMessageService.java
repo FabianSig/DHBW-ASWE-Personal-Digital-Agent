@@ -84,7 +84,7 @@ public class IntentionMessageService {
             String destination = attributes.get("destination");
             String travelMode = attributes.get("travelmode");
 
-            if (origin == null || destination == null) {
+            if (origin == null || destination == null || travelMode == null) {
                 log.error("Origin or destination is null. Origin: {}, Destination: {}", origin, destination);
                 return "Bitte gebe einen gültigen Start- bzw Zielort an.";
             }
