@@ -4,13 +4,24 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class TtsService {
-  speak(text: string, lang: string = 'de-DE') {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = lang;
+  private synth = window.speechSynthesis;
 
-    const voices = window.speechSynthesis.getVoices();
-    utterance.voice = voices.find(voice => voice.lang === lang) || voices[0];
+  constructor() {}
 
-    window.speechSynthesis.speak(utterance);
+  // Method to speak text
+  speak(text: string): void {
+    if (!this.synth) {
+      console.warn('Text-to-Speech not supported in this browser.');
+      return;
+    }
+
+    // Cancel any ongoing speech
+    this.synth.cancel();
+
+    // Create a new speech utterance with the German language
+    const utterance = new (window as any).SpeechSynthesisUtterance(text);
+    utterance.lang = 'de-DE';  // Set language to German
+
+    this.synth.speak(utterance);
   }
 }
