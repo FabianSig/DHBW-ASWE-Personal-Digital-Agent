@@ -35,9 +35,6 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.checkForAuthKey();
     this.triggerService.setOffTrigger();
-    this.apiService.getTriggerData("2024-11-8").subscribe((data) =>{
-      console.log(data);
-    })
   }
 
   checkForAuthKey() {

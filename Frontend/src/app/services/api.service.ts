@@ -11,6 +11,8 @@ export class ApiService {
   private apiUrlAudio = "http://localhost:8080" + environment.apiUrlAudio;
   private apiUrlPrefs = "http://localhost:8080" + environment.apiUrlPrefs;
   private apiUrlTrigger = "http://localhost:8080" + environment.apiUrlTrigger;
+  private apiUrlMorning = "http://localhost:8080" + environment.apiUrlMorning;
+  private apiUrlMittag = "http://localhost:8080" + environment.apiUrlMittag;
 
   constructor(private http: HttpClient) {}
 
@@ -45,6 +47,14 @@ export class ApiService {
     return this.http.get(this.apiUrlTrigger, {
       params: {date: date}
     });
+  }
+
+  getMorningRoutine() {
+    return this.http.get(this.apiUrlMorning, { responseType: 'text' });
+  }
+
+  getMittagRoutine() {
+    return this.http.get(this.apiUrlMittag, { responseType: 'text' });
   }
 
 }

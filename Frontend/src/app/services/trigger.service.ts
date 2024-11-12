@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {ApiService} from './api.service';
-import {AlarmService} from './alarm.service';
 import {ChatService} from './chat.service';
 import {interval} from 'rxjs';
 
@@ -8,73 +7,79 @@ import {interval} from 'rxjs';
   providedIn: 'root'
 })
 export class TriggerService {
-  private triggerTimes: { [url: string]: number } = {};
+  private triggerTimes: { [url: string]: Date } = {};
 
   constructor(
     private apiService: ApiService,
-    private alarmService: AlarmService,
     private chatService: ChatService
   ) {}
   currentDate = new Date().toISOString().split('T')[0];
 
   setOffTrigger() {
-    this.apiService.getTriggerData("2024-11-8").subscribe((data: any) => {
-      data.triggers.forEach((trigger: any) => {
-        this.triggerTimes[trigger.url] = this.convertTimeToMs(trigger.time);
-      });
+    this.apiService.getTriggerData(this.currentDate).subscribe((data: any) => {
+        data.triggers.forEach((trigger: any) => {
+          this.triggerTimes[trigger.route] = new Date(trigger.time);
+        });
+     });
+    this.prefferedMorningTime(); // Schauen und Setzen ob eine Morgenzeit in den Einstellungen gesetzt ist
+    this.checkForTriggeredTimes(); // Prüfe jede Minute, ob ein Alarm ausgelöst werden soll
+  }
 
-      const alarmPreference = this.getAlarmFromPreferences();
-      if (alarmPreference) {
-        this.triggerTimes['/api/logic/morning'] = this.convertTimeToMs(alarmPreference);
+ private prefferedMorningTime() {
+  const morningTime = this.getAlarmFromPreferences()
+    if (morningTime) {
+      const [hours, minutes] = morningTime.split(':').map(Number);
+      if (hours < 10) {
+        const now = new Date();
+        now.setHours(hours, minutes, 0, 0);
+
+        this.triggerTimes['/api/logic/morning'] = now;
+      } else {
+        console.warn('Die eingestellte Weckerzeit ist nicht vor 10 Uhr morgens und wird daher ignoriert.');
       }
-      this.setAlarms();
-    });
-
-    // Regelmäßig prüfen, ob ein Trigger erreicht wurde
-    this.checkForTriggeredAlarms();
+    } else {
+      console.warn('Keine Weckerzeit in den Präferenzen gefunden.');
+    }
   }
 
-  private setAlarms() {
-    Object.entries(this.triggerTimes).forEach(([, time]) => {
-      this.alarmService.setUpAlarm(time);
-    });
-  }
 
-  private checkForTriggeredAlarms() {
+  private checkForTriggeredTimes() {
     interval(60000).subscribe(() => {  // Prüfe jede Minute
-      const currentTime = new Date().getTime();
+      const currentTime = new Date().getTime();// Aktuelle Zeit als Millisekundenwert
       Object.entries(this.triggerTimes).forEach(([url, time]) => {
-        if (currentTime >= time) {
+        const triggerTimeMs = (time as Date).getTime();  // Triggerzeit in Millisekunden
+
+        if (currentTime >= triggerTimeMs) { //Millisekunden verlgleich für übersichtlichkeit
           this.executeRoutine(url);
           delete this.triggerTimes[url];  // Trigger nur einmal auslösen
         }
       });
     });
   }
-
   private executeRoutine(url: string) {
     let message = '';
+
     switch (url) {
       case '/api/logic/morning':
-        message = 'Morgenroutine gestartet!';
+        this.apiService.getMorningRoutine().subscribe((response: string) => {
+            this.chatService.addMessage(response, 'chatgpt');
+          });
         break;
       case '/api/logic/mittag':
-        message = 'Mittagsmenüvorschlag bereit!';
+        this.apiService.getMittagRoutine().subscribe((response: string) => {
+          this.chatService.addMessage(response, 'chatgpt');
+        });
         break;
       case '/api/logic/abend':
-        message = 'Heimfahrtsvorschlag bereit!';
+        message = 'TODO - Abendroutine';
+        this.chatService.addMessage(message, 'chatgpt');
         break;
+      default:
+        console.warn(`Unbekannte URL: ${url}`);
     }
-    this.chatService.addMessage(message, 'chatgpt');
-  }
-  private convertTimeToMs(timeString: string): number {
-    const [hours, minutes] = timeString.split(':').map(Number);
-    const now = new Date();
-    now.setHours(hours, minutes, 0, 0);
-    return now.getTime();
   }
 
   private getAlarmFromPreferences(): string | null {
-    return localStorage.getItem('wecker-time');
+    return localStorage.getItem('Weckerzeit');
   }
 }
