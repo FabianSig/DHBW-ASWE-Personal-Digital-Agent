@@ -1,5 +1,6 @@
 package online.dhbw_studentprojekt.msmaps.service;
 
+import online.dhbw_studentprojekt.dto.routing.custom.DirectionResponse;
 import online.dhbw_studentprojekt.msmaps.clients.MapsClient;
 import online.dhbw_studentprojekt.msmaps.clients.RoutingClient;
 import online.dhbw_studentprojekt.dto.routing.custom.RouteAddressRequest;
@@ -24,7 +25,7 @@ public class RoutingService {
 
         String travelMode = routeAddressRequest.travelMode();
 
-        return this.getRoute(new RouteRequest(
+        RouteRequest routeRequest = new RouteRequest(
                 new Origin(extractCoordinates(originResponse)),
                 new Destination(extractCoordinates(destinationResponse)),
                 travelMode,
@@ -33,7 +34,9 @@ public class RoutingService {
                 new RouteModifiers(false, false, false),
                 "en-US",
                 "METRIC"
-        ));
+        );
+
+        return this.getRoute(routeRequest);
     }
 
     public RouteResponse getRoute(RouteRequest routeRequest) {
@@ -50,15 +53,16 @@ public class RoutingService {
         throw new IllegalStateException("No results found in geocoding response.");
     }
 
-    public String getDirections(RouteAddressRequest request) {
+    public DirectionResponse getDirections(RouteAddressRequest request) {
 
         GeoCodingResponse originResponse = geoCodingService.getGeoCoding(request.origin());
         GeoCodingResponse destinationResponse = geoCodingService.getGeoCoding(request.destination());
-
-        return mapsClient.getDirections(extractPlaceId(originResponse),
+        DirectionResponse response = mapsClient.getDirections(extractPlaceId(originResponse),
                 extractPlaceId(destinationResponse),
                 System.getenv("API_KEY"),
                 request.travelMode());
+
+        return response;
     }
 
     private String extractPlaceId(GeoCodingResponse response) {
