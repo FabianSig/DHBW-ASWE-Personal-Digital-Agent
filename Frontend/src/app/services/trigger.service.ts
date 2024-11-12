@@ -7,7 +7,7 @@ import {interval} from 'rxjs';
   providedIn: 'root'
 })
 export class TriggerService {
-  private triggerTimes: { [url: string]: Date } = {};
+  private triggerTimes: { [url: string]: String } = {};
 
   constructor(
     private apiService: ApiService,
@@ -16,49 +16,47 @@ export class TriggerService {
   currentDate = new Date().toISOString().split('T')[0];
 
   setOffTrigger() {
+    this.prefferedMorningTime(); // Schauen und Setzen ob eine Morgenzeit in den Einstellungen gesetzt ist
     this.apiService.getTriggerData(this.currentDate).subscribe((data: any) => {
         data.triggers.forEach((trigger: any) => {
-          this.triggerTimes[trigger.route] = new Date(trigger.time);
+          this.triggerTimes[trigger.route] = this.formatTriggerTime(trigger.time);
         });
      });
-    this.prefferedMorningTime(); // Schauen und Setzen ob eine Morgenzeit in den Einstellungen gesetzt ist
     this.checkForTriggeredTimes(); // Prüfe jede Minute, ob ein Alarm ausgelöst werden soll
   }
 
  private prefferedMorningTime() {
   const morningTime = this.getAlarmFromPreferences()
     if (morningTime) {
-      const [hours, minutes] = morningTime.split(':').map(Number);
+      let [hours, minutes] = morningTime.split(':').map(Number);
+      (hours === undefined)?hours = 0:0;
       if (hours < 10) {
-        const now = new Date();
-        now.setHours(hours, minutes, 0, 0);
-
-        this.triggerTimes['/api/logic/morning'] = now;
+        this.triggerTimes['/api/logic/morning'] = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
       } else {
         console.warn('Die eingestellte Weckerzeit ist nicht vor 10 Uhr morgens und wird daher ignoriert.');
       }
     } else {
+      console.log(this.triggerTimes)
       console.warn('Keine Weckerzeit in den Präferenzen gefunden.');
     }
   }
 
-
   private checkForTriggeredTimes() {
-    interval(60000).subscribe(() => {  // Prüfe jede Minute
-      const currentTime = new Date().getTime();// Aktuelle Zeit als Millisekundenwert
+    let routine = '';
+    interval(1000).subscribe(() => {  // Prüfe jede Minute
+      const currentTime = new Date().toString();
       Object.entries(this.triggerTimes).forEach(([url, time]) => {
-        const triggerTimeMs = (time as Date).getTime();  // Triggerzeit in Millisekunden
-
-        if (currentTime >= triggerTimeMs) { //Millisekunden verlgleich für übersichtlichkeit
-          this.executeRoutine(url);
-          delete this.triggerTimes[url];  // Trigger nur einmal auslösen
+        if (currentTime >= time) { //Millisekunden verlgleich für übersichtlichkeit
+           routine = url
+          this.executeRoutine(routine);
+           delete this.triggerTimes[url];
         }
       });
     });
+    return routine;
   }
-  private executeRoutine(url: string) {
-    let message = '';
 
+  private executeRoutine(url: string) {
     switch (url) {
       case '/api/logic/morning':
         this.apiService.getMorningRoutine().subscribe((response: string) => {
@@ -71,7 +69,7 @@ export class TriggerService {
         });
         break;
       case '/api/logic/abend':
-        message = 'TODO - Abendroutine';
+        const message = 'TODO - Abendroutine';
         this.chatService.addMessage(message, 'chatgpt');
         break;
       default:
@@ -81,5 +79,23 @@ export class TriggerService {
 
   private getAlarmFromPreferences(): string | null {
     return localStorage.getItem('Weckerzeit');
+  }
+
+  private formatTriggerTime(time: string): string {
+    // Prüfen, ob die Zeit bereits im HH:mm-Format vorliegt
+    if (!time.includes('T')) {
+      return time; // Rückgabe, falls es bereits das richtige Format ist
+    }
+
+    // Wenn die Zeit im ISO-Format vorliegt, konvertiere in HH:mm
+    const dateObj = new Date(time);
+    if (!isNaN(dateObj.getTime())) {
+      const hours = dateObj.getHours().toString().padStart(2, '0');
+      const minutes = dateObj.getMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    } else {
+      console.warn(`Ungültiges Datum für Trigger: ${time}`);
+      return "24:00"; // Fallback-Zeit bei ungültigen Daten
+    }
   }
 }
