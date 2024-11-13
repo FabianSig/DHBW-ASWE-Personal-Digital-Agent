@@ -1,6 +1,8 @@
 package online.dhbw_studentprojekt.msnews.controller;
 
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import online.dhbw_studentprojekt.dto.news.Article;
@@ -22,7 +24,8 @@ public class NewsController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Article> getNews(@RequestParam(required = false) String topic, @RequestParam(required = false) Optional<Integer> count) {
+    @Operation(summary = "Get news articles")
+    public List<Article> getNews(@Parameter(description = "Determines the topic of the fetched news. Defaults to 'business'") @RequestParam(required = false) String topic, @Parameter(description = "The amount of headlines that should be returned.") @RequestParam(required = false) Optional<Integer> count) {
 
         return newsService.getNews(topic, count);
     }

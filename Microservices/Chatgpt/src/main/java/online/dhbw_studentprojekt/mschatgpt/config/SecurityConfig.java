@@ -1,4 +1,4 @@
-package nikomitk.mschatgpt.config;
+package online.dhbw_studentprojekt.mschatgpt.config;
 
 import online.dhbw_studentprojekt.security.filter.CustomAPIKeyFilter;
 import org.springframework.context.annotation.Bean;

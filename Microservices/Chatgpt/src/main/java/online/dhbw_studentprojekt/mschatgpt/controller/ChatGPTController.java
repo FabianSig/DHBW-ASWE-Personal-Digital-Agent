@@ -1,7 +1,7 @@
-package nikomitk.mschatgpt.controller;
+package online.dhbw_studentprojekt.mschatgpt.controller;
 
 import lombok.RequiredArgsConstructor;
-import nikomitk.mschatgpt.service.ChatGPTService;
+import online.dhbw_studentprojekt.mschatgpt.service.ChatGPTService;
 import online.dhbw_studentprojekt.dto.chatgpt.audio.ChatGPTAudioResponse;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse;
 import online.dhbw_studentprojekt.dto.chatgpt.morning.MorningRequest;
@@ -11,7 +11,7 @@ import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import nikomitk.mschatgpt.dto.audio.ChatGPTAudioRequest;
+import online.dhbw_studentprojekt.mschatgpt.dto.audio.ChatGPTAudioRequest;
 
 @RestController
 @RequestMapping("/api/chatgpt")
