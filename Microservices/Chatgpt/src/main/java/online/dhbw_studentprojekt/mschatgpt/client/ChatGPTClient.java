@@ -1,4 +1,4 @@
-package nikomitk.mschatgpt.client;
+package online.dhbw_studentprojekt.mschatgpt.client;
 
 import online.dhbw_studentprojekt.dto.chatgpt.audio.ChatGPTAudioResponse;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionRequest;

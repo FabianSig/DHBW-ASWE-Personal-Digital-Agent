@@ -1,14 +1,14 @@
-package nikomitk.mschatgpt.service;
+package online.dhbw_studentprojekt.mschatgpt.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import nikomitk.mschatgpt.client.ChatGPTClient;
-import nikomitk.mschatgpt.dto.audio.ChatGPTAudioRequest;
-import nikomitk.mschatgpt.model.Message;
-import nikomitk.mschatgpt.model.Prompt;
-import nikomitk.mschatgpt.repository.MessageRepository;
-import nikomitk.mschatgpt.repository.PromptRepository;
+import online.dhbw_studentprojekt.mschatgpt.client.ChatGPTClient;
+import online.dhbw_studentprojekt.mschatgpt.dto.audio.ChatGPTAudioRequest;
+import online.dhbw_studentprojekt.mschatgpt.model.Message;
+import online.dhbw_studentprojekt.mschatgpt.model.Prompt;
+import online.dhbw_studentprojekt.mschatgpt.repository.MessageRepository;
+import online.dhbw_studentprojekt.mschatgpt.repository.PromptRepository;
 import online.dhbw_studentprojekt.dto.chatgpt.audio.ChatGPTAudioResponse;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse;

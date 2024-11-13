@@ -1,7 +1,7 @@
-package nikomitk.mschatgpt.config;
+package online.dhbw_studentprojekt.mschatgpt.config;
 
 import lombok.extern.slf4j.Slf4j;
-import nikomitk.mschatgpt.client.ChatGPTClient;
+import online.dhbw_studentprojekt.mschatgpt.client.ChatGPTClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
