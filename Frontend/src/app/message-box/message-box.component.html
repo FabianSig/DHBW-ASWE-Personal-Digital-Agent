@@ -1,9 +1,19 @@
 <div id="chatBox" class="overflow-y-auto">
   @for(message of messages; track message.id) {
-    <div class="d-flex {{ message.sender == 'user' ? 'justify-content-end' : 'justify-content-start' }}">
+    <div class="d-flex {{ message.sender == 'user' ? 'justify-content-end' : 'justify-content-start' }} my-2">
       <div class="message-bubble text-break shadow {{ message.sender == 'user' ? 'sender' : 'receiver' }} d-inline-block mx-3 my-2 p-2 border rounded overflow-hidden">
         <p class="px-2 mb-0 " >{{ message.text }}</p>
      </div>
-   </div>
+    </div>
   }
+
+  @if(isLoading?.()){
+    <div class="loading-animation ms-4 my-2">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  }
+
+  <div #scrollAnchor></div>
 </div>
