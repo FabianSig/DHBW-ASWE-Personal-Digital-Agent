@@ -29,7 +29,6 @@ public class IntentionMessageService {
     private final MapsClient mapsClient;
     private final SpeisekarteClient speisekarteClient;
     private final PrefsClient prefsClient;
-    private final StockClient stockClient;
 
     /**
      * Processes the given message and generates a response based on the detected intention.
