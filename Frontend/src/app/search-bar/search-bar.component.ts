@@ -37,5 +37,9 @@ export class SearchBarComponent {
 
   onAudioResponse(response: AudioResponse): void {
     this.chatService.addMessage(response.text, 'user');
+    this.apiService.getChatGPTData(response.text).subscribe(response => {
+      this.chatService.addMessage(response, 'chatgpt');
+    })
+
   }
 }
