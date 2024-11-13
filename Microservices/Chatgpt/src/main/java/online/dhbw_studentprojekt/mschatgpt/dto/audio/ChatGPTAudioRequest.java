@@ -1,4 +1,4 @@
-package nikomitk.mschatgpt.dto.audio;
+package online.dhbw_studentprojekt.mschatgpt.dto.audio;
 
 import org.springframework.web.multipart.MultipartFile;
 

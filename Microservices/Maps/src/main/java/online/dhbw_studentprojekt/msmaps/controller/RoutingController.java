@@ -1,5 +1,6 @@
 package online.dhbw_studentprojekt.msmaps.controller;
 
+import online.dhbw_studentprojekt.dto.routing.custom.DirectionResponse;
 import online.dhbw_studentprojekt.msmaps.service.RoutingService;
 import lombok.RequiredArgsConstructor;
 import online.dhbw_studentprojekt.dto.routing.custom.RouteAddressRequest;
@@ -30,7 +31,7 @@ public class RoutingController {
     }
 
     @PostMapping("/directions")
-    String getDirections(@RequestBody RouteAddressRequest request) {
+    DirectionResponse getDirections(@RequestBody RouteAddressRequest request) {
 
         return routingService.getDirections(request);
     }

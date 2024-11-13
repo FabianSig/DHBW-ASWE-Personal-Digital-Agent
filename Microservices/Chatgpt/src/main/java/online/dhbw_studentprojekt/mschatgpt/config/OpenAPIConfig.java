@@ -1,4 +1,4 @@
-package nikomitk.mschatgpt.config;
+package online.dhbw_studentprojekt.mschatgpt.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
