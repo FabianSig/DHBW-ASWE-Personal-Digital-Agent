@@ -31,6 +31,12 @@ public class IntentionMessageService {
     private final PrefsClient prefsClient;
     private final StockClient stockClient;
 
+    /**
+     * Processes the given message and generates a response based on the detected intention.
+     *
+     * @param message the message to process
+     * @return the generated response message
+     */
     public String sendResponseMessage(MessageRequest message) {
 
         ChatGPTIntentionResponse intResponse = chatGPTClient.getIntention(message.message());
@@ -39,16 +45,20 @@ public class IntentionMessageService {
 
         intResponse.attributes().forEach(attr -> attributes.put(attr.name().toLowerCase(), attr.value()));
 
-        if (intResponse.route().equals("/api/routing/address")) {
-            return getResponseMessageForRoutingAddressRequest(message, attributes);
-        }
-        if (intResponse.route().equals("/api/logic/speisekarte")) {
-            return getResponseMessageForSpeisekarteRequest(message, attributes);
-        }
 
-        return "Entschuldigung, das habe ich nicht verstanden. Bitte versuche es erneut.";
+        return switch (intResponse.route()) {
+            case "/api/routing/address" -> getResponseMessageForRoutingAddressRequest(message, attributes);
+            case "/api/logic/speisekarte" -> getResponseMessageForSpeisekarteRequest(message, attributes);
+            default -> "Entschuldigung, das habe ich nicht verstanden. Bitte versuche es erneut.";
+        };
     }
 
+    /**
+     * Processes the given message and generates a response based on the detected intention.
+     *
+     * @param message the message to process
+     * @return the generated response message
+     */
     private String getResponseMessageForSpeisekarteRequest(MessageRequest message, Map<String, String> attributes) {
 
         try {
@@ -79,6 +89,13 @@ public class IntentionMessageService {
         }
     }
 
+    /**
+     * Generates a response message for a routing address request.
+     *
+     * @param message    the original message
+     * @param attributes the attributes extracted from the intention response
+     * @return the generated response message
+     */
     private String getResponseMessageForRoutingAddressRequest(MessageRequest message, Map<String, String> attributes) {
 
         final String currentTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
