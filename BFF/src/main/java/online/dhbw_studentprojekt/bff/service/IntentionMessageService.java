@@ -7,10 +7,12 @@ import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.MessageRequest;
+import online.dhbw_studentprojekt.dto.chatgpt.standard.*;
 import online.dhbw_studentprojekt.dto.prefs.Preference;
 import online.dhbw_studentprojekt.dto.routing.custom.RouteAddressRequest;
 import online.dhbw_studentprojekt.dto.routing.routing.RouteResponse;
 import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -78,7 +80,7 @@ public class IntentionMessageService {
 
             ChatMessageRequest chatRequest = new ChatMessageRequest(message.message(),
                     "Speisekarte:" + speisekarte);
-            ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, "test", "message");
+            ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, ChatId.TEST.getValue(), "message");
 
             return gptResponse.message().content();
         } catch (Exception e) {
@@ -124,7 +126,7 @@ public class IntentionMessageService {
                             + "current Time: " + currentTime + "\n"
                             + "additional data about the route: " + directionResponse);
 
-            ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, "test", "maps");
+            ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, ChatId.TEST.getValue(), "maps");
 
             if (gptResponse == null || gptResponse.message() == null) {
                 log.error("ChatGPT response or message is null.");
