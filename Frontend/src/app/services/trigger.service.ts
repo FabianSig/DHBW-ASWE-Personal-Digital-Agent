@@ -23,7 +23,7 @@ export class TriggerService {
   currentDate = new Date().toISOString().split('T')[0];
 
   setOffTrigger() {
-    //this.prefferedMorningTime(); // Schauen und Setzen ob eine Morgenzeit in den Einstellungen gesetzt ist
+    this.prefferedMorningTime(); // Schauen und Setzen ob eine Morgenzeit in den Einstellungen gesetzt ist
     this.apiService.getTriggerData(this.currentDate).subscribe((data: any) => {
         data.triggers.map((trigger: any) => {
           this.triggerTimes[trigger.route] = this.formatTriggerTime(trigger.time);
@@ -50,15 +50,16 @@ export class TriggerService {
   private checkForTriggeredTimes() {
     interval(1000).subscribe(() => { // Alle 60 Sekunden prüfen
       const currentTime = new Date().toString().slice(16, 21);// HH:mm Format
-      console.log(`Aktuelle Zeit: ${currentTime}`);
       Object.entries(this.triggerTimes).forEach(([routine, time]) => {
+
+        this.triggerTimes['api/logic/mittag'] = '11:50'
         // Prüfen, ob die aktuelle Zeit mit der geplanten Zeit übereinstimmt und die Routine noch nicht blockiert ist
-console.log(routine, time)
+
+        delete this.triggerTimes['api/logic/morning']
         if (currentTime >= time && !this.triggeredStatus[routine] && !this.isGloballyBlocked) {
           this.executeRoutine(routine);
           this.blockRoutine(routine); // Routine für eine Stunde blockieren
           this.setGlobalBlock(); // Alle Routinen für eine Stunde blockieren
-          this.triggerTimes['/api/logic/mittag'] = '11:23'
         }
         if (currentTime === time && !this.triggeredStatus[routine]) {
           this.executeRoutine(routine);
@@ -90,7 +91,7 @@ console.log(routine, time)
   private executeRoutine(url: string) {
     switch (url) {
       case '/api/logic/morning':
-        this.apiService.getMorningRoutine().subscribe((response: string) => {
+        this.apiService.getMittagRoutine().subscribe((response: string) => {
             this.chatService.addMessage(response, 'chatgpt');
           });
         break;

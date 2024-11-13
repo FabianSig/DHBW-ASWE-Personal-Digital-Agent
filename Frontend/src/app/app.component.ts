@@ -25,7 +25,7 @@ export class AppComponent implements OnInit {
   chatFullscreen = true;
   preferencesOpen = false;
 
-  constructor(private triggerService: TriggerService, private apiService: ApiService) {
+  constructor(private triggerService: TriggerService) {
   }
 
   onMenuResponse(response: MenuResponse): void {
