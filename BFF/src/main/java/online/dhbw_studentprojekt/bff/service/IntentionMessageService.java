@@ -44,7 +44,6 @@ public class IntentionMessageService {
 
         intResponse.attributes().forEach(attr -> attributes.put(attr.name().toLowerCase(), attr.value()));
 
-
         return switch (intResponse.route()) {
             case "/api/routing/address" -> getResponseMessageForRoutingAddressRequest(message, attributes);
             case "/api/logic/speisekarte" -> getResponseMessageForSpeisekarteRequest(message, attributes);
@@ -100,6 +99,7 @@ public class IntentionMessageService {
         final String currentTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
 
         try {
+            // Extract data and check for faulty input
             String origin = attributes.get("origin");
             String destination = attributes.get("destination");
             String travelMode = attributes.get("travelmode");
@@ -109,6 +109,7 @@ public class IntentionMessageService {
                 return "Bitte gebe einen gültigen Start- bzw Zielort an.";
             }
 
+            // Get routing information and check for faulty response
             RouteResponse response = mapsClient.getRouting(new RouteAddressRequest(origin, destination, travelMode.toUpperCase()));
             String directionResponse = mapsClient.getDirections(new RouteAddressRequest(origin, destination, travelMode.toLowerCase()));
 
@@ -117,10 +118,12 @@ public class IntentionMessageService {
                 return "Error: Could not retrieve routing information.";
             }
 
+            // Generate message to return to user
             ChatMessageRequest chatRequest = new ChatMessageRequest(message.message(),
                     "time to get there " + response.routes().getFirst().duration() + "\n"
                             + "current Time: " + currentTime + "\n"
                             + "additional data about the route: " + directionResponse);
+
             ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, "test", "maps");
 
             if (gptResponse == null || gptResponse.message() == null) {
