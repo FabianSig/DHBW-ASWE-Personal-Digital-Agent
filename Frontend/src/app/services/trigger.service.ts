@@ -1,24 +1,31 @@
 import {Injectable} from '@angular/core';
 import {ApiService} from './api.service';
 import {ChatService} from './chat.service';
-import {interval} from 'rxjs';
+import {interval, timer} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TriggerService {
-  private triggerTimes: { [url: string]: String } = {};
+  private triggerTimes: { [url: string]: string } = {};
+  private triggeredStatus: { [key: string]: boolean } = {
+    morning: false,
+    mittag: false,
+    abend: false
+  };
+  private isGloballyBlocked = false;
 
   constructor(
     private apiService: ApiService,
     private chatService: ChatService
-  ) {}
+  ) {this.setOffTrigger()}
+
   currentDate = new Date().toISOString().split('T')[0];
 
   setOffTrigger() {
-    this.prefferedMorningTime(); // Schauen und Setzen ob eine Morgenzeit in den Einstellungen gesetzt ist
+    //this.prefferedMorningTime(); // Schauen und Setzen ob eine Morgenzeit in den Einstellungen gesetzt ist
     this.apiService.getTriggerData(this.currentDate).subscribe((data: any) => {
-        data.triggers.forEach((trigger: any) => {
+        data.triggers.map((trigger: any) => {
           this.triggerTimes[trigger.route] = this.formatTriggerTime(trigger.time);
         });
      });
@@ -36,24 +43,48 @@ export class TriggerService {
         console.warn('Die eingestellte Weckerzeit ist nicht vor 10 Uhr morgens und wird daher ignoriert.');
       }
     } else {
-      console.log(this.triggerTimes)
       console.warn('Keine Weckerzeit in den Präferenzen gefunden.');
     }
   }
 
   private checkForTriggeredTimes() {
-    let routine = '';
-    interval(1000).subscribe(() => {  // Prüfe jede Minute
-      const currentTime = new Date().toString();
-      Object.entries(this.triggerTimes).forEach(([url, time]) => {
-        if (currentTime >= time) { //Millisekunden verlgleich für übersichtlichkeit
-           routine = url
+    interval(1000).subscribe(() => { // Alle 60 Sekunden prüfen
+      const currentTime = new Date().toString().slice(16, 21);// HH:mm Format
+      console.log(`Aktuelle Zeit: ${currentTime}`);
+      Object.entries(this.triggerTimes).forEach(([routine, time]) => {
+        // Prüfen, ob die aktuelle Zeit mit der geplanten Zeit übereinstimmt und die Routine noch nicht blockiert ist
+console.log(routine, time)
+        if (currentTime >= time && !this.triggeredStatus[routine] && !this.isGloballyBlocked) {
           this.executeRoutine(routine);
-           delete this.triggerTimes[url];
+          this.blockRoutine(routine); // Routine für eine Stunde blockieren
+          this.setGlobalBlock(); // Alle Routinen für eine Stunde blockieren
+          this.triggerTimes['/api/logic/mittag'] = '11:23'
+        }
+        if (currentTime === time && !this.triggeredStatus[routine]) {
+          this.executeRoutine(routine);
+          this.blockRoutine(routine); // Routine für eine Stunde blockieren
         }
       });
     });
-    return routine;
+  }
+
+  private setGlobalBlock() {
+    this.isGloballyBlocked = true; // Blockierung aktivieren
+    console.log('Alle Routinen sind nun für eine Stunde blockiert.');
+
+    // Timer, um die Blockierung nach einer Stunde wieder aufzuheben
+    timer(3600000).subscribe(() => { // 3600000 ms = 1 Stunde
+      this.isGloballyBlocked = false; // Blockierung aufheben
+      console.log('Alle Routinen sind wieder freigegeben und können erneut ausgelöst werden.');
+    });
+  }
+
+
+  private blockRoutine(routine: string) {
+    this.triggeredStatus[routine] = true;
+    setTimeout(() => {
+      this.triggeredStatus[routine] = false;
+    }, 3600000); // 1 Stunde in Millisekunden
   }
 
   private executeRoutine(url: string) {

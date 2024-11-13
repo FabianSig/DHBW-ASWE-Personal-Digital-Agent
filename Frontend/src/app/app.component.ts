@@ -34,8 +34,9 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.checkForAuthKey();
-    this.triggerService.setOffTrigger();
   }
+
+
 
   checkForAuthKey() {
     const authKey = localStorage.getItem('authKey');
