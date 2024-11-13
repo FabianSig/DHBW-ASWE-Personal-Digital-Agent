@@ -4,12 +4,14 @@ import {AudioRecorderComponent} from '../audio-recorder/audio-recorder.component
 import {AudioResponse} from '../interfaces/audio-response';
 import {ChatService} from '../services/chat.service';
 import {TtsService} from '../services/tts.service';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-search-bar',
   standalone: true,
   imports: [
-    AudioRecorderComponent
+    AudioRecorderComponent,
+    FormsModule
   ],
   templateUrl: './search-bar.component.html',
   styleUrl: './search-bar.component.scss'
@@ -32,9 +34,14 @@ export class SearchBarComponent {
       this.chatService.addMessage(response, 'chatgpt');
       this.ttsService.speak(response);
     })
+    this.searchTerm = '';
   }
 
   onAudioResponse(response: AudioResponse): void {
     this.chatService.addMessage(response.text, 'user');
+    this.apiService.getChatGPTData(response.text).subscribe(response => {
+      this.chatService.addMessage(response, 'chatgpt');
+    })
+
   }
 }

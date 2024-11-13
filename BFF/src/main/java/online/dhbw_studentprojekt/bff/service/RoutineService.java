@@ -73,7 +73,7 @@ public class RoutineService {
 
         Speisekarte speisekarte = speisekarteClient.getSpeisekarteWithFilteredAllergene(today.toString(), allergene);
 
-        String prompt = "Bitte begrüße mich da es Mittagszeit ist und gebe ein Beispiel Menü für das Mittagessen aus.";
+        String prompt = "Bitte begrüße mich da es Mittagszeit ist und gebe ein mögliches Menü für das Mittagessen aus.";
 
         ChatMessageRequest chatRequest = new ChatMessageRequest(prompt,
                 "Speisekarte:" + speisekarte);

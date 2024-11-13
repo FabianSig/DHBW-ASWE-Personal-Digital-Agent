@@ -1,14 +1,14 @@
-package nikomitk.mschatgpt.service;
+package online.dhbw_studentprojekt.mschatgpt.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import nikomitk.mschatgpt.client.ChatGPTClient;
-import nikomitk.mschatgpt.dto.audio.ChatGPTAudioRequest;
-import nikomitk.mschatgpt.model.Message;
-import nikomitk.mschatgpt.model.Prompt;
-import nikomitk.mschatgpt.repository.MessageRepository;
-import nikomitk.mschatgpt.repository.PromptRepository;
+import online.dhbw_studentprojekt.mschatgpt.client.ChatGPTClient;
+import online.dhbw_studentprojekt.mschatgpt.dto.audio.ChatGPTAudioRequest;
+import online.dhbw_studentprojekt.mschatgpt.model.Message;
+import online.dhbw_studentprojekt.mschatgpt.model.Prompt;
+import online.dhbw_studentprojekt.mschatgpt.repository.MessageRepository;
+import online.dhbw_studentprojekt.mschatgpt.repository.PromptRepository;
 import online.dhbw_studentprojekt.dto.chatgpt.audio.ChatGPTAudioResponse;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse;
@@ -28,6 +28,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -51,9 +52,11 @@ public class ChatGPTService {
                 .map(m -> new ChatGPTMessage(m.getRole(), m.getContent()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Prompt not found"));
 
-        List<ChatGPTMessage> messages = new ArrayList<>(messageRepository.findByChatId(chatId).stream()
+        List<ChatGPTMessage> messages = messageRepository.findByChatId(chatId).stream()
                 .map(m -> new ChatGPTMessage(m.getRole(), m.getContent()))
-                .toList());
+                .collect(Collectors.collectingAndThen(Collectors.toList(), list ->
+                        list.size() > 3 ? list.subList(list.size() - 3, list.size()) : list
+                ));
 
         messages.addFirst(prompt);
         messages.add(1, new ChatGPTMessage("system", request.data()));
