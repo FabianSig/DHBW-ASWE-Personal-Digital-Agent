@@ -14,6 +14,8 @@ import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +81,8 @@ public class IntentionMessageService {
 
     private String getResponseMessageForRoutingAddressRequest(MessageRequest message, Map<String, String> attributes) {
 
+        final String currentTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+
         try {
             String origin = attributes.get("origin");
             String destination = attributes.get("destination");
@@ -99,6 +103,7 @@ public class IntentionMessageService {
 
             ChatMessageRequest chatRequest = new ChatMessageRequest(message.message(),
                     "time to get there " + response.routes().getFirst().duration() + "\n"
+                            + "current Time: " + currentTime + "\n"
                             + "additional data about the route: " + directionResponse);
             ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, "test", "maps");
 

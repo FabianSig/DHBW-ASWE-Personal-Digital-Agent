@@ -28,6 +28,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -51,9 +52,11 @@ public class ChatGPTService {
                 .map(m -> new ChatGPTMessage(m.getRole(), m.getContent()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Prompt not found"));
 
-        List<ChatGPTMessage> messages = new ArrayList<>(messageRepository.findByChatId(chatId).stream()
+        List<ChatGPTMessage> messages = messageRepository.findByChatId(chatId).stream()
                 .map(m -> new ChatGPTMessage(m.getRole(), m.getContent()))
-                .toList());
+                .collect(Collectors.collectingAndThen(Collectors.toList(), list ->
+                        list.size() > 3 ? list.subList(list.size() - 3, list.size()) : list
+                ));
 
         messages.addFirst(prompt);
         messages.add(1, new ChatGPTMessage("system", request.data()));
