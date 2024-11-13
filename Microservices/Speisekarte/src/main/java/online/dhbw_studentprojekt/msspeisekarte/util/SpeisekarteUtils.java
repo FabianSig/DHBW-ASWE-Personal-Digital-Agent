@@ -111,7 +111,12 @@ public class SpeisekarteUtils {
         return true;
     }
 
-
+    /**
+     * Extracts a Speisekarte from the given HTML string.
+     *
+     * @param html the HTML string to extract the Speisekarte from
+     * @return a Speisekarte extracted from the HTML string
+     */
     public Speisekarte extractMenu(String html) {
 
         final String[] gruppen = html.split("<div class='col-xs-4 gruppenname'>");
