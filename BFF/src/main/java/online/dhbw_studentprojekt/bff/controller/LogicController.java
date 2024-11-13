@@ -22,7 +22,7 @@ public class LogicController {
     @PostMapping("/message")
     @ResponseStatus(HttpStatus.OK)
     public String sendMessage(@RequestBody MessageRequest request) {
-        return logicService.sendResponseMessage(request);
+        return logicService.getResponseMessage(request);
     }
 
     @GetMapping("/trigger")
