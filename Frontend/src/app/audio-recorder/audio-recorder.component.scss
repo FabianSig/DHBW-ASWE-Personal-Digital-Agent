@@ -9,3 +9,19 @@ button svg {
   height: 20px;
   fill: currentColor;
 }
+
+.red-bullet {
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.blank-bullet {
+  width: 10px;
+  height: 10px;
+  background-color: white;
+  border-radius: 50%;
+  display: inline-block;
+}
