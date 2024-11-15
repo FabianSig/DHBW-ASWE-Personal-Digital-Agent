@@ -7,7 +7,7 @@ import {interval} from 'rxjs';
   providedIn: 'root'
 })
 export class TriggerService {
-  private triggerTimes: { [url: string]: string } = {};
+  private triggerTimes: { [url: string]: number } = {};
   private triggeredStatus: { [key: string]: boolean } = {
     morning: false,
     mittag: false,
@@ -22,15 +22,16 @@ export class TriggerService {
   currentDate = new Date().toISOString().split('T')[0];
 
   setOffTrigger() {
-    this.prefferedMorningTime(); // Schauen und Setzen ob eine Morgenzeit in den Einstellungen gesetzt ist
+  //  this.prefferedMorningTime(); // Schauen und Setzen ob eine Morgenzeit in den Einstellungen gesetzt ist
     this.apiService.getTriggerData(this.currentDate).subscribe((data: any) => {
         data.triggers.map((trigger: any) => {
-          this.triggerTimes[trigger.route] = this.formatTriggerTime(trigger.time);
+          this.triggerTimes[trigger.route] = new Date(trigger.time).getTime();
+          console.log(`Routine ${trigger.route} wird um ${this.triggerTimes[trigger.route]} Uhr ausgeführt.`);
         });
-     });
-    this.checkForTriggeredTimes(); // Prüfe jede Minute, ob ein Alarm ausgelöst werden soll
+      this.checkForTriggeredTimes(); // Prüfe jede Minute, ob ein Alarm ausgelöst werden soll
+    });
   }
-
+/*
  private prefferedMorningTime() {
   const morningTime = this.getAlarmFromPreferences()
     if (morningTime) {
@@ -45,25 +46,25 @@ export class TriggerService {
       console.warn('Keine Weckerzeit in den Präferenzen gefunden.');
     }
   }
-
+*/
   private checkForTriggeredTimes() {
+    let currentTimeInMs = new Date().getTime(); // Aktuelle Zeit in Millisekunden
+        currentTimeInMs = new Date().setHours(15, 44, 0,0);
 
-    interval(2000).subscribe(() => { // Alle 60 Sekunden prüfen
-      const currentTime = new Date().toString().slice(16, 21);// HH:mm Format
-      const triggerTimes = {...this.triggerTimes};
-      const intervals = [
-        { routine: '/api/logic/morning', start: "00:00", end: triggerTimes['/api/logic/mittag'] },
-        { routine: '/api/logic/mittag', start: triggerTimes['/api/logic/mittag'], end: triggerTimes['/api/logic/abend'] },
-        { routine: '/api/logic/abend', start: triggerTimes['/api/logic/abend'], end: "22:00" }
-      ];
 
-      const currentInterval = intervals.find(
-        ({ start, end }) => currentTime >= start && currentTime < end
-      );
+    Object.entries(this.triggerTimes).forEach(([routine, triggerTime]) => {
+      const timeDifference = triggerTime - currentTimeInMs; // Berechnung der Differenz in Millisekunden
+      console.log(`Die Zeitdifferenz für ${routine} beträgt ${timeDifference}ms.`);
 
-      if (currentInterval && !this.triggeredStatus[currentInterval.routine]) {
-        this.executeRoutine(currentInterval.routine);
-        this.blockRoutine(currentInterval.routine); //Routine blockieren, damit sie nicht mehrfach ausgeführt wird
+
+      // Wenn die Zeit in der Vergangenheit liegt (negative Differenz), nichts tun
+      if (timeDifference < 0) {
+        console.log(`Die Zeit für ${routine} liegt bereits in der Vergangenheit. Nichts tun.`);
+      } else {
+        // Wenn die Zeit in der Zukunft liegt (positive Differenz), Timer setzen
+        setTimeout(() => {
+          this.executeRoutine(routine);
+        }, timeDifference); // Ausführen der Routine nach der berechneten Differenz
       }
     });
   }
@@ -97,15 +98,5 @@ export class TriggerService {
     this.triggeredStatus[routine] = true;
   }
 
-  private formatTriggerTime(time: string): string {
-    // Prüfen, ob die Zeit bereits im HH:mm-Format vorliegt
-    if (!time.includes('T')) {
-      return time; // Rückgabe, falls es bereits das richtige Format ist
-    }
-    const dateObj = new Date(time);
-      const hours = dateObj.getHours().toString().padStart(2, '0');
-      const minutes = dateObj.getMinutes().toString().padStart(2, '0');
-      return `${hours}:${minutes}`; //Rückgabe im HH:mm-Format
 
-  }
 }
