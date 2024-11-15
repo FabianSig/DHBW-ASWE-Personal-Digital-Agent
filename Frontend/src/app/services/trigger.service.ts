@@ -14,8 +14,7 @@ export class TriggerService {
     private apiService: ApiService,
     private chatService: ChatService
   ) {
-    this.clearAllTriggers();
-    this.setOffTrigger();
+    this.reload()
   }
 
   currentDate = new Date().toISOString().split('T')[0];
@@ -66,5 +65,10 @@ export class TriggerService {
     // Clear the timeout reference map
     this.timoutReferenceMap = {};
     console.log('Alle aktiven Timer wurden zurückgesetzt.');
+  }
+
+  public reload(): void {
+    this.clearAllTriggers();
+    this.setOffTrigger();
   }
 }
