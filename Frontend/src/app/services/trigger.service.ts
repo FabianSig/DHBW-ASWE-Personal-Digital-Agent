@@ -31,22 +31,7 @@ export class TriggerService {
       this.checkForTriggeredTimes(); // Prüfe jede Minute, ob ein Alarm ausgelöst werden soll
     });
   }
-/*
- private prefferedMorningTime() {
-  const morningTime = this.getAlarmFromPreferences()
-    if (morningTime) {
-      let [hours, minutes] = morningTime.split(':').map(Number);
-      (hours === undefined)?hours = 0:0;
-      if (hours < 10) {
-        this.triggerTimes['/api/logic/morning'] = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-      } else {
-        console.warn('Die eingestellte Weckerzeit ist nicht vor 10 Uhr morgens und wird daher ignoriert.');
-      }
-    } else {
-      console.warn('Keine Weckerzeit in den Präferenzen gefunden.');
-    }
-  }
-*/
+
   private checkForTriggeredTimes() {
     let currentTimeInMs = new Date().getTime(); // Aktuelle Zeit in Millisekunden
         currentTimeInMs = new Date().setHours(15, 44, 0,0);
@@ -70,24 +55,9 @@ export class TriggerService {
   }
 
   private executeRoutine(url: string) {
-    switch (url) {
-      case '/api/logic/morning':
-        this.apiService.getMorningRoutine().subscribe((response: string) => {
-            this.chatService.addMessage(response, 'chatgpt');
-          });
-        break;
-      case '/api/logic/mittag':
-        this.apiService.getMittagRoutine().subscribe((response: string) => {
-          this.chatService.addMessage(response, 'chatgpt');
-        });
-        break;
-      case '/api/logic/abend':
-        const message = 'TODO - Abendroutine';
-        this.chatService.addMessage(message, 'chatgpt');
-        break;
-      default:
-        console.warn(`Unbekannte URL: ${url}`);
-    }
+   this.apiService.executeCustomTriggerRoutine(url).subscribe((response: string) => {
+     this.chatService.addMessage(response, 'chatgpt');
+   });
   }
 
   private getAlarmFromPreferences(): string | null {

@@ -6,13 +6,12 @@ import {environment} from '../../environments/environment';
   providedIn: 'root'
 })
 export class ApiService {
+  private baseUrl = "http://localhost:8080"
   private apiUrlChatgpt = "http://localhost:8080" + environment.apiUrlLogic;
   private apiUrlSpeisekarte = "http://localhost:8080" + environment.apiUrlSpeisekarte;
   private apiUrlAudio = "http://localhost:8080" + environment.apiUrlAudio;
   private apiUrlPrefs = "http://localhost:8080" + environment.apiUrlPrefs;
   private apiUrlTrigger = "http://localhost:8080" + environment.apiUrlTrigger;
-  private apiUrlMorning = "http://localhost:8080" + environment.apiUrlMorning;
-  private apiUrlMittag = "http://localhost:8080" + environment.apiUrlMittag;
 
   constructor(private http: HttpClient) {}
 
@@ -49,12 +48,9 @@ export class ApiService {
     });
   }
 
-  getMorningRoutine() {
-    return this.http.get(this.apiUrlMorning, { responseType: 'text' });
+  executeCustomTriggerRoutine(route: string) {
+    return this.http.get(this.baseUrl + route, { responseType: 'text' });
   }
 
-  getMittagRoutine() {
-    return this.http.get(this.apiUrlMittag, { responseType: 'text' });
-  }
 
 }
