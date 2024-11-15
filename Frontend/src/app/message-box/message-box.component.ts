@@ -8,11 +8,12 @@ import {
 } from '@angular/core';
 import {ChatMessage} from '../interfaces/chat-message';
 import {ChatService} from '../services/chat.service';
+import {MarkdownModule} from 'ngx-markdown';
 
 @Component({
   selector: 'app-message-box',
   standalone: true,
-  imports: [],
+  imports: [MarkdownModule],
   templateUrl: './message-box.component.html',
   styleUrl: './message-box.component.scss'
 })
