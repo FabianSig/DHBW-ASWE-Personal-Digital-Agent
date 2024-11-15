@@ -5,7 +5,5 @@ export const environment = {
   apiUrlSpeisekarte: '/api/speisekarte',
   apiUrlAudio: '/api/chatgpt/audio',
   apiUrlPrefs: '/api/prefs',
-  apiUrlTrigger: '/api/logic/trigger',
-  apiUrlMorning: '/api/logic/morning',
-  apiUrlMittag: '/api/logic/mittag'
+  apiUrlTrigger: '/api/logic/trigger'
 };
