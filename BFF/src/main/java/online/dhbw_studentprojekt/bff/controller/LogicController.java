@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*")
 public class LogicController {
 
-    private final IntentionMessageService logicService;
+    private final IntentionMessageService intentionMessageService;
     private final TriggerService triggerService;
     private final RoutineService routineService;
 
     @PostMapping("/message")
     @ResponseStatus(HttpStatus.OK)
     public String sendMessage(@RequestBody MessageRequest request) {
-        return logicService.sendResponseMessage(request);
+        return intentionMessageService.getResponseMessage(request);
     }
 
     @GetMapping("/trigger")

@@ -1,5 +1,6 @@
 package online.dhbw_studentprojekt.msmaps.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import online.dhbw_studentprojekt.dto.routing.geocoding.GeoCodingResponse;
 import online.dhbw_studentprojekt.msmaps.service.GeoCodingService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ public class GeoCodingController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get the geocoding for a given address")
     public GeoCodingResponse getRouting(@RequestParam String address) {
         return geoCodingService.getGeoCoding(address);
     }

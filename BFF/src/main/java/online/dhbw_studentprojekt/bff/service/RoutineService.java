@@ -29,6 +29,13 @@ public class RoutineService {
     private final SpeisekarteClient speisekarteClient;
     private final NewsClient newsClient;
 
+    /**
+     * Retrieves the morning routine by gathering and processing user preferences for news topics and stock symbols,
+     * fetching the current news and stock data, and generating a ChatGPT-based summary.
+     *
+     * @return A string containing the generated morning routine, which includes summaries of the latest news
+     * and stock information.
+     */
     public String getMorningRoutine() {
         // Get prefs for news and stocks
         String newsTopic = prefsClient.getPreference("news-topics")
@@ -58,11 +65,19 @@ public class RoutineService {
         return chatGPTClient.getMorningRoutine(request).message().content();
     }
 
+    /**
+     * Retrieves the midday routine by determining the current date and adjusting for weekends,
+     * fetching a menu filtered by user-specified allergens, and generating a ChatGPT-based lunch
+     * suggestion.
+     *
+     * @return A string containing the ChatGPT generated message suggesting a lunch menu, including
+     * a greeting and menu details.
+     */
     public String getMittagRoutine() {
 
         LocalDate today = LocalDate.now();
 
-        // Wenn Wochenende, dann auf Montag setzen
+        // If weekend, set date to next monday
         if (today.getDayOfWeek().getValue() > 5) {
             today = today.plusDays(7L - today.getDayOfWeek().getValue());
         }
@@ -73,7 +88,7 @@ public class RoutineService {
 
         Speisekarte speisekarte = speisekarteClient.getSpeisekarteWithFilteredAllergene(today.toString(), allergene);
 
-        String prompt = "Bitte begrüße mich da es Mittagszeit ist und gebe ein Beispiel Menü für das Mittagessen aus.";
+        String prompt = "Bitte begrüße mich da es Mittagszeit ist und gebe ein mögliches Menü für das Mittagessen aus.";
 
         ChatMessageRequest chatRequest = new ChatMessageRequest(prompt,
                 "Speisekarte:" + speisekarte);

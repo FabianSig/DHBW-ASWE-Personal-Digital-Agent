@@ -52,7 +52,7 @@ services:
       - 8086:8080
     environment:
       - API_KEY=${MAPS_API_KEY}
-        - OUR_API_KEY=${OUR_API_KEY}
+      - OUR_API_KEY=${OUR_API_KEY}
 
   speisekarte:
     build:

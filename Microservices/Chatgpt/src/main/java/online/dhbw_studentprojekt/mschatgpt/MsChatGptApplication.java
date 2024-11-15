@@ -1,4 +1,4 @@
-package nikomitk.mschatgpt;
+package online.dhbw_studentprojekt.mschatgpt;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

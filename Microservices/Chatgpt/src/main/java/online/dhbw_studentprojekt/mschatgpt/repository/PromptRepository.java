@@ -1,6 +1,6 @@
-package nikomitk.mschatgpt.repository;
+package online.dhbw_studentprojekt.mschatgpt.repository;
 
-import nikomitk.mschatgpt.model.Prompt;
+import online.dhbw_studentprojekt.mschatgpt.model.Prompt;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
