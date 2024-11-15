@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ApiService} from './api.service';
 import {ChatService} from './chat.service';
-import {interval, timer} from 'rxjs';
+import {interval} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,6 @@ export class TriggerService {
     mittag: false,
     abend: false
   };
-  private isGloballyBlocked = false;
 
   constructor(
     private apiService: ApiService,
@@ -48,50 +47,31 @@ export class TriggerService {
   }
 
   private checkForTriggeredTimes() {
-    interval(1000).subscribe(() => { // Alle 60 Sekunden prüfen
+
+    interval(2000).subscribe(() => { // Alle 60 Sekunden prüfen
       const currentTime = new Date().toString().slice(16, 21);// HH:mm Format
-      Object.entries(this.triggerTimes).forEach(([routine, time]) => {
+      const triggerTimes = {...this.triggerTimes};
+      const intervals = [
+        { routine: '/api/logic/morning', start: "00:00", end: triggerTimes['/api/logic/mittag'] },
+        { routine: '/api/logic/mittag', start: triggerTimes['/api/logic/mittag'], end: triggerTimes['/api/logic/abend'] },
+        { routine: '/api/logic/abend', start: triggerTimes['/api/logic/abend'], end: "22:00" }
+      ];
 
-        this.triggerTimes['api/logic/mittag'] = '11:50'
-        // Prüfen, ob die aktuelle Zeit mit der geplanten Zeit übereinstimmt und die Routine noch nicht blockiert ist
+      const currentInterval = intervals.find(
+        ({ start, end }) => currentTime >= start && currentTime < end
+      );
 
-        delete this.triggerTimes['api/logic/morning']
-        if (currentTime >= time && !this.triggeredStatus[routine] && !this.isGloballyBlocked) {
-          this.executeRoutine(routine);
-          this.blockRoutine(routine); // Routine für eine Stunde blockieren
-          this.setGlobalBlock(); // Alle Routinen für eine Stunde blockieren
-        }
-        if (currentTime === time && !this.triggeredStatus[routine]) {
-          this.executeRoutine(routine);
-          this.blockRoutine(routine); // Routine für eine Stunde blockieren
-        }
-      });
+      if (currentInterval && !this.triggeredStatus[currentInterval.routine]) {
+        this.executeRoutine(currentInterval.routine);
+        this.blockRoutine(currentInterval.routine); //Routine blockieren, damit sie nicht mehrfach ausgeführt wird
+      }
     });
-  }
-
-  private setGlobalBlock() {
-    this.isGloballyBlocked = true; // Blockierung aktivieren
-    console.log('Alle Routinen sind nun für eine Stunde blockiert.');
-
-    // Timer, um die Blockierung nach einer Stunde wieder aufzuheben
-    timer(3600000).subscribe(() => { // 3600000 ms = 1 Stunde
-      this.isGloballyBlocked = false; // Blockierung aufheben
-      console.log('Alle Routinen sind wieder freigegeben und können erneut ausgelöst werden.');
-    });
-  }
-
-
-  private blockRoutine(routine: string) {
-    this.triggeredStatus[routine] = true;
-    setTimeout(() => {
-      this.triggeredStatus[routine] = false;
-    }, 3600000); // 1 Stunde in Millisekunden
   }
 
   private executeRoutine(url: string) {
     switch (url) {
       case '/api/logic/morning':
-        this.apiService.getMittagRoutine().subscribe((response: string) => {
+        this.apiService.getMorningRoutine().subscribe((response: string) => {
             this.chatService.addMessage(response, 'chatgpt');
           });
         break;
@@ -113,21 +93,19 @@ export class TriggerService {
     return localStorage.getItem('Weckerzeit');
   }
 
+  private blockRoutine(routine: string) {
+    this.triggeredStatus[routine] = true;
+  }
+
   private formatTriggerTime(time: string): string {
     // Prüfen, ob die Zeit bereits im HH:mm-Format vorliegt
     if (!time.includes('T')) {
       return time; // Rückgabe, falls es bereits das richtige Format ist
     }
-
-    // Wenn die Zeit im ISO-Format vorliegt, konvertiere in HH:mm
     const dateObj = new Date(time);
-    if (!isNaN(dateObj.getTime())) {
       const hours = dateObj.getHours().toString().padStart(2, '0');
       const minutes = dateObj.getMinutes().toString().padStart(2, '0');
-      return `${hours}:${minutes}`;
-    } else {
-      console.warn(`Ungültiges Datum für Trigger: ${time}`);
-      return "24:00"; // Fallback-Zeit bei ungültigen Daten
-    }
+      return `${hours}:${minutes}`; //Rückgabe im HH:mm-Format
+
   }
 }
