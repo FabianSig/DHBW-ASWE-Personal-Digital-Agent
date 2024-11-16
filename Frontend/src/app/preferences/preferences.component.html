@@ -62,66 +62,116 @@
 
     <div class="mb-5">
       <h2 class="text-secondary">Allergene</h2>
-      <div formGroupName="allergens" class="d-flex flex-column ms-3">
-        <div class="form-check form-switch">
-          <input type="checkbox" formControlName="Ei" id="allergenEi" class="form-check-input toggle-switch">
-          <label for="allergenEi" class="form-check-label ms-2">(Ei) Ei</label>
+      <div formGroupName="allergens" class="d-flex flex-row ms-3">
+        <div class="me-5">
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="Ei" id="allergenEi" class="form-check-input toggle-switch">
+            <label for="allergenEi" class="form-check-label ms-2">(Ei) Ei</label>
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="En" id="allergenEn" class="form-check-input toggle-switch">
+            <label for="allergenEn" class="form-check-label ms-2">(En) Erdnuss</label>
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="Fi" id="allergenFi" class="form-check-input toggle-switch">
+            <label for="allergenFi" class="form-check-label ms-2">(Fi) Fisch</label>
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="GID" id="allergenGID" class="form-check-input toggle-switch">
+            <label for="allergenGID" class="form-check-label ms-2">(GID) Dinkel</label>
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="GIG" id="allergenGIG" class="form-check-input toggle-switch">
+            <label for="allergenGIG" class="form-check-label ms-2">(GIG) Gerste</label>
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="GIH" id="allergenGIH" class="form-check-input toggle-switch">
+            <label for="allergenGIH" class="form-check-label ms-2">(GIH) Hafer</label>
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="GIKW" id="allergenGIKW" class="form-check-input toggle-switch">
+            <label for="allergenGIKW" class="form-check-label ms-2">(GIKW) Khorasan-Weizen</label>
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="GIR" id="allergenGIR" class="form-check-input toggle-switch">
+            <label for="allergenGIR" class="form-check-label ms-2">(GIR) Roggen</label>
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="GIW" id="allergenGIW" class="form-check-input toggle-switch">
+            <label for="allergenGIW" class="form-check-label ms-2">(GIW) Weizen</label>
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="Kr" id="allergenKr" class="form-check-input toggle-switch">
+            <label for="allergenKr" class="form-check-label ms-2">(Kr) Krebstiere (Krusten- und Schalentiere)</label>
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="La" id="allergenLa" class="form-check-input toggle-switch">
+            <label for="allergenLa" class="form-check-label ms-2">(La) Milch und Laktose</label>
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="Lu" id="allergenLu" class="form-check-input toggle-switch">
+            <label for="allergenLu" class="form-check-label ms-2">(Lu) Lupine</label>
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="NuC" id="allergenNuC" class="form-check-input toggle-switch">
+            <label for="allergenNuC" class="form-check-label ms-2">(NuC) Cashewnüsse</label>
+          </div>
         </div>
-        <div class="form-check form-switch">
-          <input type="checkbox" formControlName="En" id="allergenEn" class="form-check-input toggle-switch">
-          <label for="allergenEn" class="form-check-label ms-2">(En) Erdnuss</label>
-        </div>
-        <div class="form-check form-switch">
-          <input type="checkbox" formControlName="Fi" id="allergenFi" class="form-check-input toggle-switch">
-          <label for="allergenFi" class="form-check-label ms-2">(Fi) Fisch</label>
-        </div>
-        <div class="form-check form-switch">
-          <input type="checkbox" formControlName="GID" id="allergenGID" class="form-check-input toggle-switch">
-          <label for="allergenGID" class="form-check-label ms-2">(GID) Dinkel</label>
-        </div>
-        <div class="form-check form-switch">
-          <input type="checkbox" formControlName="GIG" id="allergenGIG" class="form-check-input toggle-switch">
-          <label for="allergenGIG" class="form-check-label ms-2">(GIG) Gerste</label>
-        </div>
-        <div class="form-check form-switch">
-          <input type="checkbox" formControlName="GIH" id="allergenGIH" class="form-check-input toggle-switch">
-          <label for="allergenGIH" class="form-check-label ms-2">(GIH) Hafer</label>
-        </div>
-        <div class="form-check form-switch">
-          <input type="checkbox" formControlName="GIKW" id="allergenGIKW" class="form-check-input toggle-switch">
-          <label for="allergenGIKW" class="form-check-label ms-2">(GIKW) Khorasan-Weizen</label>
-        </div>
-        <div class="form-check form-switch">
-          <input type="checkbox" formControlName="GIR" id="allergenGIR" class="form-check-input toggle-switch">
-          <label for="allergenGIR" class="form-check-label ms-2">(GIR) Roggen</label>
-        </div>
-        <div class="form-check form-switch">
-          <input type="checkbox" formControlName="GIW" id="allergenGIW" class="form-check-input toggle-switch">
-          <label for="allergenGIW" class="form-check-label ms-2">(GIW) Weizen</label>
-        </div>
-        <div class="form-check form-switch">
-          <input type="checkbox" formControlName="Kr" id="allergenKr" class="form-check-input toggle-switch">
-          <label for="allergenKr" class="form-check-label ms-2">(Kr) Krebstiere (Krusten- und Schalentiere)</label>
-        </div>
-        <div class="form-check form-switch">
-          <input type="checkbox" formControlName="La" id="allergenLa" class="form-check-input toggle-switch">
-          <label for="allergenLa" class="form-check-label ms-2">(La) Milch und Laktose</label>
-        </div>
-        <div class="form-check form-switch">
-          <input type="checkbox" formControlName="Lu" id="allergenLu" class="form-check-input toggle-switch">
-          <label for="allergenLu" class="form-check-label ms-2">(Lu) Lupine</label>
-        </div>
-        <div class="form-check form-switch">
-          <input type="checkbox" formControlName="NuC" id="allergenNuC" class="form-check-input toggle-switch">
-          <label for="allergenNuC" class="form-check-label ms-2">(NuC) Cashewnüsse</label>
-        </div>
-        <div class="form-check form-switch">
-          <input type="checkbox" formControlName="NuH" id="allergenNuH" class="form-check-input toggle-switch">
-          <label for="allergenNuH" class="form-check-label ms-2">(NuH) Haselnüsse</label>
-        </div>
-        <div class="form-check form-switch">
-          <input type="checkbox" formControlName="NuM" id="allergenNuM" class="form-check-input toggle-switch">
-          <label for="allergenNuM" class="form-check-label ms-2">(NuM) Mandeln</label>
+
+        <div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="NuH" id="allergenNuH" class="form-check-input toggle-switch">
+            <label for="allergenNuH" class="form-check-label ms-2">(NuH) Haselnüsse</label>
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="NuM" id="allergenNuM" class="form-check-input toggle-switch">
+            <label for="allergenNuM" class="form-check-label ms-2">(NuM) Mandeln</label>
+          </div>
+          <!-- New allergens from the image -->
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="NuMa" id="allergenNuMa" class="form-check-input toggle-switch">
+            <label for="allergenNuMa" class="form-check-label ms-2">(NuMa) Macadamianüsse</label>
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="NuPa" id="allergenNuPa" class="form-check-input toggle-switch">
+            <label for="allergenNuPa" class="form-check-label ms-2">(NuPa) Paranüsse</label>
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="NuPe" id="allergenNuPe" class="form-check-input toggle-switch">
+            <label for="allergenNuPe" class="form-check-label ms-2">(NuPe) Pecannüsse</label>
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="NuPi" id="allergenNuPi" class="form-check-input toggle-switch">
+            <label for="allergenNuPi" class="form-check-label ms-2">(NuPi) Pistazien</label>
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="NuW" id="allergenNuW" class="form-check-input toggle-switch">
+            <label for="allergenNuW" class="form-check-label ms-2">(NuW) Walnüsse</label>
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="Se" id="allergenSe" class="form-check-input toggle-switch">
+            <label for="allergenSe" class="form-check-label ms-2">(Se) Sesam</label>
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="Sf" id="allergenSf" class="form-check-input toggle-switch">
+            <label for="allergenSf" class="form-check-label ms-2">(Sf) Senf</label>
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="Sl" id="allergenSl" class="form-check-input toggle-switch">
+            <label for="allergenSl" class="form-check-label ms-2">(Sl) Sellerie</label>
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="So" id="allergenSo" class="form-check-input toggle-switch">
+            <label for="allergenSo" class="form-check-label ms-2">(So) Soja</label>
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="Sw" id="allergenSw" class="form-check-input toggle-switch">
+            <label for="allergenSw" class="form-check-label ms-2">(Sw) Schwefeldioxid und Sulfite</label>
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="Wt" id="allergenWt" class="form-check-input toggle-switch">
+            <label for="allergenWt" class="form-check-label ms-2">(Wt) Weichtiere</label>
+          </div>
         </div>
       </div>
     </div>
