@@ -257,6 +257,22 @@ public class SpeisekarteServiceTest {
     }
 
     @Test
+    void testGetSpeisekarteWithNullAllergenList() {
+        // Arrange
+        String testDate = "2024-10-25";
+        // Mocking Client Behavior
+        when(speisekarteClient.getSpeisekarte(any())).thenReturn(mockHtml);
+
+        // Act
+        Speisekarte result = speisekarteService.getSpeisekarteWithFilteredAllergene(Optional.of(testDate), null);
+
+        // Assert
+        assertNotNull(result, "Speisekarte should not be null for a weekday with no allergen filtering");
+        verify(speisekarteClient, times(1)).getSpeisekarte(any());
+        assertEquals(speisekarte, result, "Speisekarte should be unfiltered when allergen list is empty");
+    }
+
+    @Test
     void testGetSpeisekarteWithMultipleAllergens() {
         // Arrange
         String testDate = "2024-10-25";

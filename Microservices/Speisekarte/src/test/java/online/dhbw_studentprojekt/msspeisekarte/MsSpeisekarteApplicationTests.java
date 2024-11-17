@@ -9,5 +9,9 @@ class MsSpeisekarteApplicationTests {
     @Test
     void contextLoads() {
     }
-
+    @Test
+    public void testMainMethod() {
+        String[] args = {}; // Provide arguments if necessary
+        MsSpeisekarteApplication.main(args);
+    }
 }
