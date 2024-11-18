@@ -40,6 +40,8 @@ export class MessageBoxComponent implements OnInit, AfterViewChecked {
 
   scrollToBottom() {
     // scroll to the bottom of the chat
-    this.scrollAnchor?.nativeElement.scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => {
+      this.scrollAnchor?.nativeElement.scrollIntoView({ behavior: 'smooth' });
+    }, 500); // Delay of 500 milliseconds
   }
 }
