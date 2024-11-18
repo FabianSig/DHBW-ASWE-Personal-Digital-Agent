@@ -31,7 +31,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   private updateDateTime() {
     const dateTime = new Date();
-    this.day = dateTime.toISOString().split('T')[0];
+    const day = String(dateTime.getDate()).padStart(2, '0');
+    const month = String(dateTime.getMonth() + 1).padStart(2, '0'); // +1, because months fo from 0 to 11
+    const year = dateTime.getFullYear();
+
+    this.day = `${day}.${month}.${year}`;
     this.time = dateTime.toTimeString().split(' ')[0];
   }
 
