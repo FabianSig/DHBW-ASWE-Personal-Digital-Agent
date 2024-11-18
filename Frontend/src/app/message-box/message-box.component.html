@@ -1,9 +1,13 @@
 <div id="chatBox" class="overflow-y-auto">
   @for(message of messages; track message.id) {
     <div class="d-flex {{ message.sender == 'user' ? 'justify-content-end' : 'justify-content-start' }} my-2">
-      <div class="message-bubble text-break shadow {{ message.sender == 'user' ? 'sender' : 'receiver' }} d-inline-block mx-3 my-2 p-2 border rounded overflow-hidden">
-        <p class="px-2 mb-0 " >{{ message.text }}</p>
-     </div>
+      <div class="message-bubble text-break shadow {{ message.sender == 'user' ? 'sender' : 'receiver' }} mx-3 my-2 px-3 pt-2 border rounded overflow-hidden">
+        <markdown
+          lineNumbers
+          [start]="5">
+          {{ message.text }}
+        </markdown>
+      </div>
     </div>
   }
 
