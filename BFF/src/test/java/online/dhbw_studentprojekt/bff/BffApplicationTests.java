@@ -12,4 +12,9 @@ class BffApplicationTests {
     void contextLoads() {
     }
 
+    @Test
+    public void testMainMethod() {
+        String[] args = {}; // Provide arguments if necessary
+        BFFApplication.main(args);
+    }
 }
