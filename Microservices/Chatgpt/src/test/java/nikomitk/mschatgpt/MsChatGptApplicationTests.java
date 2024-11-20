@@ -9,5 +9,9 @@ class MsChatGptApplicationTests {
     @Test
     void contextLoads() {
     }
-
+    @Test
+    public void testMainMethod() {
+        String[] args = {}; // Provide arguments if necessary
+        MsChatGptApplication.main(args);
+    }
 }
