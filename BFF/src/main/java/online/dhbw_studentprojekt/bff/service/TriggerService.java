@@ -8,8 +8,11 @@ import online.dhbw_studentprojekt.dto.trigger.Trigger;
 import online.dhbw_studentprojekt.dto.trigger.TriggerResponse;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +26,21 @@ public class TriggerService {
         List<Trigger> triggers = new ArrayList<>();
 
         RaplaResponse raplaResponse = raplaClient.getLectureTimes(date);
-        String triggerWecker = prefsClient.getPreference("wecker-" + date).map(pref -> pref.value().getFirst()).orElse("08:00");
+        String triggerWecker = prefsClient.getPreference("wecker-" + date).map(pref -> pref.value()
+                                            .getFirst())
+                                            .orElseGet(() -> {
+                                                ZoneId zoneId = ZoneId.of("Europe/Berlin"); // Replace with your desired timezone
+
+                                                // Get today's date at 8:00 AM
+                                                LocalDateTime localDateTime = LocalDateTime.now(zoneId).withHour(8).withMinute(0).withSecond(0).withNano(0);
+
+                                                // Convert to ZonedDateTime
+                                                ZonedDateTime zonedDateTime = localDateTime.atZone(zoneId);
+
+                                                // Format as ISO 8601
+                                                String isoTime = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                                                return isoTime;
+                                            });
 
         triggers.add(new Trigger("/api/logic/morning", triggerWecker));
         triggers.add(new Trigger("/api/logic/mittag", raplaResponse.end_of_first_lecture()));

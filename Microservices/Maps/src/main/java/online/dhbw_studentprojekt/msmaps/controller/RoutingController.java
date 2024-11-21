@@ -1,5 +1,7 @@
 package online.dhbw_studentprojekt.msmaps.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import online.dhbw_studentprojekt.dto.routing.custom.DirectionResponse;
 import online.dhbw_studentprojekt.msmaps.service.RoutingService;
 import lombok.RequiredArgsConstructor;
 import online.dhbw_studentprojekt.dto.routing.custom.RouteAddressRequest;
@@ -17,6 +19,7 @@ public class RoutingController {
 
     @PostMapping("/route")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get the route between two points")
     public RouteResponse getRouting(@RequestBody RouteRequest request) {
 
         return routingService.getRoute(request);
@@ -24,13 +27,16 @@ public class RoutingController {
 
     @PostMapping("/address")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get the route between two addresses")
     public RouteResponse getRoutingByAddress(@RequestBody RouteAddressRequest request) {
 
         return routingService.getRouteByAddress(request);
     }
 
     @PostMapping("/directions")
-    String getDirections(@RequestBody RouteAddressRequest request) {
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get the directions between two addresses")
+    DirectionResponse getDirections(@RequestBody RouteAddressRequest request) {
 
         return routingService.getDirections(request);
     }

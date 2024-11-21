@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {ApiService} from '../services/api.service';
 
@@ -11,7 +11,7 @@ import {ApiService} from '../services/api.service';
   templateUrl: './preferences.component.html',
   styleUrl: './preferences.component.scss'
 })
-export class PreferencesComponent {
+export class PreferencesComponent implements OnInit {
   preferencesForm: FormGroup;
   preferencesJson = '';
 
@@ -49,14 +49,36 @@ export class PreferencesComponent {
         Lu: false,
         NuC: false,
         NuH: false,
-        NuM: false
+        NuM: false,
+        NuMa: false,
+        NuPa: false,
+        NuPe: false,
+        NuPi: false,
+        NuW: false,
+        Se: false,
+        Sf: false,
+        Sl: false,
+        So: false,
+        Sw: false,
+        Wt: false
       })
     });
+  }
+
+  ngOnInit() {
+    // Load existing preferences from localStorag
+    const savedPreferences = localStorage.getItem('preferences');
+    if (savedPreferences) {
+      this.preferencesForm.setValue(JSON.parse(savedPreferences));
+    }
   }
 
   onSubmit() {
     const formData = this.preferencesForm.value;
     this.preferencesJson = JSON.stringify(formData);
+
+    // Save the preferences in localStorage
+    localStorage.setItem('preferences', this.preferencesJson);
 
     // set alarm
     const alarmId = "wecker-" + formData.alarm.alarmDate;

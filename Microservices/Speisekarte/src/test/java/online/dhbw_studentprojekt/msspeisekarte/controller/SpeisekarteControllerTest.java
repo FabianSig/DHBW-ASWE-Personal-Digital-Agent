@@ -1,5 +1,6 @@
 package online.dhbw_studentprojekt.msspeisekarte.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 import online.dhbw_studentprojekt.msspeisekarte.service.SpeisekarteService;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,14 +13,17 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*; // For .param
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 
 
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SpeisekarteController.class)
@@ -214,5 +218,49 @@ public class SpeisekarteControllerTest {
                         .param("datum", invalidDate)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound()); // Expect a 404 Not Found
+    }
+
+    @Test
+    void testGetSpeisekarteWithFilteredAllergene() throws Exception {
+        // Arrange
+        String testDate = "2024-10-25";
+        List<String> allergensToFilter = List.of("S"); // filter out Speisen containing "S"
+
+        Speisekarte expectedFilteredSpeisekarte = new Speisekarte(
+                // filter out "Rote Linsensuppe"
+                List.of(),
+                // VeganerRenner - no change
+                speisekarte.veganerRenner(),
+                // Hauptgericht - no change
+                speisekarte.hauptgericht(),
+                // filter out "Gebratene Kartoffeln"
+                speisekarte.beilagen().subList(0,1),
+                // Salat, Dessert, and Buffet - no change as none contain "S"
+                speisekarte.salat(),
+                speisekarte.dessert(),
+                speisekarte.buffet()
+        );
+
+        // Mocking Service
+        when(speisekarteService.getSpeisekarteWithFilteredAllergene(Optional.of(testDate), allergensToFilter)).thenReturn(expectedFilteredSpeisekarte);
+
+        // Act
+        String jsonResponse = mockMvc.perform(get("/api/speisekarte/allergene")
+                        .param("datum", testDate)
+                        .param("allergene", allergensToFilter.toArray(new String[0]))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // Assert 404 status code
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+
+        // Deserialize the JSON into Speisekarte (if needed)
+        ObjectMapper objectMapper = new ObjectMapper();
+        Speisekarte result = objectMapper.readValue(jsonResponse, Speisekarte.class);
+
+
+        // Assert
+        verify(speisekarteService, times(1)).getSpeisekarteWithFilteredAllergene(any(), any());
+        assertEquals(expectedFilteredSpeisekarte, result, "Filtered Speisekarte does not match expected result");
     }
 }

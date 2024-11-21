@@ -1,5 +1,6 @@
 package online.dhbw_studentprojekt.mswetter.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import online.dhbw_studentprojekt.dto.wetter.Wetter;
 import online.dhbw_studentprojekt.mswetter.service.WetterService;
@@ -18,6 +19,7 @@ public class WetterController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get the current weather")
     public Wetter getWetter() {
 
         return wetterService.getWetter();

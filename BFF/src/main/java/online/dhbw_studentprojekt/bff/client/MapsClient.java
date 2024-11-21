@@ -1,5 +1,6 @@
 package online.dhbw_studentprojekt.bff.client;
 
+import online.dhbw_studentprojekt.dto.routing.custom.DirectionResponse;
 import online.dhbw_studentprojekt.dto.routing.custom.RouteAddressRequest;
 import online.dhbw_studentprojekt.dto.routing.routing.RouteResponse;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,5 +11,5 @@ public interface MapsClient {
     RouteResponse getRouting(@RequestBody RouteAddressRequest request);
 
     @PostExchange("api/routing/directions")
-    String getDirections(@RequestBody RouteAddressRequest request);
+    DirectionResponse getDirections(@RequestBody RouteAddressRequest request);
 }

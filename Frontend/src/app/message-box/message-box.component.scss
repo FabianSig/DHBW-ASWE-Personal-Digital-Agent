@@ -1,24 +1,57 @@
-  #chatBox {
-    min-height: 40vh;
-    max-height: 40vh;
-    border-top: 1px solid #ddd;
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-    box-shadow: 0 0 10px lightgrey;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-  }
+#chatBox {
+  min-height: 40vh;
+  max-height: 40vh;
+  border-top: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  box-shadow: 0 0 10px lightgrey;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
 
-  .message-bubble {
-    max-width: 70%;
-    position: relative;
-  }
+.message-bubble {
+  max-width: 70%;
+  position: relative;
+}
 
-  .sender {
-    background-color: #cacefc;
-  }
+.sender {
+  background-color: #cacefc;
+}
 
-  .receiver {
-    background-color: #ebe8e8;
+.receiver {
+  background-color: #ebe8e8;
+}
+
+.loading-animation {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background-color: #3F3F95;
+  border-radius: 50%;
+  animation: bounce 0.6s infinite alternate;
+}
+
+/* Verzögerung für die zweite und dritte Kugel */
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+  from {
+    transform: translateY(0);
   }
+  to {
+    transform: translateY(-10px); /* Höhe des Sprungs */
+  }
+}
+
 
