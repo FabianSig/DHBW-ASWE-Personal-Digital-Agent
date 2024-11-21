@@ -1,7 +1,7 @@
-package nikomitk.mschatgpt.controller;
+package online.dhbw_studentprojekt.mschatgpt.controller;
 
-import nikomitk.mschatgpt.dto.audio.ChatGPTAudioRequest;
-import nikomitk.mschatgpt.service.ChatGPTService;
+import online.dhbw_studentprojekt.mschatgpt.dto.audio.ChatGPTAudioRequest;
+import online.dhbw_studentprojekt.mschatgpt.service.ChatGPTService;
 import online.dhbw_studentprojekt.dto.chatgpt.audio.ChatGPTAudioResponse;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionAttribute;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse;
