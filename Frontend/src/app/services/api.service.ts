@@ -1,17 +1,18 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {environment} from '../../environments/environment';
+
+const localHost = "http://localhost:8080";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = "http://localhost:8080"
-  private apiUrlChatgpt = "http://localhost:8080" + environment.apiUrlLogic;
-  private apiUrlSpeisekarte = "http://localhost:8080" + environment.apiUrlSpeisekarte;
-  private apiUrlAudio = "http://localhost:8080" + environment.apiUrlAudio;
-  private apiUrlPrefs = "http://localhost:8080" + environment.apiUrlPrefs;
-  private apiUrlTrigger = "http://localhost:8080" + environment.apiUrlTrigger;
+  private baseUrl = localHost
+  private apiUrlChatgpt = localHost + '/api/logic/message'
+  private apiUrlSpeisekarte = localHost + '/api/speisekarte';
+  private apiUrlAudio = localHost + '/api/chatgpt/audio';
+  private apiUrlPrefs = localHost + '/api/prefs';
+  private apiUrlTrigger = localHost + '/api/logic/trigger';
 
   constructor(private http: HttpClient) {}
 
