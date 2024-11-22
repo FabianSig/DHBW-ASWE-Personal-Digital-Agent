@@ -13,6 +13,7 @@ export class ApiService {
   private apiUrlAudio = localHost + '/api/chatgpt/audio';
   private apiUrlPrefs = localHost + '/api/prefs';
   private apiUrlTrigger = localHost + '/api/logic/trigger';
+  private apiUrlTts = localHost + '/api/chatgpt/tts';
 
   constructor(private http: HttpClient) {}
 
@@ -53,5 +54,7 @@ export class ApiService {
     return this.http.get(this.baseUrl + route, { responseType: 'text' });
   }
 
-
+  getTtsAudioFile(text: string) {
+    return this.http.post(this.apiUrlTts, {text}, { responseType: 'blob' });
+  }
 }
