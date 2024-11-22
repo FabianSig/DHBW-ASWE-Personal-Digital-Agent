@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {ApiService} from '../services/api.service';
+import { TriggerService } from '../services/trigger.service';
 
 @Component({
   selector: 'app-preferences',
@@ -15,7 +16,7 @@ export class PreferencesComponent implements OnInit {
   preferencesForm: FormGroup;
   preferencesJson = '';
 
-  constructor(private fb: FormBuilder, private apiService: ApiService) {
+  constructor(private fb: FormBuilder, private apiService: ApiService, private triggerService: TriggerService) {
     this.preferencesForm = this.fb.group({
       transportation: this.fb.group({
         onFoot: false,
@@ -86,6 +87,7 @@ export class PreferencesComponent implements OnInit {
 
     this.apiService.setAlarmPreference(alarmId, alarmValue).subscribe(() => {
       console.log("Wecker gestellt");
+      this.triggerService.reload();
     })
 
     // set allergene

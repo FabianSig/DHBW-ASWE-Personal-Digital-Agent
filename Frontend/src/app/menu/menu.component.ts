@@ -17,7 +17,6 @@ export class MenuComponent {
   handleMenu(menuDate: HTMLInputElement) {
     this.apiService.getMenuData(menuDate.value).subscribe({
       next: (res) => {
-        console.log(res);
         this.menuResponseEmitter.emit(res as MenuResponse);
       },
       error: (error) => {

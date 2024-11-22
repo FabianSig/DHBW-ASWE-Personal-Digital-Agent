@@ -2,6 +2,7 @@ package online.dhbw_studentprojekt.mschatgpt.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import online.dhbw_studentprojekt.mschatgpt.service.ChatGPTService;
 import online.dhbw_studentprojekt.dto.chatgpt.audio.ChatGPTAudioResponse;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse;
@@ -9,11 +10,14 @@ import online.dhbw_studentprojekt.dto.chatgpt.morning.MorningRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTMessage;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import online.dhbw_studentprojekt.mschatgpt.dto.audio.ChatGPTAudioRequest;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/chatgpt")
 @RequiredArgsConstructor
@@ -56,6 +60,21 @@ public class ChatGPTController {
     @Operation(summary = "Get a morning message.")
     public ChatGPTResponseChoice getMorning(@RequestBody  MorningRequest request) {
         return chatGPTService.getMorning(request);
+    }
+
+    @PostMapping(value = "/tts", produces = "audio/mpeg")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get TTS.")
+    public ResponseEntity<byte[]> getMorning(@RequestBody String message) {
+        byte[] audioData = chatGPTService.getTTS(message);
+        log.info("TTS: {}", audioData);
+        // Set response headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, "audio/mpeg");
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"speech.mp3\"");
+
+        // Return the audio data as a response
+        return new ResponseEntity<>(audioData, headers, HttpStatus.OK);
     }
     
 }
