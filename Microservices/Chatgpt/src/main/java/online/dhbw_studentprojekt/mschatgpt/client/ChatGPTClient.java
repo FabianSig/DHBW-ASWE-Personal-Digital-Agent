@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.service.annotation.PostExchange;
 
+import java.util.Map;
+
 public interface ChatGPTClient {
 
     @PostExchange("v1/chat/completions")
@@ -21,4 +23,8 @@ public interface ChatGPTClient {
     ChatGPTAudioResponse sendAudio(@RequestPart("file") MultipartFile file,
                                    @RequestPart("model") String model,
                                    @RequestPart("language") String language);
+
+    @PostExchange(value = "v1/audio/speech", contentType = "application/json")
+    byte[] getTTS(@RequestBody Map<String, String> request);
+
 }
