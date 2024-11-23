@@ -29,22 +29,37 @@ public class TriggerService {
         String triggerWecker = prefsClient.getPreference("wecker-" + date).map(pref -> pref.value()
                                             .getFirst())
                                             .orElseGet(() -> {
-                                                ZoneId zoneId = ZoneId.of("Europe/Berlin"); // Replace with your desired timezone
-
-                                                // Get today's date at 8:00 AM
+                                                ZoneId zoneId = ZoneId.of("Europe/Berlin");
                                                 LocalDateTime localDateTime = LocalDateTime.now(zoneId).withHour(8).withMinute(0).withSecond(0).withNano(0);
-
-                                                // Convert to ZonedDateTime
                                                 ZonedDateTime zonedDateTime = localDateTime.atZone(zoneId);
-
-                                                // Format as ISO 8601
-                                                String isoTime = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-                                                return isoTime;
+                                                return zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
                                             });
 
         triggers.add(new Trigger("/api/logic/morning", triggerWecker));
         triggers.add(new Trigger("/api/logic/mittag", raplaResponse.end_of_first_lecture()));
         triggers.add(new Trigger("/api/logic/abend", raplaResponse.end_of_last_lecture()));
+
+        return new TriggerResponse(triggers);
+    }
+
+    public TriggerResponse getMockTrigger(String date) {
+
+        List<Trigger> triggers = new ArrayList<>();
+
+        String triggerWecker = prefsClient.getPreference("wecker-" + date).map(pref -> pref.value()
+                        .getFirst())
+                .orElseGet(() -> {
+                    ZoneId zoneId = ZoneId.of("Europe/Berlin");
+                    LocalDateTime localDateTime = LocalDateTime.now(zoneId).withHour(8).withMinute(0).withSecond(0).withNano(0);
+                    ZonedDateTime zonedDateTime = localDateTime.atZone(zoneId);
+                    return zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                });
+
+        LocalDate now = LocalDateTime.now().toLocalDate();
+
+        triggers.add(new Trigger("/api/logic/morning", triggerWecker));
+        triggers.add(new Trigger("/api/logic/mittag", now.atTime(12, 0).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
+        triggers.add(new Trigger("/api/logic/abend", now.atTime(16, 0).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
 
         return new TriggerResponse(triggers);
     }
