@@ -10,6 +10,8 @@ import {HeaderComponent} from './header/header.component';
 import {ChatComponent} from './chat/chat.component';
 import {FormsModule} from '@angular/forms';
 import {AuthPopupComponent} from './auth-popup/auth-popup.component';
+import {TriggerService} from './services/trigger.service';
+import {ApiService} from './services/api.service';
 
 @Component({
   selector: 'app-root',
@@ -23,6 +25,9 @@ export class AppComponent implements OnInit {
   chatFullscreen = true;
   preferencesOpen = false;
 
+  constructor(private triggerService: TriggerService) {
+  }
+
   onMenuResponse(response: MenuResponse): void {
     this.menuResponse = response;
   }
@@ -30,6 +35,8 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.checkForAuthKey();
   }
+
+
 
   checkForAuthKey() {
     const authKey = localStorage.getItem('authKey');

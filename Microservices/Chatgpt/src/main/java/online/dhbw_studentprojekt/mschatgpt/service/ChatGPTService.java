@@ -18,6 +18,7 @@ import online.dhbw_studentprojekt.mschatgpt.repository.PromptRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
@@ -188,6 +189,16 @@ public class ChatGPTService {
         ChatGPTResponse response = chatGPTClient.sendMessage(chatGPTRequest);
 
         return response.choices().getFirst();
+    }
+
+    public byte[]  getTTS(String message){
+
+        Map<String, String> requestBody = Map.of(
+                "voice", "alloy",
+                "model", "tts-1",
+                "input", message
+        );
+        return chatGPTClient.getTTS(requestBody);
     }
 
 }

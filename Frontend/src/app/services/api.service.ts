@@ -1,15 +1,18 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {environment} from '../../environments/environment';
+
+const localHost = "http://localhost:8080";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrlChatgpt = "http://localhost:8080" + environment.apiUrlLogic;
-  private apiUrlSpeisekarte = "http://localhost:8080" + environment.apiUrlSpeisekarte;
-  private apiUrlAudio = "http://localhost:8080" + environment.apiUrlAudio;
-  private apiUrlPrefs = "http://localhost:8080" + environment.apiUrlPrefs;
+  private baseUrl = localHost
+  private apiUrlChatgpt = localHost + '/api/logic/message'
+  private apiUrlSpeisekarte = localHost + '/api/speisekarte';
+  private apiUrlAudio = localHost + '/api/chatgpt/audio';
+  private apiUrlPrefs = localHost + '/api/prefs';
+  private apiUrlTrigger = localHost + '/api/logic/trigger';
 
   constructor(private http: HttpClient) {}
 
@@ -39,4 +42,16 @@ export class ApiService {
     const body = { id: "allergene", value: allergene};
     return this.http.post(this.apiUrlPrefs, body);
   }
+
+  getTriggerData(date: string) {
+    return this.http.get(this.apiUrlTrigger, {
+      params: {date: date}
+    });
+  }
+
+  executeCustomTriggerRoutine(route: string) {
+    return this.http.get(this.baseUrl + route, { responseType: 'text' });
+  }
+
+
 }
