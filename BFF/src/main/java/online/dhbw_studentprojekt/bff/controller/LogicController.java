@@ -28,7 +28,7 @@ public class LogicController {
     @GetMapping("/trigger")
     @ResponseStatus(HttpStatus.OK)
     public TriggerResponse getTrigger(@RequestParam String date) {
-        return triggerService.getTrigger(date);
+        return triggerService.getMockTrigger(date);
     }
 
     @GetMapping("/morning")
