@@ -1,42 +1,25 @@
 import {Component, OnInit} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import {SearchBarComponent} from './search-bar/search-bar.component';
-import {MenuComponent} from './menu/menu.component';
-import {MenuResponse} from './interfaces/menu-response';
-import {AudioRecorderComponent} from './audio-recorder/audio-recorder.component';
-import {AlarmClockComponent} from './alarm-clock/alarm-clock.component';
 import {PreferencesComponent} from './preferences/preferences.component';
 import {HeaderComponent} from './header/header.component';
-import {ChatComponent} from './chat/chat.component';
 import {FormsModule} from '@angular/forms';
 import {AuthPopupComponent} from './auth-popup/auth-popup.component';
-import {TriggerService} from './services/trigger.service';
-import {ApiService} from './services/api.service';
+import {MessageBoxComponent} from './chat-box/message-box.component';
+import {SearchBarComponent} from './chat-input/search-bar.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, SearchBarComponent, MenuComponent, AudioRecorderComponent, AlarmClockComponent, PreferencesComponent, HeaderComponent, FormsModule, AuthPopupComponent, ChatComponent],
+  imports: [RouterOutlet, PreferencesComponent, HeaderComponent, FormsModule, AuthPopupComponent, MessageBoxComponent, SearchBarComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
-  menuResponse?: MenuResponse;
-  chatFullscreen = true;
   preferencesOpen = false;
-
-  constructor(private triggerService: TriggerService) {
-  }
-
-  onMenuResponse(response: MenuResponse): void {
-    this.menuResponse = response;
-  }
 
   ngOnInit() {
     this.checkForAuthKey();
   }
-
-
 
   checkForAuthKey() {
     const authKey = localStorage.getItem('authKey');
@@ -58,10 +41,6 @@ export class AppComponent implements OnInit {
     if (popupElement) {
       popupElement.classList.remove('hidden');
     }
-  }
-
-  changeChatFullscreen() {
-    this.chatFullscreen = !this.chatFullscreen;
   }
 
   changePreferencesOpen() {
