@@ -1,4 +1,4 @@
-<div class="d-flex flex-column justify-content-center align-items-center p-5 my-5 w-75 h-100 bg-light border rounded shadow mx-auto">
+<div class="d-flex flex-column justify-content-center align-items-center p-5 my-3 w-75 h-100 bg-light border rounded shadow mx-auto">
   <h1 class="mb-4">Präferenzen</h1>
 
   <form [formGroup]="preferencesForm" (ngSubmit)="onSubmit()" class="w-75">
@@ -193,11 +193,4 @@
       <button type="submit" class="btn">Präferenzen speichern</button>
     </div>
   </form>
-
-  @if(preferencesForm.valid) {
-    <div class="w-75 mt-5">
-      <h3 class="text-secondary">Übermittelte Daten:</h3>
-      <pre class="bg-light p-3 border rounded">{{ preferencesJson }}</pre>
-    </div>
-  }
 </div>
