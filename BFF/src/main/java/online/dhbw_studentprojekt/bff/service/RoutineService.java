@@ -5,14 +5,19 @@ import lombok.extern.slf4j.Slf4j;
 import online.dhbw_studentprojekt.bff.client.*;
 import online.dhbw_studentprojekt.dto.chatgpt.morning.MorningRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
+import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatId;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
 import online.dhbw_studentprojekt.dto.news.Article;
 import online.dhbw_studentprojekt.dto.prefs.Preference;
+import online.dhbw_studentprojekt.dto.routing.custom.DirectionResponse;
+import online.dhbw_studentprojekt.dto.routing.custom.RouteAddressRequest;
 import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 import online.dhbw_studentprojekt.dto.stock.Stock;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,6 +33,7 @@ public class RoutineService {
     private final ChatGPTClient chatGPTClient;
     private final SpeisekarteClient speisekarteClient;
     private final NewsClient newsClient;
+    private final MapsClient mapsClient;
 
     /**
      * Retrieves the morning routine by gathering and processing user preferences for news topics and stock symbols,
@@ -79,7 +85,7 @@ public class RoutineService {
 
         // If weekend, set date to next monday
         if (today.getDayOfWeek().getValue() > 5) {
-            today = today.plusDays(7L - today.getDayOfWeek().getValue());
+            today = today.plusDays(8L - today.getDayOfWeek().getValue());
         }
 
         List<String> allergene = prefsClient.getPreference("allergene")
@@ -93,6 +99,36 @@ public class RoutineService {
         ChatMessageRequest chatRequest = new ChatMessageRequest(prompt,
                 "Speisekarte:" + speisekarte);
         ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, "routine", "message");
+
+        return gptResponse.message().content();
+    }
+
+    public String getAbendRoutine(){
+
+        final String currentTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+
+        List<String> home = prefsClient.getPreference("home")
+                .map(Preference::value)
+                .orElse(Collections.emptyList());
+
+        List<String> work = prefsClient.getPreference("work")
+                .map(Preference::value)
+                .orElse(Collections.emptyList());
+
+        List<String> travelmode = prefsClient.getPreference("travelMode")
+                .map(Preference::value)
+                .orElse(Collections.emptyList());
+
+        DirectionResponse directionResponse = mapsClient.getDirections(new RouteAddressRequest(work.getFirst(), home.getFirst(), travelmode.getFirst().toLowerCase()));
+
+        String prompt = "Meine letzte Vorlesung ist zu Ende wünsche mir einen Schönen Feierabend und sage mir wie ich nach Hause komme.";
+
+        ChatMessageRequest chatRequest = new ChatMessageRequest(prompt,
+                "time to get there " + directionResponse.routes().getFirst().legs().getFirst().duration().text() + "\n"
+                        + "current Time: " + currentTime + "\n"
+                        + "additional data about the route: " + directionResponse);
+
+        ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, "routine", "maps");
 
         return gptResponse.message().content();
     }

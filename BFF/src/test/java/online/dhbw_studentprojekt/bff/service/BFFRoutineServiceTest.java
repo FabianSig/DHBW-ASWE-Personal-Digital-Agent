@@ -26,8 +26,9 @@ class BFFRoutineServiceTest {
     private final ChatGPTClient chatGPTClient = mock(ChatGPTClient.class);
     private final SpeisekarteClient speisekarteClient = mock(SpeisekarteClient.class);
     private final NewsClient newsClient = mock(NewsClient.class);
+    private final MapsClient mapsClient = mock(MapsClient.class);
     private final RoutineService routineService = new RoutineService(
-            prefsClient, stockClient, chatGPTClient, speisekarteClient, newsClient);
+            prefsClient, stockClient, chatGPTClient, speisekarteClient, newsClient, mapsClient);
 
     @Test
     void testGetMorningRoutine() {

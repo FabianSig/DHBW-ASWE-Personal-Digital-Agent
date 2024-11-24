@@ -71,8 +71,8 @@ public class TriggerService {
         }
 
         triggers.add(new Trigger("/api/logic/morning", weckerDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
-        triggers.add(new Trigger("/api/logic/mittag", weckerDateTime.plusSeconds(20).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
-        triggers.add(new Trigger("/api/logic/abend", weckerDateTime.plusSeconds(20).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
+        triggers.add(new Trigger("/api/logic/mittag", weckerDateTime.plusSeconds(5).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
+        triggers.add(new Trigger("/api/logic/abend", weckerDateTime.plusSeconds(10).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
 
         return new TriggerResponse(triggers);
     }

@@ -42,4 +42,10 @@ public class LogicController {
     public String getMittagRoutine(){
         return routineService.getMittagRoutine();
     }
+
+    @GetMapping("/abend")
+    @ResponseStatus(HttpStatus.OK)
+    public String getAbendRoutine(){
+        return routineService.getAbendRoutine();
+    }
 }
