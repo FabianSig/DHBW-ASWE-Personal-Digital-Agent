@@ -3,7 +3,6 @@ import {ApiService} from '../services/api.service';
 import {AudioRecorderComponent} from '../audio-recorder/audio-recorder.component';
 import {AudioResponse} from '../interfaces/audio-response';
 import {ChatService} from '../services/chat.service';
-import {TtsService} from '../services/tts.service';
 import {FormsModule} from '@angular/forms';
 
 @Component({
@@ -21,7 +20,7 @@ export class SearchBarComponent {
   searchTerm: string = '';
   error: string = '';
 
-  constructor(private apiService: ApiService, private chatService: ChatService, private ttsService: TtsService) {
+  constructor(private apiService: ApiService, private chatService: ChatService) {
   }
 
   onSearch(event: any): void {
