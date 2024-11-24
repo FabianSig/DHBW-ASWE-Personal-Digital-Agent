@@ -5,46 +5,42 @@
     <div class="mb-5">
       <h2 class="text-secondary">Fortbewegungsmittel</h2>
       <div formGroupName="transportation" class="d-flex flex-column ms-3">
-        <div class="form-check form-switch">
-          <input type="checkbox" formControlName="onFoot" id="onFoot" class="form-check-input toggle-switch">
-          <label for="onFoot" class="form-check-label ms-2">Zu Fuß</label>
+        <div class="form-checkradio">
+          <input type="radio" formControlName="mode" id="walking" class="form-check-inputradio" value="walking">
+          <label for="walking" class="form-check-label ms-2">Zu Fuß</label>
         </div>
-        <div class="form-check form-switch">
-          <input type="checkbox" formControlName="byBike" id="byBike" class="form-check-input toggle-switch">
-          <label for="byBike" class="form-check-label ms-2">Mit Fahrrad</label>
+        <div class="form-checkradio">
+          <input type="radio" formControlName="mode" id="bicycling" class="form-check-inputradio" value="bicycling">
+          <label for="bicycling" class="form-check-label ms-2">Mit Fahrrad</label>
         </div>
-        <div class="form-check form-switch">
-          <input type="checkbox" formControlName="byCar" id="byCar" class="form-check-input toggle-switch">
-          <label for="byCar" class="form-check-label ms-2">Mit Auto</label>
+        <div class="form-checkradio">
+          <input type="radio" formControlName="mode" id="driving" class="form-check-inputradio" value="driving">
+          <label for="driving" class="form-check-label ms-2">Mit Auto</label>
         </div>
-        <div class="form-check form-switch">
-          <input type="checkbox" formControlName="byPublicTransport" id="byPublicTransport" class="form-check-input toggle-switch">
-          <label for="byPublicTransport" class="form-check-label ms-2">Mit öffentlichen Verkehrsmitteln</label>
+        <div class="form-checkradio">
+          <input type="radio" formControlName="mode" id="transit" class="form-check-inputradio" value="transit">
+          <label for="transit" class="form-check-label ms-2">Mit öffentlichen Verkehrsmitteln</label>
         </div>
       </div>
     </div>
 
     <div class="mb-5">
-      <h2 class="text-secondary">Zuhause</h2>
-      <div formGroupName="address" class="ms-3">
+      <h2 class="text-secondary">Heimadresse</h2>
+      <div formGroupName="homeAddress" class="ms-3">
         <div class="mb-3">
-          <label for="street" class="form-label">Straße und Hausnummer:</label>
-          <input type="text" formControlName="street" id="street" required class="form-control">
-        </div>
-        <div class="mb-3">
-          <label for="city" class="form-label">Stadt:</label>
-          <input type="text" formControlName="city" id="city" required class="form-control">
-        </div>
-        <div class="mb-3">
-          <label for="zip" class="form-label">Postleitzahl:</label>
-          <input type="number" formControlName="zip" id="zip" required class="form-control">
-        </div>
-        <div class="mb-3">
-          <label for="country" class="form-label">Land:</label>
-          <input type="text" formControlName="country" id="country" required class="form-control">
+          <input type="text" formControlName="address" id="home" required class="form-control">
         </div>
       </div>
     </div>
+
+      <div class="mb-5">
+        <h2 class="text-secondary">Arbeitsadresse</h2>
+        <div formGroupName="workAddress" class="ms-3">
+          <div class="mb-3">
+            <input type="text" formControlName="address" id="work" required class="form-control">
+          </div>
+        </div>
+      </div>
 
     <div class="mb-5">
       <h2 class="text-secondary">Erinnerung für Kalender</h2>
