@@ -4,10 +4,8 @@ import { AudioRecorderService } from '../services/audio-recorder.service';
 describe('AudioRecorderService', () => {
   let service: AudioRecorderService;
   let mediaRecorderMock: any;
-  let mediaStreamMock: any;
 
   beforeEach(() => {
-    mediaStreamMock = new MediaStream();
     mediaRecorderMock = {
       start: jasmine.createSpy('start'),
       stop: jasmine.createSpy('stop'),
@@ -15,7 +13,7 @@ describe('AudioRecorderService', () => {
       onstop: null,
     };
 
-    spyOn(window.navigator.mediaDevices, 'getUserMedia').and.returnValue(Promise.resolve(mediaStreamMock));
+    spyOn(window.navigator.mediaDevices, 'getUserMedia').and.returnValue(Promise.resolve(new MediaStream()));
     spyOn(window, 'MediaRecorder').and.returnValue(mediaRecorderMock);
 
     TestBed.configureTestingModule({});
@@ -45,7 +43,6 @@ describe('AudioRecorderService', () => {
   });
 
   it('should handle error if MediaRecorder is not initialized', async () => {
-    service['mediaRecorder'] = null; // Make sure mediaRecorder is not initialized
     try {
       await service.stopRecording();
       fail('Expected error to be thrown');
