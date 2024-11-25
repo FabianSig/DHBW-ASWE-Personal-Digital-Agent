@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -28,6 +29,7 @@ public class RoutineService {
     private final ChatGPTClient chatGPTClient;
     private final SpeisekarteClient speisekarteClient;
     private final NewsClient newsClient;
+    private final ContactsClient contactsClient;
 
     /**
      * Retrieves the morning routine by gathering and processing user preferences for news topics and stock symbols,
@@ -37,7 +39,7 @@ public class RoutineService {
      * and stock information.
      */
     public String getMorningRoutine() {
-        // Get prefs for news and stocks
+        // Get prefs for news, stocks and contacts
         String newsTopic = prefsClient.getPreference("news-topics")
                 .map(pref -> pref.value().getFirst())
                 .orElse("");
@@ -50,6 +52,15 @@ public class RoutineService {
                 .map(Preference::value)
                 .orElse(List.of("ALIZF", "GOOGL", "MSFT"));
 
+
+        List<String> mailDirectories = prefsClient.getPreference("mail-directories")
+                .map(Preference::value)
+                .orElse(List.of("inbox"));
+
+        List<String> phoneContacts = prefsClient.getPreference("phone-contacts")
+                .map(Preference::value)
+                .orElse(List.of());
+
         // Get news
         List<String> newsHeadlines = new java.util.ArrayList<>(newsClient.getNews(newsTopic, newsCount).stream().map(Article::title).toList());
         // Bugfix for chatgpt call
@@ -60,8 +71,14 @@ public class RoutineService {
         // Get stocks
         List<Stock> stocks = stockClient.getMultipleStock(stockSymbols);
 
+        // Get mail directories
+        Map<String, Integer> unreadInMailDirectories = contactsClient.getUnreadInMultipleDirectories(mailDirectories);
+
+        // Get last call dates
+        Map<String, LocalDate> lastCallDates = contactsClient.getLastCallDates(phoneContacts);
+
         // Get Text for news and stocks
-        MorningRequest request = new MorningRequest(newsHeadlines.getFirst(), newsHeadlines.get(1), newsHeadlines.get(2), stocks);
+        MorningRequest request = new MorningRequest(newsHeadlines.getFirst(), newsHeadlines.get(1), newsHeadlines.get(2), stocks, unreadInMailDirectories, lastCallDates);
         return chatGPTClient.getMorningRoutine(request).message().content();
     }
 
