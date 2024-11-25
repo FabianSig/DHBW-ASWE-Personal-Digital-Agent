@@ -44,6 +44,11 @@ export class ApiService {
     return this.http.post(this.apiUrlPrefs, body);
   }
 
+  setEmailPostkorbPreference(postkoerbe: string[]){
+    const body = { id: "mail-directories", value: postkoerbe};
+    return this.http.post(this.apiUrlPrefs, body);
+  }
+
   getTriggerData(date: string) {
     return this.http.get(this.apiUrlTrigger, {
       params: {date: date}
