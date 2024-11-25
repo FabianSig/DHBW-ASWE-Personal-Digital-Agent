@@ -1,6 +1,5 @@
 package online.dhbw_studentprojekt.mscontacts.service;
 
-import online.dhbw_studentprojekt.mscontacts.client.EmailClient;
 import online.dhbw_studentprojekt.mscontacts.client.PhoneClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,6 +9,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.mail.Folder;
+import javax.mail.MessagingException;
+import javax.mail.Store;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +23,7 @@ public class ContactsServiceTest {
     private PhoneClient phoneClient;
 
     @Mock
-    private EmailClient emailClient;
+    private Store emailClient;
 
     @InjectMocks
     private ContactsService contactsService;
@@ -54,29 +56,40 @@ public class ContactsServiceTest {
     }
 
     @Test
-    void getUnreadInDirectory_ShouldReturnUnread() {
+    void getUnreadInDirectory_ShouldReturnUnread() throws MessagingException {
         // Arrange
         String directory = "testDirectory";
+        Folder folder = Mockito.mock(Folder.class);
 
-        Mockito.when(contactsService.getUnreadInDirectory(directory)).thenReturn(42);
+        Mockito.when(folder.getUnreadMessageCount()).thenReturn(42);
+        Mockito.when(emailClient.getFolder(directory)).thenReturn(folder);
         // Act
         int result = contactsService.getUnreadInDirectory(directory);
 
         // Assert
         Assertions.assertEquals(42, result);
-        Mockito.verify(emailClient).getUnreadInDirectory(directory);
     }
 
     @Test
-    void getUnreadInMultipleDirectories_ShouldReturnUnreadMap() {
+    void getUnreadInMultipleDirectories_ShouldReturnUnreadMap() throws MessagingException {
         // Arrange
-        Mockito.when(emailClient.getUnreadInDirectory("testDirectory1")).thenReturn(42);
-        Mockito.when(emailClient.getUnreadInDirectory("testDirectory2")).thenReturn(43);
+        String firstDir = "testDirectory1";
+        String secondDir = "testDirectory2";
+
+        Folder testDirectory1 = Mockito.mock(Folder.class);
+        Folder testDirectory2 = Mockito.mock(Folder.class);
+
+        Mockito.when(testDirectory1.getUnreadMessageCount()).thenReturn(42);
+        Mockito.when(testDirectory2.getUnreadMessageCount()).thenReturn(43);
+
+        Mockito.when(emailClient.getFolder(firstDir)).thenReturn(testDirectory1);
+        Mockito.when(emailClient.getFolder(secondDir)).thenReturn(testDirectory2);
         // Act
-        Map<String, Integer> result = contactsService.getUnreadInMultipleDirectories(List.of("testDirectory1", "testDirectory2"));
+        Map<String, Integer> result = contactsService.getUnreadInMultipleDirectories(List.of(firstDir, secondDir));
 
         // Assert
-        Assertions.assertEquals(42, result.get("testDirectory1"));
-        Assertions.assertEquals(43, result.get("testDirectory2"));
+        Assertions.assertEquals(42, result.get(firstDir));
+        Assertions.assertEquals(43, result.get(secondDir));
     }
+
 }
