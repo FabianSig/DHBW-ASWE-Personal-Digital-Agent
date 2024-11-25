@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class AudioRecorderService {
-  private mediaRecorder!: MediaRecorder;
+  private mediaRecorder!: null;
   private audioChunks: Blob[] = [];
 
   constructor() {}

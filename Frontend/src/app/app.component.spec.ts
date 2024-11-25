@@ -1,4 +1,4 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
@@ -46,6 +46,9 @@ describe('AppComponent', () => {
     document.body.appendChild(popupElement);
 
     component.showPopup();
+
+    // Use fixture.detectChanges() to ensure that changes are reflected
+    fixture.detectChanges();
     expect(popupElement.classList.contains('hidden')).toBeFalse();
 
     document.body.removeChild(popupElement);

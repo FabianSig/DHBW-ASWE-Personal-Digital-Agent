@@ -62,6 +62,7 @@ describe('AuthPopupComponent', () => {
     document.body.appendChild(appElement);
 
     component.closePopup();
+    fixture.detectChanges();  // Ensure that the changes are reflected
 
     expect(popupElement.classList.contains('hidden')).toBeTrue();
     expect(appElement.classList.contains('blurred')).toBeFalse();

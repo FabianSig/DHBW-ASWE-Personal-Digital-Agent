@@ -43,6 +43,7 @@ describe('HeaderComponent', () => {
     expect(component.time).not.toBe(initialTime); // Time should have updated
 
     tick(1000);
+    fixture.detectChanges();
     expect(component['updateDateTime']).toHaveBeenCalledTimes(2);
   }));
 

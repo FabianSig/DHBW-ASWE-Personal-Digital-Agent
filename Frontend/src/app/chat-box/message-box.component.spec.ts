@@ -15,8 +15,7 @@ describe('MessageBoxComponent', () => {
     const chatServiceMock = jasmine.createSpyObj('ChatService', ['getMessages', 'isLoading'], { isLoading: of(false) });
 
     await TestBed.configureTestingModule({
-      imports: [MarkdownModule.forRoot()],
-      declarations: [MessageBoxComponent],
+      imports: [MarkdownModule.forRoot(), MessageBoxComponent], // MessageBoxComponent hier importieren
       providers: [
         { provide: ChatService, useValue: chatServiceMock },
         MarkdownService
