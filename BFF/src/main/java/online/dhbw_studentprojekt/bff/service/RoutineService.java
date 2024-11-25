@@ -13,9 +13,8 @@ import online.dhbw_studentprojekt.dto.stock.Stock;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -55,7 +54,7 @@ public class RoutineService {
 
         List<String> mailDirectories = prefsClient.getPreference("mail-directories")
                 .map(Preference::value)
-                .orElse(List.of("inbox"));
+                .orElse(List.of("INBOX"));
 
         List<String> phoneContacts = prefsClient.getPreference("phone-contacts")
                 .map(Preference::value)
@@ -75,10 +74,19 @@ public class RoutineService {
         Map<String, Integer> unreadInMailDirectories = contactsClient.getUnreadInMultipleDirectories(mailDirectories);
 
         // Get last call dates
-        Map<String, LocalDate> lastCallDates = contactsClient.getLastCallDates(phoneContacts);
+        Map<String, LocalDate> lastCallDates = contactsClient.getLastCallDates(phoneContacts)
+                .entrySet().stream()
+                .filter(entrySet -> entrySet.getValue().isBefore(LocalDate.now().minusDays(7)))
+                .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
 
         // Get Text for news and stocks
-        MorningRequest request = new MorningRequest(newsHeadlines.getFirst(), newsHeadlines.get(1), newsHeadlines.get(2), stocks, unreadInMailDirectories, lastCallDates);
+        MorningRequest request = new MorningRequest(
+                newsHeadlines.getFirst(),
+                newsHeadlines.get(1),
+                newsHeadlines.get(2),
+                stocks,
+                unreadInMailDirectories,
+                lastCallDates);
         return chatGPTClient.getMorningRoutine(request).message().content();
     }
 

@@ -28,10 +28,8 @@ services:
     ports:
       - 8084:8080
     environment:
-      - SPRING_PROFILES_ACTIVE=local
       - OUR_API_KEY=${OUR_API_KEY}
-    depends_on:
-      - mongodb
+      - MONGODB_PASSWORD=${MONGODB_PASSWORD}
 
   chatgpt:
     build:
@@ -92,14 +90,3 @@ services:
       - OUR_API_KEY=${OUR_API_KEY}
       - MAIL_USERNAME=${MAIL_USERNAME}
       - MAIL_PASSWORD=${MAIL_PASSWORD}
-
-  mongodb:
-    image: mongo:7.0.5
-    ports:
-      - 27017:27017
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
-      MONGO_INITDB_DATABASE: pda
-    volumes:
-      - ./data:/data/db
