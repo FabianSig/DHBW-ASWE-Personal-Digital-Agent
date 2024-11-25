@@ -176,6 +176,8 @@ public class ChatGPTService {
 
         // Format the prompt with the request data
         final String content = String.format(prompt.getContent(),
+                request.unreadMails(),
+                request.contactsLastCalled(),
                 request.firstHeadline(),
                 request.secondHeadline(),
                 request.thirdHeadline(),
