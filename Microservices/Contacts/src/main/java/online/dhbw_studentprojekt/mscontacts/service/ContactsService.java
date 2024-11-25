@@ -1,10 +1,13 @@
 package online.dhbw_studentprojekt.mscontacts.service;
 
 import lombok.RequiredArgsConstructor;
-import online.dhbw_studentprojekt.mscontacts.client.EmailClient;
 import online.dhbw_studentprojekt.mscontacts.client.PhoneClient;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import javax.mail.MessagingException;
+import javax.mail.Store;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -14,13 +17,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ContactsService {
 
-    private final EmailClient emailClient;
+    private final Store emailStore;
     private final PhoneClient phoneClient;
-
-    public int getUnreadInDirectory(String directory) {
-
-        return emailClient.getUnreadInDirectory(directory);
-    }
 
     public Map<String, Integer> getUnreadInMultipleDirectories(List<String> directories) {
 
@@ -32,9 +30,13 @@ public class ContactsService {
         return unreadMap;
     }
 
-    public LocalDate getLastCallDate(String contact) {
+    public int getUnreadInDirectory(String directory) {
 
-        return phoneClient.getLastCallDate(contact);
+        try {
+            return emailStore.getFolder(directory).getUnreadMessageCount();
+        } catch (MessagingException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Exception getting unread emails count", e);
+        }
     }
 
     public Map<String, LocalDate> getLastCallDates(List<String> contacts) {
@@ -45,6 +47,11 @@ public class ContactsService {
             lastCallDates.put(contact, lastCallDate);
         }
         return lastCallDates;
+    }
+
+    public LocalDate getLastCallDate(String contact) {
+
+        return phoneClient.getLastCallDate(contact);
     }
 
 }
