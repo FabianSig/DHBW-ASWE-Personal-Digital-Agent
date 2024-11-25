@@ -51,7 +51,6 @@ public class RoutineService {
                 .map(Preference::value)
                 .orElse(List.of("ALIZF", "GOOGL", "MSFT"));
 
-
         List<String> mailDirectories = prefsClient.getPreference("mail-directories")
                 .map(Preference::value)
                 .orElse(List.of("INBOX"));
@@ -62,7 +61,7 @@ public class RoutineService {
 
         // Get news
         List<String> newsHeadlines = new java.util.ArrayList<>(newsClient.getNews(newsTopic, newsCount).stream().map(Article::title).toList());
-        // Bugfix for chatgpt call
+        //TODO entfernen für abgabe: Bugfix for chatgpt call
         newsHeadlines.add(null);
         newsHeadlines.add(null);
         newsHeadlines.add(null);
@@ -84,9 +83,7 @@ public class RoutineService {
                 newsHeadlines.getFirst(),
                 newsHeadlines.get(1),
                 newsHeadlines.get(2),
-                stocks,
-                unreadInMailDirectories,
-                lastCallDates);
+                stocks);
         return chatGPTClient.getMorningRoutine(request).message().content();
     }
 
