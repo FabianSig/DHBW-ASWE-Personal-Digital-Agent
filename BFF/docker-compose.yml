@@ -90,6 +90,8 @@ services:
     environment:
       - API_KEY=${CONTACTS_API_KEY}
       - OUR_API_KEY=${OUR_API_KEY}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
 
   mongodb:
     image: mongo:7.0.5
