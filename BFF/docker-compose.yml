@@ -81,6 +81,16 @@ services:
         - API_KEY=${NEWS_API_KEY}
         - OUR_API_KEY=${OUR_API_KEY}
 
+  contacts:
+    build:
+      context: ../Microservices/Contacts
+      dockerfile: Dockerfile
+    ports:
+      - 8089:8080
+    environment:
+      - API_KEY=${CONTACTS_API_KEY}
+      - OUR_API_KEY=${OUR_API_KEY}
+
   mongodb:
     image: mongo:7.0.5
     ports:
