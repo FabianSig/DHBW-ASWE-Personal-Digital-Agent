@@ -25,7 +25,7 @@ describe('ChatService', () => {
     const messages = service.getMessages();
     expect(messages.length).toBe(1);
     expect(messages[0]).toEqual(jasmine.objectContaining<ChatMessage>({ text: messageText, sender, id: 0 }));
-    expect(service.isLoading).toBeTrue(); // isLoading should be true when user sends a message
+    expect(service.isLoading()).toBeTrue(); // Access the value of signal
   });
 
   it('should add new message from chatGPT and set isLoading to false', () => {
@@ -37,6 +37,6 @@ describe('ChatService', () => {
     const messages = service.getMessages();
     expect(messages.length).toBe(1);
     expect(messages[0]).toEqual(jasmine.objectContaining<ChatMessage>({ text: messageText, sender, id: 0 }));
-    expect(service.isLoading).toBeFalse(); // isLoading should be false when chatGPT sends a response
+    expect(service.isLoading()).toBeFalse(); // Access the value of signal
   });
 });

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MessageBoxComponent } from './message-box.component';
 import { ChatService } from '../services/chat.service';
 import { ChatMessage } from '../interfaces/chat-message';
-import { MarkdownModule } from 'ngx-markdown';
+import { MarkdownModule, MarkdownService } from 'ngx-markdown';
 import { of } from 'rxjs';
 import { ElementRef } from '@angular/core';
 
@@ -15,12 +15,13 @@ describe('MessageBoxComponent', () => {
     const chatServiceMock = jasmine.createSpyObj('ChatService', ['getMessages', 'isLoading'], { isLoading: of(false) });
 
     await TestBed.configureTestingModule({
-      imports: [MessageBoxComponent, MarkdownModule],
+      imports: [MarkdownModule.forRoot()],
+      declarations: [MessageBoxComponent],
       providers: [
-        { provide: ChatService, useValue: chatServiceMock }
+        { provide: ChatService, useValue: chatServiceMock },
+        MarkdownService
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
 
     chatServiceSpy = TestBed.inject(ChatService) as jasmine.SpyObj<ChatService>;
 
@@ -28,7 +29,7 @@ describe('MessageBoxComponent', () => {
     component = fixture.componentInstance;
 
     // Mock chat messages
-    chatServiceSpy.getMessages.and.returnValue([{ id:1, text: 'Hello World', sender: 'user' }] as ChatMessage[]);
+    chatServiceSpy.getMessages.and.returnValue([{ id: 1, text: 'Hello World', sender: 'user' }] as ChatMessage[]);
     fixture.detectChanges();
   });
 
@@ -54,7 +55,7 @@ describe('MessageBoxComponent', () => {
       }
     } as ElementRef;
 
-    component.messages.push({ id:2, text: 'New message', sender: 'user' });
+    component.messages.push({ id: 2, text: 'New message', sender: 'user' });
     component.ngAfterViewChecked(); // Check will call scrollToBottom
     // @ts-ignore
     expect(component.scrollAnchor.nativeElement.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });

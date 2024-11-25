@@ -24,6 +24,10 @@ describe('TriggerService', () => {
     service = TestBed.inject(TriggerService);
     apiServiceSpy = TestBed.inject(ApiService) as jasmine.SpyObj<ApiService>;
     chatServiceSpy = TestBed.inject(ChatService) as jasmine.SpyObj<ChatService>;
+
+    // Mocking API responses
+    apiServiceSpy.getTriggerData.and.returnValue(of({ triggers: [] }));
+    apiServiceSpy.executeCustomTriggerRoutine.and.returnValue(of('Trigger executed'));
   });
 
   it('should be created', () => {
@@ -70,8 +74,8 @@ describe('TriggerService', () => {
 
   it('should reload triggers', () => {
     // @ts-ignore
-    spyOn(service, 'clearAllTriggers');
-    spyOn(service, 'setOffTrigger');
+    spyOn(service, 'clearAllTriggers').and.callThrough();
+    spyOn(service, 'setOffTrigger').and.callThrough();
 
     service.reload();
 

@@ -70,7 +70,11 @@ describe('PreferencesComponent', () => {
       address: { street: 'Test St', city: 'Test City', zip: '12345', country: 'Testland' },
       reminder: 'Test reminder',
       alarm: { alarmDate: '2023-12-31', alarmTime: '12:00' },
-      allergens: { Ei: true, En: false }
+      allergens: {
+        Ei: true, En: false, Fi: true, GID: false, GIG: false, GIH: false, GIKW: false, GIR: false, GIW: false,
+        Kr: false, La: false, Lu: false, NuC: false, NuH: false, NuM: false, NuMa: false, NuPa: false, NuPe: false,
+        NuPi: false, NuW: false, Se: false, Sf: false, Sl: false, So: false, Sw: false, Wt: false
+      }
     });
 
     localStorage.setItem('preferences', preferencesMock);
@@ -85,7 +89,11 @@ describe('PreferencesComponent', () => {
       address: { street: 'Test St', city: 'Test City', zip: '12345', country: 'Testland' },
       reminder: 'Test reminder',
       alarm: { alarmDate: '2023-12-31', alarmTime: '12:00' },
-      allergens: { Ei: true, En: false, Fi: true }
+      allergens: {
+        Ei: true, En: false, Fi: true, GID: false, GIG: false, GIH: false, GIKW: false, GIR: false, GIW: false,
+        Kr: false, La: false, Lu: false, NuC: false, NuH: false, NuM: false, NuMa: false, NuPa: false, NuPe: false,
+        NuPi: false, NuW: false, Se: false, Sf: false, Sl: false, So: false, Sw: false, Wt: false
+      }
     });
 
     apiServiceSpy.setAlarmPreference.and.returnValue(of({}));

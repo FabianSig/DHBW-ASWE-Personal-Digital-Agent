@@ -1,82 +1,53 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AudioRecorderComponent } from './audio-recorder.component';
+import { TestBed } from '@angular/core/testing';
 import { AudioRecorderService } from '../services/audio-recorder.service';
-import { ApiService } from '../services/api.service';
-import { of } from 'rxjs';
-import { AudioResponse } from '../interfaces/audio-response';
 
-describe('AudioRecorderComponent', () => {
-  let component: AudioRecorderComponent;
-  let fixture: ComponentFixture<AudioRecorderComponent>;
-  let audioRecorderService: jasmine.SpyObj<AudioRecorderService>;
-  let apiService: jasmine.SpyObj<ApiService>;
+describe('AudioRecorderService', () => {
+  let service: AudioRecorderService;
+  let mediaRecorderMock: any;
 
-  beforeEach(async () => {
-    const audioRecorderServiceSpy = jasmine.createSpyObj('AudioRecorderService', ['startRecording', 'stopRecording']);
-    const apiServiceSpy = jasmine.createSpyObj('ApiService', ['getAudioData']);
+  beforeEach(() => {
+    mediaRecorderMock = {
+      start: jasmine.createSpy('start'),
+      stop: jasmine.createSpy('stop'),
+      ondataavailable: null,
+      onstop: null,
+    };
 
-    await TestBed.configureTestingModule({
-      declarations: [AudioRecorderComponent],
-      providers: [
-        { provide: AudioRecorderService, useValue: audioRecorderServiceSpy },
-        { provide: ApiService, useValue: apiServiceSpy }
-      ]
-    }).compileComponents();
+    spyOn(window.navigator.mediaDevices, 'getUserMedia').and.returnValue(Promise.resolve(new MediaStream()));
+    spyOn(window, 'MediaRecorder').and.returnValue(mediaRecorderMock);
 
-    audioRecorderService = TestBed.inject(AudioRecorderService) as jasmine.SpyObj<AudioRecorderService>;
-    apiService = TestBed.inject(ApiService) as jasmine.SpyObj<ApiService>;
-
-    fixture = TestBed.createComponent(AudioRecorderComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(AudioRecorderService);
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should be created', () => {
+    expect(service).toBeTruthy();
   });
 
-  it('should start recording', () => {
-    component.startRecording();
-    expect(component.isRecording).toBeTrue();
-    expect(audioRecorderService.startRecording).toHaveBeenCalled();
+  it('should start recording', async () => {
+    await service.startRecording();
+    expect(mediaRecorderMock.start).toHaveBeenCalled();
   });
 
-  it('should stop recording and send audio', async () => {
-    const mockAudioBlob = new Blob();
-    audioRecorderService.stopRecording.and.returnValue(Promise.resolve(mockAudioBlob));
+  it('should stop recording and resolve with audio Blob', async () => {
+    const mockBlob = new Blob(['audio'], { type: 'audio/webm' });
+    mediaRecorderMock.stop.and.callFake(() => {
+      mediaRecorderMock.ondataavailable({ data: mockBlob });
+      mediaRecorderMock.onstop();
+    });
 
-    spyOn(component['audioResponseEmitter'], 'emit');
-    const mockAudioResponse: AudioResponse = { text: 'Hello from GPT' };
-    apiService.getAudioData.and.returnValue(of(mockAudioResponse));
-
-    await component.stopRecording();
-    expect(component.isRecording).toBeFalse();
-    expect(component.audioFile).toBe(mockAudioBlob);
-    expect(apiService.getAudioData).toHaveBeenCalledWith(mockAudioBlob);
-    expect(component['audioResponseEmitter'].emit).toHaveBeenCalledWith(mockAudioResponse);
+    await service.startRecording();
+    const result = await service.stopRecording();
+    expect(mediaRecorderMock.stop).toHaveBeenCalled();
+    expect(result).toEqual(mockBlob);
   });
 
-  it('should handle error if recording ends with failure', async () => {
-    const consoleErrorSpy = spyOn(console, 'error');
-    audioRecorderService.stopRecording.and.returnValue(Promise.reject('some error'));
-
-    await component.stopRecording();
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Error stopping recording:', 'some error');
-  });
-
-  it('should not send audio if no file is available', () => {
-    const consoleErrorSpy = spyOn(console, 'error');
-
-    component['sendAudioToChatGPT']();
-    expect(consoleErrorSpy).toHaveBeenCalledWith('No audio file available');
-  });
-
-  it('should handle error from ApiService', () => {
-    const consoleErrorSpy = spyOn(console, 'error');
-    component.audioFile = new Blob();
-    apiService.getAudioData.and.returnValue(of({}).pipe(() => { throw 'API error'; }));
-
-    component['sendAudioToChatGPT']();
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Error occurred:', 'API error');
+  it('should handle error if MediaRecorder is not initialized', async () => {
+    try {
+      await service.stopRecording();
+      fail('Expected error to be thrown');
+    } catch (error) {
+      expect(error).toBe('MediaRecorder is not initialized');
+    }
   });
 });

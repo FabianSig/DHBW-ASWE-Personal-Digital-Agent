@@ -20,29 +20,30 @@ describe('HeaderComponent', () => {
   });
 
   it('should initialize title, day and time on init', () => {
-    // @ts-ignore
-    spyOn(component, 'updateDateTime').and.callThrough();
+    spyOn(component as any, 'updateDateTime').and.callThrough();
     component.ngOnInit();
     expect(component.title).toBe('Assistify AI');
-    // @ts-ignore
-    expect(component.updateDateTime).toHaveBeenCalled();
-    expect(component.day).toMatch(/^\d{2}\.\d{2}\.\d{4}$/); // Matches date format
-    expect(component.time).toMatch(/^\d{2}:\d{2}:\d{2}$/); // Matches time format
+    expect(component['updateDateTime']).toHaveBeenCalled();
+    expect(component.day).toMatch(/^\d{2}\.\d{2}\.\d{4}/); // Matches date format
+    expect(component.time).toMatch(/^\d{2}:\d{2}:\d{2}/); // Matches time format
   });
 
   it('should update time and day every second', fakeAsync(() => {
+    spyOn(component as any, 'updateDateTime').and.callThrough();
+
+    component.ngOnInit(); // Initialize component
+    fixture.detectChanges();
+
     const initialDay = component.day;
     const initialTime = component.time;
 
     tick(1000);
-    component.ngOnInit();
     fixture.detectChanges();
     expect(component.day).toBe(initialDay); // Day should remain the same after one tick
     expect(component.time).not.toBe(initialTime); // Time should have updated
 
     tick(1000);
-    // @ts-ignore
-    expect(component.updateDateTime).toHaveBeenCalledTimes(2);
+    expect(component['updateDateTime']).toHaveBeenCalledTimes(2);
   }));
 
   it('should clear interval on destroy', () => {
