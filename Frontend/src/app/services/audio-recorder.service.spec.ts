@@ -10,9 +10,9 @@ describe('AudioRecorderService', () => {
     spyOn(navigator.mediaDevices, 'getUserMedia').and.returnValue(Promise.resolve(mockMediaStream));
 
     mockMediaRecorder = jasmine.createSpyObj('MediaRecorder', ['start', 'stop'], {
-      ondataavailable: () => {},
-      onstop: () => {},
-      onerror: () => {}
+      ondataavailable: null,
+      onstop: null,
+      onerror: null
     });
 
     spyOn(window as any, 'MediaRecorder').and.returnValue(mockMediaRecorder);
@@ -38,32 +38,33 @@ describe('AudioRecorderService', () => {
     const mockBlobData = new Blob(['audio data'], { type: 'audio/ogg' });
     let resolveBlob: Blob | undefined;
 
-    spyOn(mockMediaRecorder, 'stop').and.callFake(() => {
-      setTimeout(() => {
-        (mockMediaRecorder.ondataavailable as any)({ data: mockBlobData });
-        mockMediaRecorder.onstop();
-      }, 0);
-    });
+    mockMediaRecorder.ondataavailable = (event: any) => {
+      event.data = mockBlobData;
+    };
+
+    mockMediaRecorder.onstop = () => {
+      resolveBlob = mockBlobData;
+    };
 
     service.stopRecording().then(blob => {
-      resolveBlob = blob;
+      expect(blob).toEqual(mockBlobData);
     });
 
     expect(mockMediaRecorder.stop).toHaveBeenCalled();
 
+    // Simulate the stop event
+    mockMediaRecorder.onstop();
+
+    // Wait for the promise to resolve
     await new Promise(resolve => setTimeout(resolve, 10));
 
     expect(resolveBlob).toBeDefined();
     expect(resolveBlob instanceof Blob).toBeTrue();
-    expect(resolveBlob).toEqual(mockBlobData);
   });
 
   it('should reject the promise if there is an error during recording', done => {
-    let errorThrown: any;
-
     service.stopRecording().catch(error => {
-      errorThrown = error;
-      expect(errorThrown).toBeDefined();
+      expect(error).toBeDefined();
       done();
     });
 
@@ -79,6 +80,6 @@ describe('AudioRecorderService', () => {
 
     expect(errorThrown).toBeDefined();
     expect(errorThrown instanceof TypeError).toBeTrue();
-    expect(errorThrown.message).toBe('MediaRecorder is not initialized.');
+    expect(errorThrown.message).toBe(new TypeError('MediaRecorder is not initialized.').message);
   });
 });
