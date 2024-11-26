@@ -12,10 +12,10 @@ import {FormsModule} from '@angular/forms';
     AudioRecorderComponent,
     FormsModule
   ],
-  templateUrl: './search-bar.component.html',
-  styleUrl: './search-bar.component.scss'
+  templateUrl: './chat-input.component.html',
+  styleUrl: './chat-input.component.scss'
 })
-export class SearchBarComponent {
+export class ChatInputComponent {
 
   searchTerm: string = '';
   error: string = '';

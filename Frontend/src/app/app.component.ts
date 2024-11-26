@@ -4,13 +4,13 @@ import {PreferencesComponent} from './preferences/preferences.component';
 import {HeaderComponent} from './header/header.component';
 import {FormsModule} from '@angular/forms';
 import {AuthPopupComponent} from './auth-popup/auth-popup.component';
-import {MessageBoxComponent} from './chat-box/message-box.component';
-import {SearchBarComponent} from './chat-input/search-bar.component';
+import {ChatBoxComponent} from './chat-box/chat-box.component';
+import {ChatInputComponent} from './chat-input/chat-input.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, PreferencesComponent, HeaderComponent, FormsModule, AuthPopupComponent, MessageBoxComponent, SearchBarComponent],
+  imports: [RouterOutlet, PreferencesComponent, HeaderComponent, FormsModule, AuthPopupComponent, ChatBoxComponent, ChatInputComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

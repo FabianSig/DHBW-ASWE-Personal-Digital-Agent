@@ -14,10 +14,10 @@ import {MarkdownModule} from 'ngx-markdown';
   selector: 'app-message-box',
   standalone: true,
   imports: [MarkdownModule],
-  templateUrl: './message-box.component.html',
-  styleUrl: './message-box.component.scss'
+  templateUrl: './chat-box.component.html',
+  styleUrl: './chat-box.component.scss'
 })
-export class MessageBoxComponent implements OnInit, AfterViewChecked {
+export class ChatBoxComponent implements OnInit, AfterViewChecked {
   messages: ChatMessage[] = [];
   prevMessagesLength = 0;
   isLoading: WritableSignal<boolean> | undefined ;
