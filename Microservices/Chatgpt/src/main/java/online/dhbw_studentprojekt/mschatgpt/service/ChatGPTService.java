@@ -205,8 +205,6 @@ public class ChatGPTService {
                 "input", summaryMessage
         );
 
-        log.info(summaryMessage);
-
         return chatGPTClient.getTTS(requestBody);
     }
 

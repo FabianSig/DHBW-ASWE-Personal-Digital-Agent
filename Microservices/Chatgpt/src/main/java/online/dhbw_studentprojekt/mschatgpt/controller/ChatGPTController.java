@@ -68,8 +68,6 @@ public class ChatGPTController {
     @Operation(summary = "Get TTS.")
     public ResponseEntity<byte[]> getTTS(@RequestBody TTSRequest request) {
         byte[] audioData = chatGPTService.getTTS(request.text());
-        log.info("TTS: {}", audioData);
-        // Set response headers
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "audio/mpeg");
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"speech.mp3\"");
