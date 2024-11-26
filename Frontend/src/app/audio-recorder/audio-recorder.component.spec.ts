@@ -33,19 +33,29 @@ describe('AudioRecorderService', () => {
 
   it('should stop recording and resolve with audio Blob', async () => {
     const mockBlob = new Blob(['audio'], { type: 'audio/webm' });
+
+    // Simulate MediaRecorder behavior for stop()
     mediaRecorderMock.stop.and.callFake(() => {
-      mediaRecorderMock.ondataavailable({ data: mockBlob });
-      mediaRecorderMock.onstop();
+      if (mediaRecorderMock.ondataavailable) {
+        mediaRecorderMock.ondataavailable({ data: mockBlob });
+      }
+      if (mediaRecorderMock.onstop) {
+        mediaRecorderMock.onstop();
+      }
     });
 
+    // Start recording and then stop it
     await service.startRecording();
     const result = await service.stopRecording();
+
+    // Assertions
     expect(mediaRecorderMock.stop).toHaveBeenCalled();
     expect(result).toEqual(mockBlob);
   });
 
   it('should handle error if MediaRecorder is not initialized', async () => {
-    service['mediaRecorder']  = null as unknown as MediaRecorder; // Make sure mediaRecorder is not initialized
+    service['mediaRecorder'] = null as unknown as MediaRecorder; // Simulate uninitialized state
+
     try {
       await service.stopRecording();
       fail('Expected error to be thrown');

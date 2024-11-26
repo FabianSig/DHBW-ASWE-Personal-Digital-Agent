@@ -3,8 +3,7 @@ import { MessageBoxComponent } from './message-box.component';
 import { ChatService } from '../services/chat.service';
 import { ChatMessage } from '../interfaces/chat-message';
 import { MarkdownModule, MarkdownService } from 'ngx-markdown';
-import { of } from 'rxjs';
-import { ElementRef } from '@angular/core';
+import {ElementRef, signal} from '@angular/core';
 
 describe('MessageBoxComponent', () => {
   let component: MessageBoxComponent;
@@ -12,7 +11,7 @@ describe('MessageBoxComponent', () => {
   let chatServiceSpy: jasmine.SpyObj<ChatService>;
 
   beforeEach(async () => {
-    const chatServiceMock = jasmine.createSpyObj('ChatService', ['getMessages'], { isLoading: of(false) });
+    const chatServiceMock = jasmine.createSpyObj('ChatService', ['getMessages'], { isLoading: signal(false), });
 
     await TestBed.configureTestingModule({
       imports: [MarkdownModule.forRoot(), MessageBoxComponent], // MessageBoxComponent hier importieren
