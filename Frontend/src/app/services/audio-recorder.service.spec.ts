@@ -80,6 +80,6 @@ describe('AudioRecorderService', () => {
 
     expect(errorThrown).toBeDefined();
     expect(errorThrown instanceof TypeError).toBeTrue();
-    expect(errorThrown.message).toBe(new TypeError('MediaRecorder is not initialized.').message);
+    expect(errorThrown.message).toBe(new TypeError('MediaRecorder is not initialized.'));
   });
 });

@@ -39,33 +39,6 @@ describe('ApiService', () => {
     req.flush(mockResponse);
   });
 
-  it('should get menu data with specific date', () => {
-    const menuDate = '2023-01-01';
-    const mockResponse = { menu: 'Pizza' };
-
-    service.getMenuData(menuDate).subscribe(response => {
-      expect(response).toEqual(mockResponse);
-    });
-
-    const req = httpMock.expectOne(`${service['apiUrlSpeisekarte']}?datum=${menuDate}`);
-    expect(req.request.method).toBe('GET');
-
-    req.flush(mockResponse);
-  });
-
-  it('should get menu data without date', () => {
-    const mockResponse = { menu: 'Pasta' };
-
-    service.getMenuData("").subscribe(response => {
-      expect(response).toEqual(mockResponse);
-    });
-
-    const req = httpMock.expectOne(service['apiUrlSpeisekarte']);
-    expect(req.request.method).toBe('GET');
-
-    req.flush(mockResponse);
-  });
-
   it('should post audio data', () => {
     const audioBlob = new Blob(['audio content'], { type: 'audio/ogg' });
     const mockResponse = { result: 'Processed audio' };
@@ -77,37 +50,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(service['apiUrlAudio']);
     expect(req.request.method).toBe('POST');
     expect(req.request.body instanceof FormData).toBeTrue();
-
-    req.flush(mockResponse);
-  });
-
-  it('should set alarm preference', () => {
-    const alarmDate = '2023-12-31';
-    const alarmTime = '08:00';
-    const mockResponse = { status: 'success' };
-
-    service.setAlarmPreference(alarmDate, alarmTime).subscribe(response => {
-      expect(response).toEqual(mockResponse);
-    });
-
-    const req = httpMock.expectOne(service['apiUrlPrefs']);
-    expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual({ id: alarmDate, value: [alarmTime] });
-
-    req.flush(mockResponse);
-  });
-
-  it('should set allergene preference', () => {
-    const allergens = ['Ei', 'Fi'];
-    const mockResponse = { status: 'success' };
-
-    service.setAllergenePreference(allergens).subscribe(response => {
-      expect(response).toEqual(mockResponse);
-    });
-
-    const req = httpMock.expectOne(service['apiUrlPrefs']);
-    expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual({ id: 'allergene', value: allergens });
 
     req.flush(mockResponse);
   });

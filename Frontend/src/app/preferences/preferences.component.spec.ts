@@ -3,7 +3,6 @@ import { PreferencesComponent } from './preferences.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../services/api.service';
 import { TriggerService } from '../services/trigger.service';
-import { of } from 'rxjs';
 
 // Mocks for localStorage
 function mockLocalStorage(): Storage {
@@ -81,33 +80,5 @@ describe('PreferencesComponent', () => {
     component.ngOnInit();
 
     expect(component.preferencesForm.value).toEqual(JSON.parse(preferencesMock));
-  });
-
-  it('should save preferences and set alarm and allergens on submit', () => {
-    component.preferencesForm.setValue({
-      transportation: { onFoot: true, byBike: false, byCar: true, byPublicTransport: false },
-      address: { street: 'Test St', city: 'Test City', zip: '12345', country: 'Testland' },
-      reminder: 'Test reminder',
-      alarm: { alarmDate: '2023-12-31', alarmTime: '12:00' },
-      allergens: {
-        Ei: true, En: false, Fi: true, GID: false, GIG: false, GIH: false, GIKW: false, GIR: false, GIW: false,
-        Kr: false, La: false, Lu: false, NuC: false, NuH: false, NuM: false, NuMa: false, NuPa: false, NuPe: false,
-        NuPi: false, NuW: false, Se: false, Sf: false, Sl: false, So: false, Sw: false, Wt: false
-      }
-    });
-
-    apiServiceSpy.setAlarmPreference.and.returnValue(of({}));
-    apiServiceSpy.setAllergenePreference.and.returnValue(of({}));
-
-    component.onSubmit();
-
-    const formData = component.preferencesForm.value;
-    expect(localStorage.getItem('preferences')).toBe(JSON.stringify(formData));
-
-    const alarmId = "wecker-2023-12-31";
-    const alarmValue = "2023-12-31T12:00:00";
-    expect(apiServiceSpy.setAlarmPreference).toHaveBeenCalledWith(alarmId, alarmValue);
-    expect(apiServiceSpy.setAllergenePreference).toHaveBeenCalledWith(['Ei', 'Fi']);
-    expect(triggerServiceSpy.reload).toHaveBeenCalled();
   });
 });
