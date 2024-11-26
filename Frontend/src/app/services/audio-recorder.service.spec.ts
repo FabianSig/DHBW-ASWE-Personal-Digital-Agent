@@ -10,9 +10,9 @@ describe('AudioRecorderService', () => {
     spyOn(navigator.mediaDevices, 'getUserMedia').and.returnValue(Promise.resolve(mockMediaStream));
 
     mockMediaRecorder = jasmine.createSpyObj('MediaRecorder', ['start', 'stop'], {
-      ondataavailable: null,
-      onstop: null,
-      onerror: null
+      ondataavailable: () => {},
+      onstop: () => {},
+      onerror: () => {}
     });
 
     spyOn(window as any, 'MediaRecorder').and.returnValue(mockMediaRecorder);
