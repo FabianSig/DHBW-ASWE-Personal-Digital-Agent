@@ -105,6 +105,36 @@ public class RoutineService {
         return gptResponse.message().content();
     }
 
+
+    public String getNachmittagRoutine() {
+
+        // Get preferences
+        List<String> mailDirectories = prefsClient.getPreference("korb")
+                .map(Preference::value)
+                .orElse(List.of("INBOX"));
+
+        List<String> phoneContacts = prefsClient.getPreference("contact")
+                .map(Preference::value)
+                .orElse(List.of());
+
+        // Get mail directories
+        Map<String, Integer> unreadInMailDirectories = contactsClient.getUnreadInMultipleDirectories(mailDirectories);
+
+        // Get last call dates
+        Map<String, LocalDate> lastCallDates = contactsClient.getLastCallDates(phoneContacts)
+                .entrySet().stream()
+                .filter(entrySet -> entrySet.getValue().isBefore(LocalDate.now().minusDays(7)))
+                .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        String prompt = "Du bist ein hilfreicher assistent, der nachmittags an ungelesene mails in angegebenen ordnern erinnert. Außerdem sollst du erinnern, die angehängten kontakte mal wieder anzurufen, die schon länger nicht mehr kontaktiert werden.";
+
+        ChatMessageRequest request = new ChatMessageRequest(prompt, "Telefonkontakte: " + lastCallDates + "\nMail ordner: " + unreadInMailDirectories);
+
+        ChatGPTResponseChoice responseChoice = chatGPTClient.getResponse(request, ChatId.TEST.getValue(), "message");
+
+        return responseChoice.message().content();
+    }
+
     public String getAbendRoutine(){
 
         final String currentTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
