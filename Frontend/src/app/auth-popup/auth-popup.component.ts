@@ -16,13 +16,16 @@ export class AuthPopupComponent {
 
   constructor(private authInterceptorService: AuthInterceptorService) {}
 
+  // Processes the input of the authentication key
   submitKey() {
     if (this.authKey) {
+      // set the authentication key in the service to be used for future API calls so that it only needs to be entered once      this.authInterceptorService.setAuthKey(this.authKey);
       this.authInterceptorService.setAuthKey(this.authKey);
       this.closePopup();
     }
   }
 
+  // closes the popup and removes the blur effect from the application
   closePopup() {
     // Hide the popup
     const popupElement = document.querySelector('.popup-overlay');
