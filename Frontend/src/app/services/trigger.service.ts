@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ApiService} from './api.service';
 import {ChatService} from './chat.service';
-import {trigger} from '@angular/animations';
 
 @Injectable({
   providedIn: 'root'
@@ -36,14 +35,14 @@ export class TriggerService {
     let currentTimeInMs = new Date().getTime(); // Aktuelle Zeit in Millisekunden
 
     Object.entries(this.triggerMap).forEach(([routine, triggerTime]) => {
-      const timeDifference = triggerTime - currentTimeInMs; // Berechnung der Differenz in Millisekunden
+      const timeDifference = triggerTime - currentTimeInMs; // Calculate the time difference in milliseconds
       console.log(`Processing ${ routine } with timedifference ${timeDifference}`)
-      // Wenn die Zeit in der Zukunft liegt (negative Differenz), nichts tun
+      // If the time is in the past (negative difference), do nothing
       if (timeDifference >= 0) {
         console.log(`Executing Trigger ${routine} in ${timeDifference/1000} seconds`)
           this.apiService.executeCustomTriggerRoutine(routine).subscribe((response: string)=> {
           this.handleTriggerDisplayText(response, timeDifference)
-          });// Ausführen der Routine nach der berechneten Differenz
+          });// Execute the trigger routine
       }
     });
   }
@@ -79,7 +78,7 @@ export class TriggerService {
 
   private clearAllTriggers() {
     // Leere alle aktiven Timer
-    Object.entries(this.timoutReferenceMap).forEach(([routine, timeoutRef]) => {
+    Object.entries(this.timoutReferenceMap).forEach(([timeoutRef]) => {
       clearTimeout(timeoutRef);
     });
 

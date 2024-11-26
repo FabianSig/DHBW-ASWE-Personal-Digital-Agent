@@ -53,14 +53,14 @@ describe('AudioRecorderService', () => {
     expect(result).toEqual(mockBlob);
   });
 
-  it('should handle error if MediaRecorder is not initialized', async () => {
+  it('should handle error if MediaRecorder is not initialized.', async () => {
     service['mediaRecorder'] = null as unknown as MediaRecorder; // Simulate uninitialized state
 
     try {
       await service.stopRecording();
       fail('Expected error to be thrown');
     } catch (error) {
-      expect(error).toBe('MediaRecorder is not initialized');
+      expect(error).toBe('MediaRecorder is not initialized.');
     }
   });
 });

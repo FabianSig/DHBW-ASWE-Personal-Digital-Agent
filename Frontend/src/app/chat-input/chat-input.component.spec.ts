@@ -14,11 +14,11 @@ describe('ChatInputComponent', () => {
   let chatServiceSpy: jasmine.SpyObj<ChatService>;
 
   beforeEach(async () => {
-    const apiServiceMock = jasmine.createSpyObj('ApiService', ['getChatGPTData']);
+    const apiServiceMock = jasmine.createSpyObj('ApiService', ['getChatGPTData', 'getTtsAudioFile']);
     const chatServiceMock = jasmine.createSpyObj('ChatService', ['addMessage']);
 
     await TestBed.configureTestingModule({
-      imports: [ChatInputComponent, FormsModule, AudioRecorderComponent],
+      imports: [FormsModule, AudioRecorderComponent],
       providers: [
         { provide: ApiService, useValue: apiServiceMock },
         { provide: ChatService, useValue: chatServiceMock }

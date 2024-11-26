@@ -31,6 +31,7 @@ export class AudioRecorderService {
 
   stopRecording(): Promise<Blob> {
     return new Promise((resolve, reject) => {
+      // Ensure the MediaRecorder is initialized before stopping the recording
       if (!this.mediaRecorder) {
         reject(new TypeError('MediaRecorder is not initialized.'));
         return;
@@ -47,7 +48,7 @@ export class AudioRecorderService {
         reject(event); // Reject the promise if an error occurs during recording
       };
 
-      this.mediaRecorder.stop();
+      this.mediaRecorder.stop(); // Stop the recording
     });
   }
 }

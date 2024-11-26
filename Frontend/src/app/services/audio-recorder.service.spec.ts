@@ -39,8 +39,11 @@ describe('AudioRecorderService', () => {
 
     // Setze die ondataavailable Funktion, um die Blob-Daten zu simulieren
     mockMediaRecorder.ondataavailable = (event: any) => {
-      event.data = mockBlobData;
+      event.data = mockBlobData; // Simuliere die Blob-Daten
     };
+
+    // Starte die Aufnahme
+    await service.startRecording();
 
     // Der Promise muss aufgerufen werden
     const recordingPromise = service.stopRecording();
@@ -66,7 +69,7 @@ describe('AudioRecorderService', () => {
     mockMediaRecorder.onerror({ name: 'error', message: 'Test error' });
   });
 
-  it('should handle error if MediaRecorder is not initialized', async () => {
+  it('should handle error if MediaRecorder is not initialized.', async () => {
     let errorThrown: any;
 
     await service.stopRecording().catch(error => {
