@@ -24,7 +24,7 @@ describe('SearchBarComponent', () => {
         { provide: ChatService, useValue: chatServiceMock }
       ]
     })
-      .compileComponents();
+    .compileComponents();
 
     apiServiceSpy = TestBed.inject(ApiService) as jasmine.SpyObj<ApiService>;
     chatServiceSpy = TestBed.inject(ChatService) as jasmine.SpyObj<ChatService>;

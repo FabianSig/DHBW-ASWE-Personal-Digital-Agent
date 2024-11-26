@@ -13,6 +13,7 @@ export class ApiService {
   private apiUrlAudio = localHost + '/api/chatgpt/audio';
   private apiUrlPrefs = localHost + '/api/prefs';
   private apiUrlTrigger = localHost + '/api/logic/trigger';
+  private apiUrlTts = localHost + '/api/chatgpt/tts';
 
   constructor(private http: HttpClient) {}
 
@@ -38,8 +39,28 @@ export class ApiService {
     return this.http.post(this.apiUrlPrefs, body);
   }
 
+  setTravelModePreference(travelMode: string) {
+    const body = { id: "travelMode", value: [travelMode]};
+    return this.http.post(this.apiUrlPrefs, body);
+  }
+
   setAllergenePreference(allergene: string[]) {
     const body = { id: "allergene", value: allergene};
+    return this.http.post(this.apiUrlPrefs, body);
+  }
+
+  setHomeAddress(homeAdress: string){
+    const body = { id: "home", value: [homeAdress]};
+    return this.http.post(this.apiUrlPrefs, body);
+  }
+
+  setWorkAddress(workAdress: string){
+    const body = { id: "work", value: [workAdress]};
+    return this.http.post(this.apiUrlPrefs, body);
+  }
+
+  setEmailPostkorbPreference(postkoerbe: string[]){
+    const body = { id: "mail-directories", value: postkoerbe};
     return this.http.post(this.apiUrlPrefs, body);
   }
 
@@ -53,5 +74,7 @@ export class ApiService {
     return this.http.get(this.baseUrl + route, { responseType: 'text' });
   }
 
-
+  getTtsAudioFile(text: string) {
+    return this.http.post(this.apiUrlTts, {text}, { responseType: 'blob' });
+  }
 }

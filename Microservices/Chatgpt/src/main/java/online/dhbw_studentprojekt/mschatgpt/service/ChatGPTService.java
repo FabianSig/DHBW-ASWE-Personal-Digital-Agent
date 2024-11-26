@@ -3,6 +3,7 @@ package online.dhbw_studentprojekt.mschatgpt.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import online.dhbw_studentprojekt.dto.chatgpt.audio.ChatGPTAudioResponse;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChatGPTService {
@@ -176,6 +178,8 @@ public class ChatGPTService {
 
         // Format the prompt with the request data
         final String content = String.format(prompt.getContent(),
+                request.unreadMails(),
+                request.contactsLastCalled(),
                 request.firstHeadline(),
                 request.secondHeadline(),
                 request.thirdHeadline(),
@@ -193,11 +197,14 @@ public class ChatGPTService {
 
     public byte[]  getTTS(String message){
 
+        String summaryMessage = sendMessage(new ChatMessageRequest(message, "No data"), "summary", "summary").message().content();
+
         Map<String, String> requestBody = Map.of(
                 "voice", "alloy",
                 "model", "tts-1",
-                "input", message
+                "input", summaryMessage
         );
+
         return chatGPTClient.getTTS(requestBody);
     }
 

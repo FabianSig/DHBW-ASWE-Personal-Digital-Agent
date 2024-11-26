@@ -3,6 +3,7 @@ package online.dhbw_studentprojekt.mschatgpt.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import online.dhbw_studentprojekt.mschatgpt.dto.audio.TTSRequest;
 import online.dhbw_studentprojekt.mschatgpt.service.ChatGPTService;
 import online.dhbw_studentprojekt.dto.chatgpt.audio.ChatGPTAudioResponse;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse;
@@ -65,10 +66,8 @@ public class ChatGPTController {
     @PostMapping(value = "/tts", produces = "audio/mpeg")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get TTS.")
-    public ResponseEntity<byte[]> getMorning(@RequestBody String message) {
-        byte[] audioData = chatGPTService.getTTS(message);
-        log.info("TTS: {}", audioData);
-        // Set response headers
+    public ResponseEntity<byte[]> getTTS(@RequestBody TTSRequest request) {
+        byte[] audioData = chatGPTService.getTTS(request.text());
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "audio/mpeg");
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"speech.mp3\"");

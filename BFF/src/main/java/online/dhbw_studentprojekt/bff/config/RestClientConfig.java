@@ -35,6 +35,9 @@ public class RestClientConfig {
     @Value("${microservice.news.ip}")
     private String newsServiceUrl;
 
+    @Value("${microservice.contacts.ip}")
+    private String contactsServiceUrl;
+
     @Bean
     public ChatGPTClient chatGPTClient() {
 
@@ -122,6 +125,19 @@ public class RestClientConfig {
         RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
         HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(restClientAdapter).build();
         return httpServiceProxyFactory.createClient(NewsClient.class);
+    }
+
+    @Bean
+    public ContactsClient contactsClient() {
+
+        RestClient restClient = RestClient.builder()
+                .baseUrl(contactsServiceUrl)
+                .defaultHeader("Authorization", System.getenv("OUR_API_KEY"))
+                .build();
+
+        RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
+        HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(restClientAdapter).build();
+        return httpServiceProxyFactory.createClient(ContactsClient.class);
     }
 
 }
