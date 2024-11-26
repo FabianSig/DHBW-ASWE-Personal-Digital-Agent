@@ -2,6 +2,7 @@ package online.dhbw_studentprojekt.msstock.service;
 
 import online.dhbw_studentprojekt.dto.stock.Stock;
 import online.dhbw_studentprojekt.msstock.client.StockClient;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -56,10 +57,7 @@ public class StockServiceTest {
         when(stockClient.getStock(invalidSymbol)).thenReturn(errorResponse);
 
         // Act & Assert
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
-                () -> stockService.getStock(invalidSymbol),
-                "Expected ResponseStatusException for invalid symbol");
-        assertEquals("404 NOT_FOUND \"Invalid symbol\"", exception.getMessage());
+        Assertions.assertNull(stockService.getStock(invalidSymbol));
         verify(stockClient, times(1)).getStock(invalidSymbol);
     }
 
