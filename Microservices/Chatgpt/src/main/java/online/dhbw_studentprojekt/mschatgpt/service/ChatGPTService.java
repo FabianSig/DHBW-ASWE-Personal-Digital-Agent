@@ -71,11 +71,7 @@ public class ChatGPTService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Prompt not found"));
 
         // Retrieve the last 3 messages from the chat history
-        List<ChatGPTMessage> messages = messageRepository.findByChatId(chatId).stream()
-                .map(m -> new ChatGPTMessage(m.getRole(), m.getContent()))
-                .collect(Collectors.collectingAndThen(Collectors.toList(), list ->
-                        list.size() > 3 ? list.subList(list.size() - 3, list.size()) : list
-                ));
+        List<ChatGPTMessage> messages = new ArrayList<>();
 
         messages.addFirst(prompt);
         messages.add(1, new ChatGPTMessage("system", request.data()));

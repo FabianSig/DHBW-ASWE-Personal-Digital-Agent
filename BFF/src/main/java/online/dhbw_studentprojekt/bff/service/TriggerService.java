@@ -29,7 +29,7 @@ public class TriggerService {
         List<Trigger> triggers = new ArrayList<>();
 
         RaplaResponse raplaResponse = raplaClient.getLectureTimes(date);
-        String triggerWecker = prefsClient.getPreference("wecker-" + date).map(pref -> pref.value()
+        String triggerWecker = prefsClient.getPreference("alarm").map(pref -> pref.value()
                                             .getFirst())
                                             .orElseGet(() -> {
                                                 ZoneId zoneId = ZoneId.of("Europe/Berlin");
@@ -50,7 +50,7 @@ public class TriggerService {
 
         List<Trigger> triggers = new ArrayList<>();
         log.debug("Getting Trigger for: wecker-{}", date);
-        String triggerWecker = prefsClient.getPreference("wecker-" + date).map(pref -> pref.value()
+        String triggerWecker = prefsClient.getPreference("alarm").map(pref -> pref.value()
                         .getFirst())
                 .orElseGet(() -> {
                     LocalDateTime localDateTime = LocalDateTime.now();
@@ -67,7 +67,7 @@ public class TriggerService {
 
         } catch (DateTimeParseException e) {
             log.error("Invalid triggerWecker format: {}", triggerWecker, e);
-            weckerDateTime = LocalDateTime.now().plusMinutes(1);
+            weckerDateTime = LocalDateTime.now().minusMinutes(1);
         }
 
         triggers.add(new Trigger("/api/logic/morning", weckerDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
