@@ -10,7 +10,7 @@ describe('TriggerService', () => {
   let chatServiceSpy: jasmine.SpyObj<ChatService>;
 
   beforeEach(() => {
-    const apiSpy = jasmine.createSpyObj('ApiService', ['getTriggerData', 'executeCustomTriggerRoutine']);
+    const apiSpy = jasmine.createSpyObj('ApiService', {'getTriggerData': of({ triggers: [] }), 'executeCustomTriggerRoutine': of('Trigger executed')});
     const chatSpy = jasmine.createSpyObj('ChatService', ['addMessage']);
 
     TestBed.configureTestingModule({

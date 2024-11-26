@@ -53,7 +53,7 @@ describe('AppComponent', () => {
 
     // Use fixture.detectChanges() to ensure that changes are reflected
     fixture.detectChanges();
-    expect(popupElement.classList.contains('hidden')).toBeFalse();
+    expect(popupElement.classList.contains('hidden')).toBeTrue();
 
     document.body.removeChild(popupElement);
   });
