@@ -23,7 +23,7 @@ describe('MessageBoxComponent', () => {
 
     chatServiceSpy = TestBed.inject(ChatService) as jasmine.SpyObj<ChatService>;
 
-    fixture = TestBed.createComponent(MessageBoxComponent);
+    fixture = TestBed.createComponent(ChatInputComponent);
     component = fixture.componentInstance;
 
     // Mock chat messages

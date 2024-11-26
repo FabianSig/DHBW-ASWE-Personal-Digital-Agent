@@ -70,50 +70,81 @@ export class PreferencesComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Load existing preferences from localStorag
-    const savedPreferences = localStorage.getItem('preferences');
-    if (savedPreferences) {
-      const parsedPreferences = JSON.parse(savedPreferences);
-      console.log('Loaded Preferences:', parsedPreferences);
-      if (!parsedPreferences.transportation?.mode) {
-        parsedPreferences.transportation = { ...parsedPreferences.transportation, mode: 'transit' };
-      }
-      this.preferencesForm.setValue(parsedPreferences);
-    }
+    this.loadPreferences()
   }
 
   onSubmit() {
     const formData = this.preferencesForm.value;
-    this.preferencesJson = JSON.stringify(formData);
+    console.log('Form submitted with data:', formData);
 
-    // Save the preferences in localStorage
-    localStorage.setItem('preferences', this.preferencesJson);
+    // Update transportation mode
+    const transportationMode = formData.transportation.mode;
+    this.apiService.setPreferences('travelMode', [transportationMode]).subscribe();
+    console.log('Transportation mode updated:', transportationMode);
 
-    // set alarm
-    const alarmId = "wecker-" + formData.alarm.alarmDate;
-    const alarmValue = formData.alarm.alarmDate + "T" + formData.alarm.alarmTime + ":00"  ;
-    const alarm$ = this.apiService.setAlarmPreference(alarmId, alarmValue);
+    // Update home address
+    const homeAddress = formData.homeAddress.address;
+    this.apiService.setPreferences('home', [homeAddress]).subscribe();
+    console.log('Home address updated:', homeAddress);
 
-    const travelMode$ = this.apiService.setTravelModePreference(formData.transportation.mode);
+    // Update work address
+    const workAddress = formData.workAddress.address;
+    this.apiService.setPreferences('work', [workAddress]).subscribe();
+    console.log('Work address updated:', workAddress);
 
-    const allergens = Object.keys(formData.allergens).filter(key => formData.allergens[key]);
-    const allergens$ = this.apiService.setAllergenePreference(allergens);
+    // Update allergens
+    const allergens = Object.entries(formData.allergens)
+      .filter(([key, value]) => value) // Get only allergens with `true` values
+      .map(([key]) => key); // Extract allergen keys
+    this.apiService.setPreferences('allergene', allergens).subscribe();
+    console.log('Allergens updated:', allergens);
 
-    const workAddress$ = this.apiService.setWorkAddress(formData.workAddress.address)
+    // // Update reminder
+    // const reminder = formData.reminder;
+    // this.apiService.setPreferences('reminder', [reminder]);
+    // console.log('Reminder updated:', reminder);
 
-    const homeAddress$ = this.apiService.setHomeAddress(formData.homeAddress.address)
+    // Update alarm
+    const alarmId = `alarm-${formData.alarm.alarmDate}`;
+    const alarmValue = `${formData.alarm.alarmDate}T${formData.alarm.alarmTime}:00`;
+    this.apiService.setPreferences(alarmId, [alarmValue]).subscribe();
+    console.log('Alarm updated:', { alarmId, alarmValue });
 
-    //Wir machen hier mit RxJS einen forkjoin, damit wir sicherstellen, dass alle preferences gesezt worden sind bevor wir reloaded
-    forkJoin([alarm$, travelMode$, allergens$, workAddress$, homeAddress$]).subscribe({
-      next: ([alarmResult, travelModeResult, allergensResult]) => {
-        console.log("All API calls completed.");
-        this.triggerService.reload();
-      },
-      error: (err) => {
-        console.error("Error during API calls:", err);
-      }
-    });
-
-
+    console.log('Preferences update completed.');
   }
+
+  private loadPreferences() {
+    // Define the preference IDs
+    const preferenceIds = [
+      { id: 'travelMode', formControlPath: 'transportation.mode' },
+      { id: 'home', formControlPath: 'homeAddress.address' },
+      { id: 'work', formControlPath: 'workAddress.address' },
+      { id: 'allergene', formControlPath: 'allergens' },
+      { id: 'reminder', formControlPath: 'reminder' },
+    ];
+
+    // Fetch each preference and update the form
+    preferenceIds.forEach((pref) => {
+      this.apiService.getPreference(pref.id).subscribe((response) => {
+        if (response && response.value) {
+          if (pref.id === 'allergene') {
+            // Update allergens (special case for multiple values)
+            const allergens = response.value.reduce((acc: Record<string, boolean>, allergen: string) => {
+              acc[allergen] = true;
+              return acc;
+            }, {} as Record<string, boolean>);
+            this.preferencesForm.get(pref.formControlPath)?.patchValue(allergens);
+          } else {
+            // Update single values
+            const control = this.preferencesForm.get(pref.formControlPath);
+            if (control) {
+              control.patchValue(response.value[0]);
+            }
+          }
+          console.log(`Preference ${pref.id} loaded and updated.`);
+        }
+      });
+    });
+  }
+
 }
