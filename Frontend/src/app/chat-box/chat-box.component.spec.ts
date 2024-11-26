@@ -1,36 +1,33 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { SearchBarComponent } from './search-bar.component';
-import { FormsModule } from '@angular/forms';
-import { AudioRecorderComponent } from '../audio-recorder/audio-recorder.component';
-import { ApiService } from '../services/api.service';
+import { ChatBoxComponent } from './chat-box.component';
 import { ChatService } from '../services/chat.service';
-import { of } from 'rxjs';
-import { AudioResponse } from '../interfaces/audio-response';
+import { ChatMessage } from '../interfaces/chat-message';
+import { MarkdownModule, MarkdownService } from 'ngx-markdown';
+import {ElementRef, signal} from '@angular/core';
 
-describe('SearchBarComponent', () => {
-  let component: SearchBarComponent;
-  let fixture: ComponentFixture<SearchBarComponent>;
-  let apiServiceSpy: jasmine.SpyObj<ApiService>;
+describe('ChatInputComponent', () => {
+  let component: ChatBoxComponent;
+  let fixture: ComponentFixture<ChatBoxComponent>;
   let chatServiceSpy: jasmine.SpyObj<ChatService>;
 
   beforeEach(async () => {
-    const apiServiceMock = jasmine.createSpyObj('ApiService', ['getChatGPTData']);
-    const chatServiceMock = jasmine.createSpyObj('ChatService', ['addMessage']);
+    const chatServiceMock = jasmine.createSpyObj('ChatService', ['getMessages'], { isLoading: signal(false), });
 
     await TestBed.configureTestingModule({
-      imports: [SearchBarComponent, FormsModule, AudioRecorderComponent],
+      imports: [MarkdownModule.forRoot(), ChatBoxComponent],
       providers: [
-        { provide: ApiService, useValue: apiServiceMock },
-        { provide: ChatService, useValue: chatServiceMock }
+        { provide: ChatService, useValue: chatServiceMock },
+        MarkdownService
       ]
-    })
-    .compileComponents();
+    }).compileComponents();
 
-    apiServiceSpy = TestBed.inject(ApiService) as jasmine.SpyObj<ApiService>;
     chatServiceSpy = TestBed.inject(ChatService) as jasmine.SpyObj<ChatService>;
 
-    fixture = TestBed.createComponent(SearchBarComponent);
+    fixture = TestBed.createComponent(ChatBoxComponent);
     component = fixture.componentInstance;
+
+    // Mock chat messages
+    chatServiceSpy.getMessages.and.returnValue([{ id: 1, text: 'Hello World', sender: 'user' }] as ChatMessage[]);
     fixture.detectChanges();
   });
 
@@ -38,34 +35,61 @@ describe('SearchBarComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should update searchTerm on search', () => {
-    const mockEvent = { target: { value: 'test search' } };
-    component.onSearch(mockEvent);
-    expect(component.searchTerm).toBe('test search');
+  it('should initialize with messages from chat service', () => {
+    expect(component.messages.length).toBe(1);
+    expect(component.messages[0].text).toBe('Hello World');
   });
 
-  it('should add user message and clear searchTerm after handleChatGPTSearch', () => {
-    component.searchTerm = 'Hello GPT';
-    const mockResponse = 'Hello from GPT';
-    apiServiceSpy.getChatGPTData.and.returnValue(of(mockResponse));
-
-    component.handleChatGPTSearch();
-
-    expect(chatServiceSpy.addMessage).toHaveBeenCalledWith('Hello GPT', 'user');
-    expect(apiServiceSpy.getChatGPTData).toHaveBeenCalledWith('Hello GPT');
-    expect(chatServiceSpy.addMessage).toHaveBeenCalledWith(mockResponse, 'chatgpt');
-    expect(component.searchTerm).toBe('');
+  it('should update prevMessagesLength on ngAfterViewChecked', () => {
+    component.ngAfterViewChecked();
+    expect(component.prevMessagesLength).toBe(component.messages.length);
   });
 
-  it('should add user message from audio response and process it', () => {
-    const audioResponse: AudioResponse = { text: 'Audio message content' };
-    const mockResponse = 'Response from GPT';
-    apiServiceSpy.getChatGPTData.and.returnValue(of(mockResponse));
+  it('should scroll to bottom on new message', (done) => {
+    // @ts-ignore
+    component.scrollAnchor = {
+      nativeElement: {
+        scrollIntoView: jasmine.createSpy('scrollIntoView')
+      }
+    } as ElementRef;
 
-    component.onAudioResponse(audioResponse);
+    // Add a new message to trigger scrolling
+    component.messages.push({ id: 2, text: 'New message', sender: 'user' });
 
-    expect(chatServiceSpy.addMessage).toHaveBeenCalledWith('Audio message content', 'user');
-    expect(apiServiceSpy.getChatGPTData).toHaveBeenCalledWith('Audio message content');
-    expect(chatServiceSpy.addMessage).toHaveBeenCalledWith(mockResponse, 'chatgpt');
+    // Call ngAfterViewChecked, which includes the scrolling logic
+    component.ngAfterViewChecked();
+
+    // Wait for the setTimeout in scrollToBottom
+    setTimeout(() => {
+      // Verify scrollIntoView was called
+      // @ts-ignore
+      expect(component.scrollAnchor.nativeElement.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
+      done();
+    }, 600);
+  });
+
+  it('should not scroll to bottom if no new message is added', () => {
+    const spy = jasmine.createSpy('scrollIntoView');
+    // @ts-ignore
+    component.scrollAnchor = {
+      nativeElement: {
+        scrollIntoView: spy
+      }
+    } as ElementRef;
+
+    component.ngAfterViewChecked();  // No new message, so no scroll
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('should handle undefined scrollAnchor', (done) => {
+    // @ts-ignore
+    component.scrollAnchor = undefined;
+    spyOn<any>(component, 'scrollToBottom').and.callThrough();
+
+    component.scrollToBottom();
+    setTimeout(() => {
+      expect(component['scrollToBottom']).toHaveBeenCalled();
+      done();
+    }, 600); // allows time for setTimeout to execute
   });
 });
