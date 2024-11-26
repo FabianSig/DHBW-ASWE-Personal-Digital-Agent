@@ -24,15 +24,17 @@ export class ChatInputComponent {
   }
 
   onSearch(event: any): void {
+    // Updates the searchTerm as the user types, enabling real-time input handling
     this.searchTerm = event.target.value;
   }
 
   handleChatGPTSearch(): void {
     this.chatService.addMessage(this.searchTerm, 'user');
+    // Fetches a response from the ChatGPT API based on the user's input
     this.apiService.getChatGPTData(this.searchTerm).subscribe(response => {
       this.chatService.addMessage(response, 'chatgpt');
 
-      // Text-To-Speech
+      // Initiates the Text-To-Speech process for the response to enhance user experience
       this.apiService.getTtsAudioFile(response).subscribe({
         next: (res) => {
           // Create an object URL from the Blob
