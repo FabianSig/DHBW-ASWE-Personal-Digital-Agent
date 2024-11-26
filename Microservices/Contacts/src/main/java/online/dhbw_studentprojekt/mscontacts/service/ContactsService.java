@@ -24,6 +24,9 @@ public class ContactsService {
 
         Map<String, Integer> unreadMap = new HashMap<>();
         for (String directory : directories) {
+            if(directory.isBlank()) {
+                continue;
+            }
             int unread = getUnreadInDirectory(directory);
             unreadMap.put(directory, unread);
         }
