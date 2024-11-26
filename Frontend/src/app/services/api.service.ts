@@ -39,8 +39,23 @@ export class ApiService {
     return this.http.post(this.apiUrlPrefs, body);
   }
 
+  setTravelModePreference(travelMode: string) {
+    const body = { id: "travelMode", value: [travelMode]};
+    return this.http.post(this.apiUrlPrefs, body);
+  }
+
   setAllergenePreference(allergene: string[]) {
     const body = { id: "allergene", value: allergene};
+    return this.http.post(this.apiUrlPrefs, body);
+  }
+
+  setHomeAddress(homeAdress: string){
+    const body = { id: "home", value: [homeAdress]};
+    return this.http.post(this.apiUrlPrefs, body);
+  }
+
+  setWorkAddress(workAdress: string){
+    const body = { id: "work", value: [workAdress]};
     return this.http.post(this.apiUrlPrefs, body);
   }
 

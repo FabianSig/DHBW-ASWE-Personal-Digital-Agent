@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {ApiService} from '../services/api.service';
 import { TriggerService } from '../services/trigger.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-preferences',
@@ -19,16 +20,13 @@ export class PreferencesComponent implements OnInit {
   constructor(private fb: FormBuilder, private apiService: ApiService, private triggerService: TriggerService) {
     this.preferencesForm = this.fb.group({
       transportation: this.fb.group({
-        onFoot: false,
-        byBike: false,
-        byCar: false,
-        byPublicTransport: false
+        mode: 'transit'
       }),
-      address: this.fb.group({
-        street: '',
-        city: '',
-        zip: '',
-        country: ''
+      homeAddress: this.fb.group({
+        address: ''
+      }),
+      workAddress: this.fb.group({
+        address: ''
       }),
       email: this.fb.group({
         korb1: '',
@@ -75,7 +73,12 @@ export class PreferencesComponent implements OnInit {
     // Load existing preferences from localStorag
     const savedPreferences = localStorage.getItem('preferences');
     if (savedPreferences) {
-      this.preferencesForm.setValue(JSON.parse(savedPreferences));
+      const parsedPreferences = JSON.parse(savedPreferences);
+      console.log('Loaded Preferences:', parsedPreferences);
+      if (!parsedPreferences.transportation?.mode) {
+        parsedPreferences.transportation = { ...parsedPreferences.transportation, mode: 'transit' };
+      }
+      this.preferencesForm.setValue(parsedPreferences);
     }
   }
 
@@ -89,17 +92,28 @@ export class PreferencesComponent implements OnInit {
     // set alarm
     const alarmId = "wecker-" + formData.alarm.alarmDate;
     const alarmValue = formData.alarm.alarmDate + "T" + formData.alarm.alarmTime + ":00"  ;
+    const alarm$ = this.apiService.setAlarmPreference(alarmId, alarmValue);
 
-    this.apiService.setAlarmPreference(alarmId, alarmValue).subscribe(() => {
-      console.log("Wecker gestellt");
-      this.triggerService.reload();
-    })
+    const travelMode$ = this.apiService.setTravelModePreference(formData.transportation.mode);
 
-    // set allergene
     const allergens = Object.keys(formData.allergens).filter(key => formData.allergens[key]);
-    console.log(allergens)
-    this.apiService.setAllergenePreference(allergens).subscribe(() => {
-      console.log("Allergene gesetzt");
-    })
+    const allergens$ = this.apiService.setAllergenePreference(allergens);
+
+    const workAddress$ = this.apiService.setWorkAddress(formData.workAddress.address)
+
+    const homeAddress$ = this.apiService.setHomeAddress(formData.homeAddress.address)
+
+    //Wir machen hier mit RxJS einen forkjoin, damit wir sicherstellen, dass alle preferences gesezt worden sind bevor wir reloaded
+    forkJoin([alarm$, travelMode$, allergens$, workAddress$, homeAddress$]).subscribe({
+      next: ([alarmResult, travelModeResult, allergensResult]) => {
+        console.log("All API calls completed.");
+        this.triggerService.reload();
+      },
+      error: (err) => {
+        console.error("Error during API calls:", err);
+      }
+    });
+
+
   }
 }

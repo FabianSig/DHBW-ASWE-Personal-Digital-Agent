@@ -66,7 +66,7 @@ public class ChatGPTController {
     @PostMapping(value = "/tts", produces = "audio/mpeg")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get TTS.")
-    public ResponseEntity<byte[]> getMorning(@RequestBody TTSRequest request) {
+    public ResponseEntity<byte[]> getTTS(@RequestBody TTSRequest request) {
         byte[] audioData = chatGPTService.getTTS(request.text());
         log.info("TTS: {}", audioData);
         // Set response headers

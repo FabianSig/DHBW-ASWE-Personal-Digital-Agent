@@ -28,7 +28,7 @@ public class LogicController {
     @GetMapping("/trigger")
     @ResponseStatus(HttpStatus.OK)
     public TriggerResponse getTrigger(@RequestParam String date) {
-        return triggerService.getTrigger(date);
+        return triggerService.getMockTrigger(date);
     }
 
     @GetMapping("/morning")
@@ -41,5 +41,11 @@ public class LogicController {
     @ResponseStatus(HttpStatus.OK)
     public String getMittagRoutine(){
         return routineService.getMittagRoutine();
+    }
+
+    @GetMapping("/abend")
+    @ResponseStatus(HttpStatus.OK)
+    public String getAbendRoutine(){
+        return routineService.getAbendRoutine();
     }
 }
