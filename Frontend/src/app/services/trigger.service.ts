@@ -32,7 +32,7 @@ export class TriggerService {
   }
 
   private processTriggers() {
-    let currentTimeInMs = new Date().getTime(); // Aktuelle Zeit in Millisekunden
+    let currentTimeInMs = new Date().getTime(); // Current time in milliseconds
 
     Object.entries(this.triggerMap).forEach(([routine, triggerTime]) => {
       const timeDifference = triggerTime - currentTimeInMs; // Calculate the time difference in milliseconds
@@ -77,12 +77,12 @@ export class TriggerService {
   }
 
   private clearAllTriggers() {
-    // Leere alle aktiven Timer
+    // Clear all active timers
     Object.entries(this.timoutReferenceMap).forEach(([routine, timeoutRef]) => {
       clearTimeout(timeoutRef);
     });
 
-    this.timoutReferenceMap = {}; // Leere das Referenzobjekt
+    this.timoutReferenceMap = {}; // Empty the reference object
   }
 
   public reload(): void {
