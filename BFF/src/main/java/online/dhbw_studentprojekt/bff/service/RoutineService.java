@@ -54,16 +54,16 @@ public class RoutineService {
                 .map(preference -> Integer.parseInt(preference.value().getFirst()))
                 .orElse(3);
 
-        List<String> stockSymbols = prefsClient.getPreference("stock-symbols")
+        List<String> stockSymbols = prefsClient.getPreference("stock")
                 .map(Preference::value)
                 .orElse(List.of("ALIZF", "GOOGL", "MSFT"));
 
 
-        List<String> mailDirectories = prefsClient.getPreference("mail-directories")
+        List<String> mailDirectories = prefsClient.getPreference("korb")
                 .map(Preference::value)
                 .orElse(List.of("INBOX"));
 
-        List<String> phoneContacts = prefsClient.getPreference("phone-contacts")
+        List<String> phoneContacts = prefsClient.getPreference("contact")
                 .map(Preference::value)
                 .orElse(List.of());
 

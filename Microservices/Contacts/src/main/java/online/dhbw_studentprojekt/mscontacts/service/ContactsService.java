@@ -43,6 +43,9 @@ public class ContactsService {
 
         Map<String, LocalDate> lastCallDates = new HashMap<>();
         for (String contact : contacts) {
+            if(!contact.isBlank()) {
+                continue;
+            }
             LocalDate lastCallDate = getLastCallDate(contact);
             lastCallDates.put(contact, lastCallDate);
         }
