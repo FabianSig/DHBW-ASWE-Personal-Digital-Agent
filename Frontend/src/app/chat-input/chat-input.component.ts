@@ -12,10 +12,10 @@ import {FormsModule} from '@angular/forms';
     AudioRecorderComponent,
     FormsModule
   ],
-  templateUrl: './search-bar.component.html',
-  styleUrl: './search-bar.component.scss'
+  templateUrl: './chat-input.component.html',
+  styleUrl: './chat-input.component.scss'
 })
-export class SearchBarComponent {
+export class ChatInputComponent {
 
   searchTerm: string = '';
   error: string = '';
@@ -24,15 +24,17 @@ export class SearchBarComponent {
   }
 
   onSearch(event: any): void {
+    // Updates the searchTerm as the user types, enabling real-time input handling
     this.searchTerm = event.target.value;
   }
 
   handleChatGPTSearch(): void {
     this.chatService.addMessage(this.searchTerm, 'user');
+    // Fetches a response from the ChatGPT API based on the user's input
     this.apiService.getChatGPTData(this.searchTerm).subscribe(response => {
       this.chatService.addMessage(response, 'chatgpt');
 
-      // Text-To-Speech
+      // Initiates the Text-To-Speech process for the response to enhance user experience
       this.apiService.getTtsAudioFile(response).subscribe({
         next: (res) => {
           // Create an object URL from the Blob
