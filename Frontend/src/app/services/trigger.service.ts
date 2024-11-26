@@ -78,7 +78,7 @@ export class TriggerService {
 
   private clearAllTriggers() {
     // Leere alle aktiven Timer
-    Object.entries(this.timoutReferenceMap).forEach(([timeoutRef]) => {
+    Object.entries(this.timoutReferenceMap).forEach(([routine, timeoutRef]) => {
       clearTimeout(timeoutRef);
     });
 
