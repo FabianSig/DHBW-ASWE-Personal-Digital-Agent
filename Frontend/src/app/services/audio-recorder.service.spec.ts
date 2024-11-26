@@ -35,10 +35,15 @@ describe('AudioRecorderService', () => {
   });
 
   it('should stop recording and resolve with audio Blob', async () => {
+    const mockBlobData = new Blob(['audio data'], { type: 'audio/ogg' });
     let resolveBlob: Blob | undefined;
 
-    // Simulate mediaRecorder ondataavailable and onstop events
-    (mockMediaRecorder.ondataavailable as any)({ data: new Blob(['audio data']) });
+    spyOn(mockMediaRecorder, 'stop').and.callFake(() => {
+      setTimeout(() => {
+        (mockMediaRecorder.ondataavailable as any)({ data: mockBlobData });
+        mockMediaRecorder.onstop();
+      }, 0);
+    });
 
     service.stopRecording().then(blob => {
       resolveBlob = blob;
@@ -46,24 +51,34 @@ describe('AudioRecorderService', () => {
 
     expect(mockMediaRecorder.stop).toHaveBeenCalled();
 
-    setTimeout(() => mockMediaRecorder.onstop(), 0); // Simulate async onstop event
-    setTimeout(() => {
-      expect(resolveBlob).toBeDefined();
-      expect(resolveBlob instanceof Blob).toBeTrue();
-    }, 0);
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    expect(resolveBlob).toBeDefined();
+    expect(resolveBlob instanceof Blob).toBeTrue();
+    expect(resolveBlob).toEqual(mockBlobData);
   });
 
   it('should reject the promise if there is an error during recording', done => {
     let errorThrown: any;
 
-    // Here, testing stopRecording() instead, as that's the method dealing with Promise handling
     service.stopRecording().catch(error => {
       errorThrown = error;
       expect(errorThrown).toBeDefined();
       done();
     });
 
-    // Simulate an error
     mockMediaRecorder.onerror({ name: 'error', message: 'Test error' });
+  });
+
+  it('should handle error if MediaRecorder is not initialized', async () => {
+    let errorThrown: any;
+
+    await service.stopRecording().catch(error => {
+      errorThrown = error;
+    });
+
+    expect(errorThrown).toBeDefined();
+    expect(errorThrown instanceof TypeError).toBeTrue();
+    expect(errorThrown.message).toBe('MediaRecorder is not initialized.');
   });
 });

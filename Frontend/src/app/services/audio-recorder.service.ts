@@ -28,6 +28,11 @@ export class AudioRecorderService {
 
   stopRecording(): Promise<Blob> {
     return new Promise((resolve, reject) => {
+      if (!this.mediaRecorder) {
+        reject(new TypeError('MediaRecorder is not initialized.'));
+        return;
+      }
+
       this.mediaRecorder.onstop = () => {
         const audioBlob = new Blob(this.audioChunks, { type: 'audio/ogg' });
         resolve(audioBlob);
