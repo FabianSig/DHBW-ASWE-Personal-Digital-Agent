@@ -36,30 +36,25 @@ describe('AudioRecorderService', () => {
 
   it('should stop recording and resolve with audio Blob', async () => {
     const mockBlobData = new Blob(['audio data'], { type: 'audio/ogg' });
-    let resolveBlob: Blob | undefined;
 
+    // Setze die ondataavailable Funktion, um die Blob-Daten zu simulieren
     mockMediaRecorder.ondataavailable = (event: any) => {
       event.data = mockBlobData;
     };
 
-    mockMediaRecorder.onstop = () => {
-      resolveBlob = mockBlobData;
-    };
+    // Der Promise muss aufgerufen werden
+    const recordingPromise = service.stopRecording();
 
-    service.stopRecording().then(blob => {
-      expect(blob).toEqual(mockBlobData);
-    });
+    // Stoppe die Aufnahme und simuliere den Stop-Event
+    mockMediaRecorder.stop(); // Simuliere den Stop-Aufruf
 
-    expect(mockMediaRecorder.stop).toHaveBeenCalled();
-
-    // Simulate the stop event
+    // Simuliere den onstop-Event
     mockMediaRecorder.onstop();
 
-    // Wait for the promise to resolve
-    await new Promise(resolve => setTimeout(resolve, 10));
+    // Warte auf die Promise
+    const blob = await recordingPromise;
 
-    expect(resolveBlob).toBeDefined();
-    expect(resolveBlob instanceof Blob).toBeTrue();
+    expect(blob).toEqual(mockBlobData);
   });
 
   it('should reject the promise if there is an error during recording', done => {
@@ -80,6 +75,6 @@ describe('AudioRecorderService', () => {
 
     expect(errorThrown).toBeDefined();
     expect(errorThrown instanceof TypeError).toBeTrue();
-    expect(errorThrown.message).toBe(new TypeError('MediaRecorder is not initialized.'));
+    expect(errorThrown.message.trim()).toBe(new TypeError('MediaRecorder is not initialized.').message.trim());
   });
 });

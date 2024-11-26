@@ -7,7 +7,7 @@ import { ChatService } from '../services/chat.service';
 import { of } from 'rxjs';
 import { AudioResponse } from '../interfaces/audio-response';
 
-describe('SearchBarComponent', () => {
+describe('ChatInputComponent', () => {
   let component: ChatInputComponent;
   let fixture: ComponentFixture<ChatInputComponent>;
   let apiServiceSpy: jasmine.SpyObj<ApiService>;
