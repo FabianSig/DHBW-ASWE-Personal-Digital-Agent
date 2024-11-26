@@ -20,9 +20,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -45,6 +47,7 @@ class BFFIntentionMessageServiceTest {
 
     @Test
     void testGetResponseMessage_withRoutingAddress() {
+
         MessageRequest messageRequest = new MessageRequest("How do I get from A to B?");
         ChatGPTIntentionResponse intentionResponse = new ChatGPTIntentionResponse("/api/routing/address",
                 List.of(new ChatGPTIntentionAttribute("origin", "A"),
@@ -81,12 +84,12 @@ class BFFIntentionMessageServiceTest {
         verify(chatGPTClient).getResponse(any(ChatMessageRequest.class), any(), eq("maps"));
     }
 
-
     @Test
     void testGetResponseMessage_withSpeisekarte() {
+
         MessageRequest messageRequest = new MessageRequest("What's on the menu?");
         ChatGPTIntentionResponse intentionResponse = new ChatGPTIntentionResponse("/api/logic/speisekarte",
-            List.of(new ChatGPTIntentionAttribute("date", "2024-11-20")));
+                List.of(new ChatGPTIntentionAttribute("date", "2024-11-20")));
         when(chatGPTClient.getIntention(messageRequest.message())).thenReturn(intentionResponse);
 
         List<String> mockAllergene = List.of("nuts", "gluten");
@@ -225,11 +228,34 @@ class BFFIntentionMessageServiceTest {
         verify(chatGPTClient).getIntention(messageRequest.message());
         verify(prefsClient).getPreference("allergene");
         verify(speisekarteClient).getSpeisekarteWithFilteredAllergene("2024-11-20", mockAllergene);
-        verify(chatGPTClient).getResponse(any(ChatMessageRequest.class),any(), eq("message"));
+        verify(chatGPTClient).getResponse(any(ChatMessageRequest.class), any(), eq("message"));
+    }
+
+    @Test
+    void testGetResponseMessage_withSpeisekarteError() {
+
+        MessageRequest messageRequest = new MessageRequest("What's on the menu?");
+        ChatGPTIntentionResponse intentionResponse = new ChatGPTIntentionResponse("/api/logic/speisekarte",
+                List.of(new ChatGPTIntentionAttribute("date", null)));
+        when(chatGPTClient.getIntention(messageRequest.message())).thenReturn(intentionResponse);
+
+        List<String> mockAllergene = List.of("nuts", "gluten");
+
+        when(prefsClient.getPreference("allergene")).thenReturn(Optional.of(new Preference("allergene", mockAllergene)));
+        when(speisekarteClient.getSpeisekarteWithFilteredAllergene("2024-11-20", mockAllergene)).thenReturn(null);
+
+        when(chatGPTClient.getResponse(any(ChatMessageRequest.class), any(), eq("message")))
+                .thenReturn(new ChatGPTResponseChoice(new ChatGPTMessage("assistant", "Here is the menu.")));
+
+        // assert that getResponseMessage throws org.springframework. web. server. ResponseStatusException: 500 INTERNAL_SERVER_ERROR "Could not process Speisekarte information."
+
+        Assertions.assertThrows(ResponseStatusException.class, () -> intentionMessageService.getResponseMessage(messageRequest));
+
     }
 
     @Test
     void testGetResponseMessage_withUnknownRoute() {
+
         MessageRequest messageRequest = new MessageRequest("Unknown request");
         ChatGPTIntentionResponse intentionResponse = new ChatGPTIntentionResponse("/api/unknown", List.of());
 
@@ -242,4 +268,5 @@ class BFFIntentionMessageServiceTest {
         verify(chatGPTClient).getIntention(messageRequest.message());
         verifyNoInteractions(mapsClient, speisekarteClient, prefsClient);
     }
+
 }
