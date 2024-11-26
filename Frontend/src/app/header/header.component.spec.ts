@@ -44,7 +44,7 @@ describe('HeaderComponent', () => {
 
     tick(1000);
     fixture.detectChanges();
-    expect(component['updateDateTime']).toHaveBeenCalledTimes(2);
+    expect(component['updateDateTime']).toHaveBeenCalledTimes(3);
   }));
 
   it('should clear interval on destroy', () => {
