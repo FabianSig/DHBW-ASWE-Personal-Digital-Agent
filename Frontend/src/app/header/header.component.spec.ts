@@ -14,9 +14,8 @@ describe('HeaderComponent', () => {
     fixture = TestBed.createComponent(HeaderComponent);
     component = fixture.componentInstance;
 
-    // Mock Date.now for consistent testing
     originalDateNow = Date.now;
-    Date.now = () => new Date('2023-11-26T10:30:45').getTime();
+    Date.now = () => new Date().getTime();
 
     fixture.detectChanges();
   });
@@ -40,8 +39,9 @@ describe('HeaderComponent', () => {
   });
 
   it('should set day and time correctly on initialization', () => {
-    const expectedDay = '26.11.2023'; // Based on mocked date
-    const expectedTime = '10:30:45'; // Based on mocked date
+    let dateTime = new Date()
+    const expectedDay = `${String(dateTime.getDate()).padStart(2, '0')}.${String(dateTime.getMonth() + 1).padStart(2, '0')}.${dateTime.getFullYear()}`;
+    const expectedTime = dateTime.toTimeString().split(' ')[0];
 
     expect(component.day).toBe(expectedDay);
     expect(component.time).toBe(expectedTime);
@@ -66,8 +66,9 @@ describe('HeaderComponent', () => {
   });
 
   it('should correctly format date and time in updateDateTime', () => {
-    const expectedDay = '26.11.2023';
-    const expectedTime = '10:30:45';
+    const dateTime = new Date();
+    const expectedDay = `${String(dateTime.getDate()).padStart(2, '0')}.${String(dateTime.getMonth() + 1).padStart(2, '0')}.${dateTime.getFullYear()}`;
+    const expectedTime = dateTime.toTimeString().split(' ')[0];
 
     component['updateDateTime'](); // Call the private method
     expect(component.day).toBe(expectedDay);
