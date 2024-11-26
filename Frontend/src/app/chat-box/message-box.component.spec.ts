@@ -45,7 +45,7 @@ describe('MessageBoxComponent', () => {
     expect(component.prevMessagesLength).toBe(component.messages.length);
   });
 
-  it('should scroll to bottom on new message', () => {
+  it('should scroll to bottom on new message', (done) => {
     // @ts-ignore
     component.scrollAnchor = {
       nativeElement: {
@@ -53,10 +53,19 @@ describe('MessageBoxComponent', () => {
       }
     } as ElementRef;
 
+    // Add a new message to trigger scrolling
     component.messages.push({ id: 2, text: 'New message', sender: 'user' });
-    component.ngAfterViewChecked(); // Check will call scrollToBottom
-    // @ts-ignore
-    expect(component.scrollAnchor.nativeElement.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
+
+    // Call ngAfterViewChecked, which includes the scrolling logic
+    component.ngAfterViewChecked();
+
+    // Wait for the setTimeout in scrollToBottom
+    setTimeout(() => {
+      // Verify scrollIntoView was called
+      // @ts-ignore
+      expect(component.scrollAnchor.nativeElement.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
+      done();
+    }, 600);
   });
 
   it('should not scroll to bottom if no new message is added', () => {
