@@ -8,6 +8,8 @@ import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
 import online.dhbw_studentprojekt.dto.news.Article;
 import online.dhbw_studentprojekt.dto.prefs.Preference;
+import online.dhbw_studentprojekt.dto.routing.custom.DirectionResponse;
+import online.dhbw_studentprojekt.dto.routing.custom.RouteAddressRequest;
 import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 import online.dhbw_studentprojekt.dto.stock.Stock;
 import org.springframework.stereotype.Service;
@@ -92,7 +94,11 @@ public class RoutineService {
                 stocks,
                 unreadInMailDirectories,
                 lastCallDates);
-        return chatGPTClient.getMorningRoutine(request).message().content();
+        //return chatGPTClient.getMorningRoutine(request).message().content();
+        //For Testing so we dont exceed API limit.
+        return "Heute, am 26. November 2024, hat Verteidigungsminister Boris Pistorius seinen Verzicht auf eine Kanzlerkandidatur erklärt und unterstützt Bundeskanzler Olaf Scholz, der am kommenden Montag offiziell als SPD-Kanzlerkandidat nominiert werden soll. \n" +
+                "ZDF\n" +
+                " Zudem hat der Internationale Strafgerichtshof in Den Haag Haftbefehle gegen Israels Premierminister Benjamin Netanjahu und den Hamas-Anführer erlassen. ";
     }
 
     /**
