@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
 
 const localHost = "http://localhost:8080";
 
@@ -22,46 +23,18 @@ export class ApiService {
     return this.http.post<string>(this.apiUrlChatgpt, body , { responseType: 'text' as 'json' });
   }
 
-  getMenuData(menuDate: string) {
-    // If no date is given, undefined is used to display the menu for the current day
-    const params = menuDate ? { datum : menuDate } : undefined;
-    return this.http.get(this.apiUrlSpeisekarte, { params });
-  }
-
   getAudioData(audioFile: Blob) {
     const formData = new FormData();
     formData.append('file', audioFile, 'recording.ogg');
     return this.http.post(this.apiUrlAudio, formData );
   }
 
-  setAlarmPreference(alarmDate: string, alarmTime: string) {
-    const body = { id: alarmDate, value: [alarmTime]};
-    return this.http.post(this.apiUrlPrefs, body);
+  getPreferenceFormFromDB() : Observable<string> {
+    return this.http.get<string>(this.apiUrlPrefs + '/all');
   }
 
-  setTravelModePreference(travelMode: string) {
-    const body = { id: "travelMode", value: [travelMode]};
-    return this.http.post(this.apiUrlPrefs, body);
-  }
-
-  setAllergenePreference(allergene: string[]) {
-    const body = { id: "allergene", value: allergene};
-    return this.http.post(this.apiUrlPrefs, body);
-  }
-
-  setHomeAddress(homeAdress: string){
-    const body = { id: "home", value: [homeAdress]};
-    return this.http.post(this.apiUrlPrefs, body);
-  }
-
-  setWorkAddress(workAdress: string){
-    const body = { id: "work", value: [workAdress]};
-    return this.http.post(this.apiUrlPrefs, body);
-  }
-
-  setEmailPostkorbPreference(postkoerbe: string[]){
-    const body = { id: "mail-directories", value: postkoerbe};
-    return this.http.post(this.apiUrlPrefs, body);
+  setPreferenceFormInDB(preferenceForm: any){
+    return this.http.post(this.apiUrlPrefs + '/all', preferenceForm);
   }
 
   getTriggerData(date: string) {
