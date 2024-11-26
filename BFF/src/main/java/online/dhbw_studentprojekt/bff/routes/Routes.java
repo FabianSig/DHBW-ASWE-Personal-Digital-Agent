@@ -62,17 +62,17 @@ public class Routes {
     }
 
 
-//    @Value("${microservice.weather.path}")
-//    private String weatherServicePath;
-//    @Value("${microservice.weather.ip}")
-//    private String weatherServiceIp;
-//
-//    @Bean
-//    public RouterFunction<ServerResponse> weatherServiceRoute() {
-//        return GatewayRouterFunctions.route("weather_service")
-//                .route(RequestPredicates.path(weatherServicePath), HandlerFunctions.http(weatherServiceIp))
-//                .build();
-//    }
+    @Value("${microservice.weather.path}")
+    private String weatherServicePath;
+    @Value("${microservice.weather.ip}")
+    private String weatherServiceIp;
+
+    @Bean
+    public RouterFunction<ServerResponse> weatherServiceRoute() {
+        return GatewayRouterFunctions.route("weather_service")
+                .route(RequestPredicates.path(weatherServicePath), HandlerFunctions.http(weatherServiceIp))
+                .build();
+    }
 
     @Value("${microservice.speisekarte.path}")
     private String speisekarteServicePath;
@@ -164,6 +164,30 @@ public class Routes {
     public RouterFunction<ServerResponse> newsServiceSwaggerRoute(){
         return route("news_service_swagger")
                 .route(RequestPredicates.path(newsServiceSwaggerPath), HandlerFunctions.http(newsServiceIp))
+                .filter(setPath("/api-docs"))
+                .build();
+    }
+
+    @Value("${microservice.contacts.ip}")
+    private String contactsServiceIp;
+
+    @Value("${microservice.contacts.path}")
+    private String contactsServicePath;
+
+    @Bean
+    public RouterFunction<ServerResponse> contactsServiceRoute() {
+        return route("contacts_service")
+                .route(RequestPredicates.path(contactsServicePath), HandlerFunctions.http(contactsServiceIp))
+                .build();
+    }
+
+    @Value("${springdoc.swagger-ui.urls[6].url}")
+    private String contactsServiceSwaggerPath;
+
+    @Bean
+    public RouterFunction<ServerResponse> contactsServiceSwaggerRoute(){
+        return route("contacts_service_swagger")
+                .route(RequestPredicates.path(contactsServiceSwaggerPath), HandlerFunctions.http(contactsServiceIp))
                 .filter(setPath("/api-docs"))
                 .build();
     }

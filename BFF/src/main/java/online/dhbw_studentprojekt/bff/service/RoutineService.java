@@ -69,7 +69,7 @@ public class RoutineService {
 
         // Get news
         List<String> newsHeadlines = new java.util.ArrayList<>(newsClient.getNews(newsTopic, newsCount).stream().map(Article::title).toList());
-        // Bugfix for chatgpt call
+        //TODO entfernen für abgabe: Bugfix for chatgpt call
         newsHeadlines.add(null);
         newsHeadlines.add(null);
         newsHeadlines.add(null);
@@ -95,7 +95,7 @@ public class RoutineService {
                 unreadInMailDirectories,
                 lastCallDates);
         //return chatGPTClient.getMorningRoutine(request).message().content();
-        //For Testing so we dont exceed API limit.
+        //TODO For Testing so we dont exceed API limit.
         return "Heute, am 26. November 2024, hat Verteidigungsminister Boris Pistorius seinen Verzicht auf eine Kanzlerkandidatur erklärt und unterstützt Bundeskanzler Olaf Scholz, der am kommenden Montag offiziell als SPD-Kanzlerkandidat nominiert werden soll. \n" +
                 "ZDF\n" +
                 " Zudem hat der Internationale Strafgerichtshof in Den Haag Haftbefehle gegen Israels Premierminister Benjamin Netanjahu und den Hamas-Anführer erlassen. ";
