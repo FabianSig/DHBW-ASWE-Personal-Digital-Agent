@@ -28,6 +28,11 @@ export class PreferencesComponent implements OnInit {
       workAddress: this.fb.group({
         address: ''
       }),
+      email: this.fb.group({
+        korb1: '',
+        korb2: '',
+        korb3: ''
+      }),
       reminder: '',
       alarm: this.fb.group({
         alarmDate: '',

@@ -5,12 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import online.dhbw_studentprojekt.bff.client.*;
 import online.dhbw_studentprojekt.dto.chatgpt.morning.MorningRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
-import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatId;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
 import online.dhbw_studentprojekt.dto.news.Article;
 import online.dhbw_studentprojekt.dto.prefs.Preference;
-import online.dhbw_studentprojekt.dto.routing.custom.DirectionResponse;
-import online.dhbw_studentprojekt.dto.routing.custom.RouteAddressRequest;
 import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 import online.dhbw_studentprojekt.dto.stock.Stock;
 import org.springframework.stereotype.Service;
@@ -20,6 +17,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -34,6 +33,7 @@ public class RoutineService {
     private final SpeisekarteClient speisekarteClient;
     private final NewsClient newsClient;
     private final MapsClient mapsClient;
+    private final ContactsClient contactsClient;
 
     /**
      * Retrieves the morning routine by gathering and processing user preferences for news topics and stock symbols,
@@ -43,7 +43,7 @@ public class RoutineService {
      * and stock information.
      */
     public String getMorningRoutine() {
-        // Get prefs for news and stocks
+        // Get prefs for news, stocks and contacts
         String newsTopic = prefsClient.getPreference("news-topics")
                 .map(pref -> pref.value().getFirst())
                 .orElse("");
@@ -56,6 +56,15 @@ public class RoutineService {
                 .map(Preference::value)
                 .orElse(List.of("ALIZF", "GOOGL", "MSFT"));
 
+
+        List<String> mailDirectories = prefsClient.getPreference("mail-directories")
+                .map(Preference::value)
+                .orElse(List.of("INBOX"));
+
+        List<String> phoneContacts = prefsClient.getPreference("phone-contacts")
+                .map(Preference::value)
+                .orElse(List.of());
+
         // Get news
         List<String> newsHeadlines = new java.util.ArrayList<>(newsClient.getNews(newsTopic, newsCount).stream().map(Article::title).toList());
         // Bugfix for chatgpt call
@@ -66,8 +75,23 @@ public class RoutineService {
         // Get stocks
         List<Stock> stocks = stockClient.getMultipleStock(stockSymbols);
 
+        // Get mail directories
+        Map<String, Integer> unreadInMailDirectories = contactsClient.getUnreadInMultipleDirectories(mailDirectories);
+
+        // Get last call dates
+        Map<String, LocalDate> lastCallDates = contactsClient.getLastCallDates(phoneContacts)
+                .entrySet().stream()
+                .filter(entrySet -> entrySet.getValue().isBefore(LocalDate.now().minusDays(7)))
+                .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
+
         // Get Text for news and stocks
-        MorningRequest request = new MorningRequest(newsHeadlines.getFirst(), newsHeadlines.get(1), newsHeadlines.get(2), stocks);
+        MorningRequest request = new MorningRequest(
+                newsHeadlines.getFirst(),
+                newsHeadlines.get(1),
+                newsHeadlines.get(2),
+                stocks,
+                unreadInMailDirectories,
+                lastCallDates);
         return chatGPTClient.getMorningRoutine(request).message().content();
     }
 

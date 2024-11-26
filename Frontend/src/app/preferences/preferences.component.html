@@ -43,6 +43,24 @@
       </div>
 
     <div class="mb-5">
+      <h2 class="text-secondary">E-Mail Postfach</h2>
+      <div formGroupName="email" class="ms-3">
+        <div class="mb-3">
+          <label for="korb1" class="form-label">Postkorb 1:</label>
+          <input type="text" formControlName="street" id="korb1" required class="form-control">
+        </div>
+        <div class="mb-3">
+          <label for="korb2" class="form-label">Postkorb 2:</label>
+          <input type="text" formControlName="city" id="korb2" required class="form-control">
+        </div>
+        <div class="mb-3">
+          <label for="korb3" class="form-label">Postkorb 3:</label>
+          <input type="number" formControlName="zip" id="korb3" required class="form-control">
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-5">
       <h2 class="text-secondary">Erinnerung für Kalender</h2>
       <select formControlName="reminder" id="reminder" required class="form-select ms-3">
         <option value="">Keine Erinnerung</option>
