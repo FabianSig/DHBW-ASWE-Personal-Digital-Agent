@@ -50,8 +50,11 @@ public class ContactsService {
     }
 
     public LocalDate getLastCallDate(String contact) {
-
-        return phoneClient.getLastCallDate(contact);
+        // TODO remove
+        Map<String, LocalDate> callDates = new HashMap<>();
+        callDates.put("Mama", LocalDate.of(2024, 10, 24));
+        callDates.put("Papa", LocalDate.of(2024, 9, 15));
+        return callDates.get(contact);
     }
 
 }
