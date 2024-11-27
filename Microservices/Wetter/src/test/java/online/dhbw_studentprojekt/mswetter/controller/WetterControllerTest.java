@@ -31,17 +31,19 @@ public class WetterControllerTest {
     @Test
     void testGetWetter() throws Exception {
         // Arrange
+        String city = "Stuttgart";
         Main main = new Main(20.5, 19.0, 15.0, 22.0);
         Weather weather = new Weather(501, "Rain", "moderate rain", "10d");
         List<Weather> weatherList = List.of(weather);
 
-        Wetter mockWetter = new Wetter("Stuttgart", main, weatherList);
-        when(wetterService.getWetter()).thenReturn(mockWetter);
+        Wetter mockWetter = new Wetter(city, main, weatherList);
+        when(wetterService.getWetter(city)).thenReturn(mockWetter);
 
         // Act & Assert
-        mockMvc.perform(get("/api/wetter"))
+        mockMvc.perform(get("/api/wetter").param("city", city))
+
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Stuttgart"))
+                .andExpect(jsonPath("$.name").value(city))
                 .andExpect(jsonPath("$.main.temp").value(20.5))
                 .andExpect(jsonPath("$.main.feels_like").value(19.0))
                 .andExpect(jsonPath("$.main.temp_min").value(15.0))
@@ -51,6 +53,6 @@ public class WetterControllerTest {
                 .andExpect(jsonPath("$.weather[0].description").value("moderate rain"))
                 .andExpect(jsonPath("$.weather[0].icon").value("10d"));
 
-        verify(wetterService, times(1)).getWetter();
+        verify(wetterService, times(1)).getWetter(city);
     }
 }

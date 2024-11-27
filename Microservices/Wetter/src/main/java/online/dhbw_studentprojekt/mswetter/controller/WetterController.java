@@ -5,10 +5,7 @@ import lombok.RequiredArgsConstructor;
 import online.dhbw_studentprojekt.dto.wetter.Wetter;
 import online.dhbw_studentprojekt.mswetter.service.WetterService;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,9 +17,8 @@ public class WetterController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get the current weather")
-    public Wetter getWetter() {
-
-        return wetterService.getWetter();
+    public Wetter getWetter(@RequestParam String city) {
+        return wetterService.getWetter(city);
     }
 
 }

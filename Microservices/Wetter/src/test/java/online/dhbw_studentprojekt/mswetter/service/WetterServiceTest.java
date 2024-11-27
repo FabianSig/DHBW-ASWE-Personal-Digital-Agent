@@ -32,10 +32,10 @@ public class WetterServiceTest {
         List<Weather> weatherList = List.of(weather);
 
         Wetter mockWetter = new Wetter("Stuttgart", main, weatherList);
-        when(wetterClient.getWetter()).thenReturn(mockWetter);
+        when(wetterClient.getWetter("Stuttgart")).thenReturn(mockWetter);
 
         // Act
-        Wetter result = wetterService.getWetter();
+        Wetter result = wetterService.getWetter("Stuttgart");
 
         // Assert
         assertNotNull(result);
@@ -45,6 +45,6 @@ public class WetterServiceTest {
         assertEquals(1, result.weather().size());
         assertEquals("Rain", result.weather().get(0).main());
         assertEquals("moderate rain", result.weather().get(0).description());
-        verify(wetterClient, times(1)).getWetter();
+        verify(wetterClient, times(1)).getWetter("Stuttgart");
     }
 }
