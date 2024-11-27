@@ -46,7 +46,7 @@ public class ContactsService {
 
         Map<String, LocalDate> lastCallDates = new HashMap<>();
         for (String contact : contacts) {
-            if(!contact.isBlank()) {
+            if(contact.isBlank()) {
                 continue;
             }
             LocalDate lastCallDate = getLastCallDate(contact);
@@ -60,6 +60,12 @@ public class ContactsService {
         Map<String, LocalDate> callDates = new HashMap<>();
         callDates.put("Mama", LocalDate.of(2024, 10, 24));
         callDates.put("Papa", LocalDate.of(2024, 9, 15));
+        callDates.put("Kaka", LocalDate.of(2024, 8, 1));
+        callDates.put("Fabian", LocalDate.of(2024, 7, 1));
+        callDates.put("Niko", LocalDate.of(2024, 6, 1));
+        callDates.put("Sven", LocalDate.of(2024, 5, 1));
+        callDates.put("Ralf", LocalDate.of(2024, 4, 1));
+        callDates.put("Aziz", LocalDate.of(2024, 3, 1));
         return callDates.get(contact);
     }
 
