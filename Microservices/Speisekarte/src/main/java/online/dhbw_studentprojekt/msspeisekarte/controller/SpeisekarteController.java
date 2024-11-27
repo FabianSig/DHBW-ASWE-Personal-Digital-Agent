@@ -34,6 +34,13 @@ public class SpeisekarteController {
         return speisekarteService.getSpeisekarte(datum);
     }
 
+    /**
+     * Get the speisekarte filtered with allergenes for the given date.
+     *
+     * @param datum in format yyyy-MM-dd
+     * @return the speisekarte for the given date
+     * @see Speisekarte
+     */
     @Operation(summary = "Get the speisekarte for the given date, with filtered allergene")
     @GetMapping("/allergene")
     @ResponseStatus(HttpStatus.OK)
