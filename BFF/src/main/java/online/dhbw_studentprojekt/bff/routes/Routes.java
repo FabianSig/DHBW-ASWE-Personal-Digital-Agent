@@ -42,11 +42,20 @@ public class Routes {
     private String routingServicePath;
     @Value("${microservice.routing.ip}")
     private String routingServiceIp;
+    @Value("${microservice.geocoding.path}")
+    private String geocodingServicePath;
 
     @Bean
     public RouterFunction<ServerResponse> routingServiceRoute() {
         return GatewayRouterFunctions.route("routing_service")
                 .route(RequestPredicates.path(routingServicePath), HandlerFunctions.http(routingServiceIp))
+                .build();
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> geocodingServiceRoute() {
+        return GatewayRouterFunctions.route("geocoding_service")
+                .route(RequestPredicates.path(geocodingServicePath), HandlerFunctions.http(routingServiceIp))
                 .build();
     }
 

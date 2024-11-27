@@ -70,7 +70,7 @@ public class TriggerService {
             weckerDateTime = LocalDateTime.now().minusMinutes(1);
         }
 
-        int delay = 60;
+        int delay = 30;
 
         triggers.add(new Trigger("/api/logic/morning", weckerDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
         triggers.add(new Trigger("/api/logic/mittag", weckerDateTime.plusSeconds(delay*2).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));

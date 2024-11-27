@@ -11,8 +11,11 @@ import online.dhbw_studentprojekt.dto.news.Article;
 import online.dhbw_studentprojekt.dto.prefs.Preference;
 import online.dhbw_studentprojekt.dto.routing.custom.DirectionResponse;
 import online.dhbw_studentprojekt.dto.routing.custom.RouteAddressRequest;
+import online.dhbw_studentprojekt.dto.routing.geocoding.AddressComponent;
+import online.dhbw_studentprojekt.dto.routing.geocoding.GeoCodingResponse;
 import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 import online.dhbw_studentprojekt.dto.stock.Stock;
+import online.dhbw_studentprojekt.dto.wetter.Wetter;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -37,6 +40,7 @@ public class RoutineService {
     private final NewsClient newsClient;
     private final MapsClient mapsClient;
     private final ContactsClient contactsClient;
+    private final WetterClient wetterClient;
 
     /**
      * Retrieves the morning routine by gathering and processing user preferences for news topics and stock symbols,
@@ -178,13 +182,37 @@ public class RoutineService {
                 .map(Preference::value)
                 .orElse(Collections.emptyList());
 
-        DirectionResponse directionResponse = mapsClient.getDirections(new RouteAddressRequest(work.getFirst(), home.getFirst(), travelmode.getFirst().toLowerCase()));
+        GeoCodingResponse geoCodingResponse = mapsClient.getGeoCoding(home.getFirst());
 
-        String prompt = "Meine letzte Vorlesung ist zu Ende wünsche mir einen Schönen Feierabend und sage mir wie ich nach Hause komme.";
+        String shortName = geoCodingResponse.results().stream()
+                .flatMap(result -> result.address_components().stream())
+                .filter(component -> component.types().contains("locality"))
+                .map(AddressComponent::short_name)
+                .findFirst()
+                .orElse("Stuttgart");
+
+        Wetter wetter = wetterClient.getWetter(shortName);
+
+        String mainWetter = wetter.weather().getFirst().main();
+        DirectionResponse directionResponse;
+        String prompt;
+
+        if(mainWetter.equalsIgnoreCase("rain")){
+            String newTravelMode = "transit";
+            directionResponse = mapsClient.getDirections(new RouteAddressRequest(work.getFirst(), home.getFirst(), newTravelMode));
+            String tmp = "Heute regnet es leider deswegen muss ich %s anstatt %s nutzen. Meine letzte Vorlesung ist zu Ende wünsche mir einen Schönen Feierabend und sage mir wie ich nach Hause komme. Und wiederhole, dass es regnet und sage dass wir auf die eben genannten alternative ausweichen müssen";
+            prompt = String.format(tmp, newTravelMode, travelmode.getFirst().toLowerCase());
+        }
+        else{
+            directionResponse = mapsClient.getDirections(new RouteAddressRequest(work.getFirst(), home.getFirst(), travelmode.getFirst().toLowerCase()));
+
+            prompt = "Meine letzte Vorlesung ist zu Ende wünsche mir einen Schönen Feierabend und sage mir wie ich nach Hause komme.";
+        }
+
 
         ChatMessageRequest chatRequest = new ChatMessageRequest(prompt,
                 "time to get there " + directionResponse.routes().getFirst().legs().getFirst().duration().text() + "\n"
-                        + "current Time: " + currentTime + "\n"
+                        + "departure time" + directionResponse.routes().getFirst().legs().getFirst().departure_time() + "\n"
                         + "additional data about the route: " + directionResponse);
 
         ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, "routine", "maps");

@@ -74,7 +74,16 @@ public class ChatGPTService {
         List<ChatGPTMessage> messages = new ArrayList<>();
 
         messages.addFirst(prompt);
-        messages.add(1, new ChatGPTMessage("system", request.data()));
+
+        if(extraPromptId != null && extraPromptId.equals("summary")) {
+            messages.add(new ChatGPTMessage("assistant", request.data()));
+        }
+        else{
+            messages.add(1, new ChatGPTMessage("system", request.data()));
+        }
+
+
+
 
         // If an extra prompt ID is provided, add the corresponding prompt to the list of messages
         if (StringUtils.hasText(extraPromptId)) {
@@ -193,7 +202,7 @@ public class ChatGPTService {
 
     public byte[]  getTTS(String message){
 
-        String summaryMessage = sendMessage(new ChatMessageRequest(message, "No data"), "summary", "summary").message().content();
+        String summaryMessage = sendMessage(new ChatMessageRequest("Bitte fasse deine Nachricht nochmals zusammen um es kompakter zu machen", message), "summary", "summary").message().content();
 
         Map<String, String> requestBody = Map.of(
                 "voice", "alloy",

@@ -38,6 +38,11 @@ public class RestClientConfig {
     @Value("${microservice.contacts.ip}")
     private String contactsServiceUrl;
 
+    @Value("${microservice.weather.ip}")
+    private String wetterServiceUrl;
+
+
+
     @Bean
     public ChatGPTClient chatGPTClient() {
 
@@ -74,6 +79,18 @@ public class RestClientConfig {
         RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
         HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(restClientAdapter).build();
         return httpServiceProxyFactory.createClient(SpeisekarteClient.class);
+    }
+
+    @Bean
+    public WetterClient wetterClient() {
+
+        RestClient restClient = RestClient.builder()
+                .baseUrl(wetterServiceUrl)
+                .build();
+
+        RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
+        HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(restClientAdapter).build();
+        return httpServiceProxyFactory.createClient(WetterClient.class);
     }
 
     @Bean
