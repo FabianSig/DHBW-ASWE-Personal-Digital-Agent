@@ -18,9 +18,18 @@ public class SpeisekarteService {
 
     private final SpeisekarteClient speisekarteClient;
 
+    /**
+     * Retrieves a Speisekarte and filters out meals containing specified allergens.
+     *
+     * @param date      an optional date parameter to fetch the Speisekarte for a specific date
+     * @param allergene a list of allergens to filter out from the Speisekarte
+     * @return a Speisekarte with meals filtered based on the specified allergens
+     */
     public Speisekarte getSpeisekarteWithFilteredAllergene(Optional<String> date, List<String> allergene) {
 
         Speisekarte speisekarte = this.getSpeisekarte(date);
+
+        // If no allergene are specified, return the unfiltered speisekarte
         if (allergene == null || allergene.isEmpty()) {
             return speisekarte;
         }
@@ -28,7 +37,12 @@ public class SpeisekarteService {
         return filterSpeisekarte(speisekarte, allergene);
     }
 
-
+    /**
+     * Retrieves a Speisekarte for a specific date.
+     *
+     * @param datumParam an optional date parameter to fetch the Speisekarte for a specific date
+     * @return a Speisekarte for the specified date
+     */
     public Speisekarte getSpeisekarte(Optional<String> datumParam) {
 
         final String websiteHtml = speisekarteClient.getSpeisekarte(prepareFormData(datumParam));
