@@ -30,6 +30,9 @@ public class ContactsService {
             int unread = getUnreadInDirectory(directory);
             unreadMap.put(directory, unread);
         }
+        if(unreadMap.isEmpty()){
+            unreadMap.put("INBOX",  getUnreadInDirectory("INBOX"));
+        }
         return unreadMap;
     }
 
