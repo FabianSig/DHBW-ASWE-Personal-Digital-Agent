@@ -197,8 +197,6 @@ public class ChatGPTService {
      *
      * @param message the input message to be summarized and converted to speech
      * @return a byte array representing the generated TTS audio
-     * @throws IllegalArgumentException if the input message is null or empty
-     * @throws RuntimeException if there is an error during communication with the summarization or TTS service
      */
     public byte[] getTTS(String message) {
 
