@@ -17,7 +17,6 @@ describe('PreferencesComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
-      declarations: [PreferencesComponent],
       providers: [
         FormBuilder,
         { provide: ApiService, useValue: apiServiceSpy },
@@ -80,4 +79,6 @@ describe('PreferencesComponent', () => {
       expect(console.error).toHaveBeenCalledWith('An error occurred while updating preferences:', jasmine.any(Error));
     }));
   });
+
+
 });
