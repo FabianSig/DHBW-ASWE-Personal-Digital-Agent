@@ -18,7 +18,6 @@ describe('ChatInputComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [FormsModule],
-      declarations: [ChatInputComponent],
       providers: [
         { provide: ApiService, useValue: apiServiceMock },
         { provide: ChatService, useValue: chatServiceMock }
