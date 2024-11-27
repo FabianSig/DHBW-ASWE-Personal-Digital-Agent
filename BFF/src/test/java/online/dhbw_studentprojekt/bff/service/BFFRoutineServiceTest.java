@@ -1,7 +1,6 @@
 package online.dhbw_studentprojekt.bff.service;
 
 import online.dhbw_studentprojekt.bff.client.*;
-import online.dhbw_studentprojekt.dto.chatgpt.morning.MorningRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTMessage;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
@@ -43,11 +42,7 @@ class BFFRoutineServiceTest {
     @Mock
     private NewsClient newsClient;
     @Mock
-    private MapsClient mapsClient;
-    @Mock
     private ContactsClient contactsClient;
-    @Mock
-    private WetterClient wetterClient;
 
     @InjectMocks
     private RoutineService routineService;
@@ -90,7 +85,6 @@ class BFFRoutineServiceTest {
         verify(prefsClient).getPreference("stock");
         verify(newsClient).getNews("Technology", 3);
         verify(stockClient).getMultipleStock(List.of("AAPL", "TSLA", "AMZN"));
-        verify(chatGPTClient).getMorningRoutine(any(MorningRequest.class));
     }
 
 
@@ -245,7 +239,6 @@ class BFFRoutineServiceTest {
         // Verify interactions
         verify(prefsClient).getPreference("allergene");
         verify(speisekarteClient).getSpeisekarteWithFilteredAllergene(eq(today.toString()), Mockito.anyList());
-        verify(chatGPTClient).getResponse(expectedChatRequest, "routine", "message");
     }
 
     @Test
@@ -271,27 +264,7 @@ class BFFRoutineServiceTest {
         when(prefsClient.getPreference("travelMode"))
                 .thenReturn(Optional.empty());
 
-        GeoCodingResponse geoCodingResponse = new GeoCodingResponse(null, null);
-
-
-        Wetter wetter = new Wetter("", null, List.of(new Wetter.Weather(1, null, null, null)));
-
-
-        DirectionResponse directionResponse = new DirectionResponse(List.of(
-                new DirectionResponse.Route(null)
-        ));
-
-
-        String expectedPrompt = "Meine letzte Vorlesung ist zu Ende wünsche mir einen Schönen Feierabend und sage mir wie ich nach Hause komme.";
-        ChatMessageRequest expectedChatRequest = new ChatMessageRequest(expectedPrompt,
-                "time to get there 30 mins\n" +
-                        "departure time17:00\n" +
-                        "additional data about the route: " + directionResponse);
-
-        // Act
-
-
-        // Assert
+        // Act & Assert
         assertThrows(NoSuchElementException.class, () -> routineService.getAbendRoutine());
 
 

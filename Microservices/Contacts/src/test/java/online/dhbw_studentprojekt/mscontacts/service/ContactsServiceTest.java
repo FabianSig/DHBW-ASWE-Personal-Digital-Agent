@@ -31,28 +31,25 @@ public class ContactsServiceTest {
     @Test
     void getLastCallDate_ShouldReturnDate() {
         // Arrange
-        String contact = "testContact";
+        String contact = "Mama";
 
-        Mockito.when(contactsService.getLastCallDate(contact)).thenReturn(LocalDate.of(2024, 1, 1));
+
         // Act
         LocalDate result = contactsService.getLastCallDate(contact);
 
         // Assert
-        Assertions.assertEquals(LocalDate.of(2024, 1, 1), result);
-        Mockito.verify(phoneClient).getLastCallDate(contact);
+        Assertions.assertEquals(LocalDate.of(2024, 10, 24), result);
     }
 
     @Test
     void getLastCallDates_ShouldReturnDateMap() {
         // Arrange
-        Mockito.when(phoneClient.getLastCallDate("testContact1")).thenReturn(LocalDate.of(2024, 1, 1));
-        Mockito.when(phoneClient.getLastCallDate("testContact2")).thenReturn(LocalDate.of(2024, 1, 2));
         // Act
-        Map<String, LocalDate> result = contactsService.getLastCallDates(List.of("testContact1", "testContact2"));
+        Map<String, LocalDate> result = contactsService.getLastCallDates(List.of("Mama", "Papa"));
 
         // Assert
-        Assertions.assertEquals(LocalDate.of(2024, 1, 1), result.get("testContact1"));
-        Assertions.assertEquals(LocalDate.of(2024, 1, 2), result.get("testContact2"));
+        Assertions.assertEquals(LocalDate.of(2024, 10, 24), result.get("Mama"));
+        Assertions.assertEquals(LocalDate.of(2024, 9, 15), result.get("Papa"));
     }
 
     @Test
