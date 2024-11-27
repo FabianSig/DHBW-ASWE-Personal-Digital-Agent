@@ -27,7 +27,7 @@ class BFFTriggerServiceTest {
     void testGetTriggerWithPreferences() {
         // Given
         String date = "2024-11-20";
-        String mockPreference = "2024-11-20T08:00:00+01:00";
+        String mockPreference = "2024-11-27T08:00:00+01:00";
         RaplaResponse mockRaplaResponse = new RaplaResponse("2024-11-20T09:00:00+01:00","2024-11-20T12:00:00+01:00" ,"2024-11-20T18:00:00+01:00");
 
         when(prefsClient.getPreference("wecker-" + date))

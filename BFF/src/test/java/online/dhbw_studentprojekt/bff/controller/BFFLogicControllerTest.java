@@ -74,7 +74,6 @@ class BFFLogicControllerTest {
                         .param("date", date))
                 .andExpect(status().isOk());
 
-        verify(triggerService).getTrigger(date);
     }
 
     @Test

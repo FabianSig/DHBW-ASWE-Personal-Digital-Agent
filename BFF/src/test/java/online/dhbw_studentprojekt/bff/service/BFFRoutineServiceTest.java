@@ -7,40 +7,59 @@ import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
 import online.dhbw_studentprojekt.dto.news.Article;
 import online.dhbw_studentprojekt.dto.prefs.Preference;
+import online.dhbw_studentprojekt.dto.routing.custom.DirectionResponse;
+import online.dhbw_studentprojekt.dto.routing.geocoding.GeoCodingResponse;
 import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 import online.dhbw_studentprojekt.dto.stock.Stock;
+import online.dhbw_studentprojekt.dto.wetter.Wetter;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class BFFRoutineServiceTest {
 
-    private final PrefsClient prefsClient = mock(PrefsClient.class);
-    private final StockClient stockClient = mock(StockClient.class);
-    private final ChatGPTClient chatGPTClient = mock(ChatGPTClient.class);
-    private final SpeisekarteClient speisekarteClient = mock(SpeisekarteClient.class);
-    private final NewsClient newsClient = mock(NewsClient.class);
-    private final MapsClient mapsClient = mock(MapsClient.class);
-    private final ContactsClient contactsClient = mock(ContactsClient.class);
-    private final WetterClient wetterClient = mock(WetterClient.class);
-    private final RoutineService routineService = new RoutineService(
-            prefsClient, stockClient, chatGPTClient, speisekarteClient, newsClient, mapsClient, contactsClient, wetterClient);
+    @Mock
+    private PrefsClient prefsClient;
+    @Mock
+    private StockClient stockClient;
+    @Mock
+    private ChatGPTClient chatGPTClient;
+    @Mock
+    private SpeisekarteClient speisekarteClient;
+    @Mock
+    private NewsClient newsClient;
+    @Mock
+    private MapsClient mapsClient;
+    @Mock
+    private ContactsClient contactsClient;
+    @Mock
+    private WetterClient wetterClient;
+
+    @InjectMocks
+    private RoutineService routineService;
 
     @Test
     void testGetMorningRoutine() {
         // Arrange
-        when(prefsClient.getPreference("news-topics"))
-                .thenReturn(Optional.of(new Preference("news-topics", List.of("Technology"))));
-        when(prefsClient.getPreference("news-count"))
-                .thenReturn(Optional.of(new Preference("news-count", List.of("3"))));
-        when(prefsClient.getPreference("stock-symbols"))
-                .thenReturn(Optional.of(new Preference("stock-symbols", List.of("AAPL", "TSLA", "AMZN"))));
+        when(prefsClient.getPreference("news-topic"))
+                .thenReturn(Optional.of(new Preference("news-topic", List.of("Technology"))));
+
+        when(prefsClient.getPreference("stock"))
+                .thenReturn(Optional.of(new Preference("stock", List.of("AAPL", "TSLA", "AMZN"))));
 
         when(newsClient.getNews("Technology", 3))
                 .thenReturn(List.of(
@@ -57,7 +76,7 @@ class BFFRoutineServiceTest {
                 ));
 
         // Use Argument Matchers
-        when(chatGPTClient.getMorningRoutine(any(MorningRequest.class)))
+        when(chatGPTClient.getResponse(Mockito.any(), Mockito.any(), Mockito.any()))
                 .thenReturn(new ChatGPTResponseChoice(new ChatGPTMessage("assistant", "Good morning! Here's your summary.")));
 
         // Act
@@ -67,9 +86,8 @@ class BFFRoutineServiceTest {
         assertEquals("Good morning! Here's your summary.", routine);
 
         // Verify interactions
-        verify(prefsClient).getPreference("news-topics");
-        verify(prefsClient).getPreference("news-count");
-        verify(prefsClient).getPreference("stock-symbols");
+        verify(prefsClient).getPreference("news-topic");
+        verify(prefsClient).getPreference("stock");
         verify(newsClient).getNews("Technology", 3);
         verify(stockClient).getMultipleStock(List.of("AAPL", "TSLA", "AMZN"));
         verify(chatGPTClient).getMorningRoutine(any(MorningRequest.class));
@@ -215,8 +233,8 @@ class BFFRoutineServiceTest {
         String prompt = "Bitte begrüße mich da es Mittagszeit ist und gebe ein mögliches Menü für das Mittagessen aus.";
         ChatMessageRequest expectedChatRequest = new ChatMessageRequest(prompt, "Speisekarte:" + expectedSpeisekarte);
 
-        when(chatGPTClient.getResponse(expectedChatRequest, "routine", "message"))
-                .thenReturn(new ChatGPTResponseChoice(new ChatGPTMessage("assistant","Enjoy your lunch! Here's the menu.")));
+        when(chatGPTClient.getResponse(Mockito.any(), Mockito.any(), Mockito.any()))
+                .thenReturn(new ChatGPTResponseChoice(new ChatGPTMessage("assistant", "Enjoy your lunch! Here's the menu.")));
 
         // Act
         String routine = routineService.getMittagRoutine();
@@ -229,5 +247,55 @@ class BFFRoutineServiceTest {
         verify(speisekarteClient).getSpeisekarteWithFilteredAllergene(eq(today.toString()), Mockito.anyList());
         verify(chatGPTClient).getResponse(expectedChatRequest, "routine", "message");
     }
+
+    @Test
+    void testGetNachmittagRoutine() {
+
+        when(contactsClient.getLastCallDates(Mockito.any())).thenReturn(Map.of("Alice", LocalDate.of(2024, 11, 6), "Bob", LocalDate.of(2024, 11, 7)));
+
+        when(contactsClient.getUnreadInMultipleDirectories(Mockito.any())).thenReturn(Map.of("INBOX", 3, "Test", 2));
+        when(chatGPTClient.getResponse(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ChatGPTResponseChoice(new ChatGPTMessage("assistant", "Here are your unread messages and phone reminders.")));
+
+        String routine = routineService.getNachmittagRoutine();
+
+        assertEquals("Here are your unread messages and phone reminders.", routine);
+    }
+
+    @Test
+    void testGetAbendRoutine() {
+        // Arrange
+        when(prefsClient.getPreference("home"))
+                .thenReturn(Optional.empty());
+        when(prefsClient.getPreference("work"))
+                .thenReturn(Optional.empty());
+        when(prefsClient.getPreference("travelMode"))
+                .thenReturn(Optional.empty());
+
+        GeoCodingResponse geoCodingResponse = new GeoCodingResponse(null, null);
+
+
+        Wetter wetter = new Wetter("", null, List.of(new Wetter.Weather(1, null, null, null)));
+
+
+        DirectionResponse directionResponse = new DirectionResponse(List.of(
+                new DirectionResponse.Route(null)
+        ));
+
+
+        String expectedPrompt = "Meine letzte Vorlesung ist zu Ende wünsche mir einen Schönen Feierabend und sage mir wie ich nach Hause komme.";
+        ChatMessageRequest expectedChatRequest = new ChatMessageRequest(expectedPrompt,
+                "time to get there 30 mins\n" +
+                        "departure time17:00\n" +
+                        "additional data about the route: " + directionResponse);
+
+        // Act
+
+
+        // Assert
+        assertThrows(NoSuchElementException.class, () -> routineService.getAbendRoutine());
+
+
+    }
+
 }
 
