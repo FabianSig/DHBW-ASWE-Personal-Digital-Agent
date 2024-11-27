@@ -54,11 +54,38 @@ public class RoutineService {
         List<String> stockSymbols = prefsClient.getPreference("stock")
                 .map(Preference::value)
                 .orElse(List.of("ALIZF", "GOOGL", "MSFT"));
-        // Get news
-        List<String> newsHeadlines = new java.util.ArrayList<>(newsClient.getNews(newsTopic, 3).stream().map(Article::title).toList());
+        // Get news TODO
+        //List<String> newsHeadlines = new java.util.ArrayList<>(newsClient.getNews(newsTopic, 3).stream().map(Article::title).toList());
+        List<String> newsHeadlines = new ArrayList<>();
+        newsHeadlines.add("\"Heute, am 26. November 2024, hat Verteidigungsminister Boris Pistorius seinen Verzicht auf eine Kanzlerkandidatur erklärt und unterstützt Bundeskanzler Olaf Scholz, der am kommenden Montag offiziell als SPD-Kanzlerkandidat nominiert werden soll. \\n\" +\n" +
+                "        //        \"ZDF\\n\" +\n" +
+                "         //       \" Zudem hat der Internationale Strafgerichtshof in Den Haag Haftbefehle gegen Israels Premierminister Benjamin Netanjahu und d");
+        // Get stocks TODO
+        //List<Stock> stocks = stockClient.getMultipleStock(stockSymbols);
+        List<Stock> stocks = new ArrayList<>();
 
-        // Get stocks
-        List<Stock> stocks = stockClient.getMultipleStock(stockSymbols);
+        Stock stock1 = new Stock(
+                "TechCorp",
+                new Stock.DataPoint("2024-11-25", "120.50", "118.00", "122.00", "121.00"),
+                new Stock.DataPoint("2024-11-24", "119.00", "117.50", "120.80", "118.20")
+        );
+
+        Stock stock2 = new Stock(
+                "GreenEnergy",
+                new Stock.DataPoint("2024-11-25", "55.30", "54.00", "56.20", "55.80"),
+                new Stock.DataPoint("2024-11-24", "56.00", "53.90", "56.50", "54.50")
+        );
+
+        Stock stock3 = new Stock(
+                "RetailCo",
+                new Stock.DataPoint("2024-11-25", "78.10", "76.80", "79.50", "78.90"),
+                new Stock.DataPoint("2024-11-24", "77.50", "75.60", "78.20", "76.80")
+        );
+
+        stocks.add(stock1);
+        stocks.add(stock2);
+        stocks.add(stock3);
+
         String prompt = "Du bist ein hilfreicher assistent, der als begleitung eines weckers informationen zu den heutigen nachrichten und bestimmten börsenwerten gibt. Die top 3 Nachrichten heute sind und  aktienwerte sind angehangen";
 
         ChatMessageRequest chatRequest = new ChatMessageRequest(prompt,
@@ -96,7 +123,7 @@ public class RoutineService {
 
         Speisekarte speisekarte = speisekarteClient.getSpeisekarteWithFilteredAllergene(today.toString(), allergene);
 
-        String prompt = "Bitte begrüße mich da es Mittagszeit ist und gebe ein mögliches Menü für das Mittagessen aus. Suche also eine Vorspeise, Hauptspeise und Nachspeise für mich aus.";
+        String prompt = "Ich gebe dir anbei meine Speisekarte für heute. Bitte begrüße mich da es Mittagszeit ist und gebe ein mögliches Menü für das Mittagessen aus. Suche also eine Vorspeise, Hauptspeise und Nachspeise für mich aus.";
 
         ChatMessageRequest chatRequest = new ChatMessageRequest(prompt,
                 "Speisekarte:" + speisekarte);
