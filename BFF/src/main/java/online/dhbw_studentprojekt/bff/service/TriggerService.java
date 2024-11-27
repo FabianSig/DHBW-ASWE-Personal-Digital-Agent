@@ -38,46 +38,12 @@ public class TriggerService {
                                                 return zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
                                             });
 
+        // Setting Trigger and constructing nachmittag trigger by adding one hour to raplaResponse.end_of_first_lecture()
         triggers.add(new Trigger("/api/logic/morning", triggerWecker));
         triggers.add(new Trigger("/api/logic/mittag", raplaResponse.end_of_first_lecture()));
+        triggers.add(new Trigger("/api/logic/nachmittag", LocalDateTime.parse(raplaResponse.end_of_first_lecture()).plusHours(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
         triggers.add(new Trigger("/api/logic/abend", raplaResponse.end_of_last_lecture()));
 
         return new TriggerResponse(triggers);
     }
-
-    public TriggerResponse getMockTrigger(String date) {
-
-
-        List<Trigger> triggers = new ArrayList<>();
-        log.debug("Getting Trigger for: wecker-{}", date);
-        String triggerWecker = prefsClient.getPreference("alarm").map(pref -> pref.value()
-                        .getFirst())
-                .orElseGet(() -> {
-                    LocalDateTime localDateTime = LocalDateTime.now();
-                    return localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-                });
-
-        log.debug("Retrieved wecker: {}", triggerWecker);
-
-
-        LocalDateTime weckerDateTime;
-
-        try {
-            weckerDateTime = LocalDateTime.parse(triggerWecker, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-
-        } catch (DateTimeParseException e) {
-            log.error("Invalid triggerWecker format: {}", triggerWecker, e);
-            weckerDateTime = LocalDateTime.now().minusMinutes(1);
-        }
-
-        int delay = 30;
-
-        triggers.add(new Trigger("/api/logic/morning", weckerDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
-        triggers.add(new Trigger("/api/logic/mittag", weckerDateTime.plusSeconds(delay*2).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
-        triggers.add(new Trigger("/api/logic/nachmittag", weckerDateTime.plusSeconds(delay*4).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
-        triggers.add(new Trigger("/api/logic/abend", weckerDateTime.plusSeconds(delay*6).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
-
-        return new TriggerResponse(triggers);
-    }
-
 }

@@ -50,7 +50,7 @@ public class RoutineService {
      * and stock information.
      */
     public String getMorningRoutine() {
-        // Get prefs for news, stocks and contacts
+        // Get preferences from DB
         String newsTopic = prefsClient.getPreference("news-topic")
                 .map(pref -> pref.value().getFirst())
                 .orElse("");
@@ -58,50 +58,20 @@ public class RoutineService {
         List<String> stockSymbols = prefsClient.getPreference("stock")
                 .map(Preference::value)
                 .orElse(List.of("ALIZF", "GOOGL", "MSFT"));
-        // Get news TODO
-        //List<String> newsHeadlines = new java.util.ArrayList<>(newsClient.getNews(newsTopic, 3).stream().map(Article::title).toList());
-        List<String> newsHeadlines = new ArrayList<>();
-        newsHeadlines.add("\"Heute, am 26. November 2024, hat Verteidigungsminister Boris Pistorius seinen Verzicht auf eine Kanzlerkandidatur erklärt und unterstützt Bundeskanzler Olaf Scholz, der am kommenden Montag offiziell als SPD-Kanzlerkandidat nominiert werden soll. \\n\" +\n" +
-                "        //        \"ZDF\\n\" +\n" +
-                "         //       \" Zudem hat der Internationale Strafgerichtshof in Den Haag Haftbefehle gegen Israels Premierminister Benjamin Netanjahu und d");
-        // Get stocks TODO
-        //List<Stock> stocks = stockClient.getMultipleStock(stockSymbols);
-        List<Stock> stocks = new ArrayList<>();
 
-        Stock stock1 = new Stock(
-                "TechCorp",
-                new Stock.DataPoint("2024-11-25", "120.50", "118.00", "122.00", "121.00"),
-                new Stock.DataPoint("2024-11-24", "119.00", "117.50", "120.80", "118.20")
-        );
+        // Get news and stocks and taking preferences into account
+        List<String> newsHeadlines = new java.util.ArrayList<>(newsClient.getNews(newsTopic, 3).stream().map(Article::title).toList());
+        List<Stock> stocks = stockClient.getMultipleStock(stockSymbols);
 
-        Stock stock2 = new Stock(
-                "GreenEnergy",
-                new Stock.DataPoint("2024-11-25", "55.30", "54.00", "56.20", "55.80"),
-                new Stock.DataPoint("2024-11-24", "56.00", "53.90", "56.50", "54.50")
-        );
+        String prompt = "Du bist ein hilfreicher assistent, der als begleitung eines weckers informationen zu den heutigen nachrichten und bestimmten börsenwerten gibt. Die top 3 Nachrichten heute sind und Aktienwerte sind angehangen";
 
-        Stock stock3 = new Stock(
-                "RetailCo",
-                new Stock.DataPoint("2024-11-25", "78.10", "76.80", "79.50", "78.90"),
-                new Stock.DataPoint("2024-11-24", "77.50", "75.60", "78.20", "76.80")
-        );
-
-        stocks.add(stock1);
-        stocks.add(stock2);
-        stocks.add(stock3);
-
-        String prompt = "Du bist ein hilfreicher assistent, der als begleitung eines weckers informationen zu den heutigen nachrichten und bestimmten börsenwerten gibt. Die top 3 Nachrichten heute sind und  aktienwerte sind angehangen";
-
+        // Requesting ChatGPT to retrieve user facing message
         ChatMessageRequest chatRequest = new ChatMessageRequest(prompt,
                 "Aktienwerte:" + stocks
                         + "News:" + newsHeadlines);
         ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, ChatId.TEST.getValue(), "message");
 
         return gptResponse.message().content();
-        //TODO For Testing so we dont exceed API limit.
-        //return "Heute, am 26. November 2024, hat Verteidigungsminister Boris Pistorius seinen Verzicht auf eine Kanzlerkandidatur erklärt und unterstützt Bundeskanzler Olaf Scholz, der am kommenden Montag offiziell als SPD-Kanzlerkandidat nominiert werden soll. \n" +
-        //        "ZDF\n" +
-         //       " Zudem hat der Internationale Strafgerichtshof in Den Haag Haftbefehle gegen Israels Premierminister Benjamin Netanjahu und den Hamas-Anführer erlassen. ";
     }
 
     /**
@@ -168,8 +138,7 @@ public class RoutineService {
 
     public String getAbendRoutine(){
 
-        final String currentTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-
+        // Get Preferences
         List<String> home = prefsClient.getPreference("home")
                 .map(Preference::value)
                 .orElse(Collections.emptyList());
@@ -182,33 +151,10 @@ public class RoutineService {
                 .map(Preference::value)
                 .orElse(Collections.emptyList());
 
-        GeoCodingResponse geoCodingResponse = mapsClient.getGeoCoding(home.getFirst());
+        // Get DirectionsResponse from Google Map and build user facing response message with ChatGPT
+        DirectionResponse directionResponse = mapsClient.getDirections(new RouteAddressRequest(work.getFirst(), home.getFirst(), travelmode.getFirst().toLowerCase()));
 
-        String shortName = geoCodingResponse.results().stream()
-                .flatMap(result -> result.address_components().stream())
-                .filter(component -> component.types().contains("locality"))
-                .map(AddressComponent::short_name)
-                .findFirst()
-                .orElse("Stuttgart");
-
-        Wetter wetter = wetterClient.getWetter(shortName);
-
-        String mainWetter = wetter.weather().getFirst().main();
-        DirectionResponse directionResponse;
-        String prompt;
-
-        if(mainWetter.equalsIgnoreCase("rain")){
-            String newTravelMode = "transit";
-            directionResponse = mapsClient.getDirections(new RouteAddressRequest(work.getFirst(), home.getFirst(), newTravelMode));
-            String tmp = "Heute regnet es leider deswegen muss ich %s anstatt %s nutzen. Meine letzte Vorlesung ist zu Ende wünsche mir einen Schönen Feierabend und sage mir wie ich nach Hause komme. Und wiederhole, dass es regnet und sage dass wir auf die eben genannten alternative ausweichen müssen";
-            prompt = String.format(tmp, newTravelMode, travelmode.getFirst().toLowerCase());
-        }
-        else{
-            directionResponse = mapsClient.getDirections(new RouteAddressRequest(work.getFirst(), home.getFirst(), travelmode.getFirst().toLowerCase()));
-
-            prompt = "Meine letzte Vorlesung ist zu Ende wünsche mir einen Schönen Feierabend und sage mir wie ich nach Hause komme.";
-        }
-
+        String prompt = "Meine letzte Vorlesung ist zu Ende wünsche mir einen Schönen Feierabend und sage mir wie ich nach Hause komme.";
 
         ChatMessageRequest chatRequest = new ChatMessageRequest(prompt,
                 "time to get there " + directionResponse.routes().getFirst().legs().getFirst().duration().text() + "\n"
