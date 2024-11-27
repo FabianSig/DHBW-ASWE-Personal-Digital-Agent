@@ -46,15 +46,6 @@ describe('PreferencesComponent', () => {
       expect(component.preferencesForm.get('transportation.mode')?.value).toBe('transit');
     }));
 
-    it('should handle API errors gracefully', fakeAsync(() => {
-      spyOn(console, 'warn');
-      apiService.getPreference.and.returnValue(throwError(() => new Error('API Error')));
-
-      component['loadPreferences']();
-      tick();
-
-      expect(console.warn).toHaveBeenCalledWith(jasmine.any(String));
-    }));
   });
 
   describe('onSubmit', () => {

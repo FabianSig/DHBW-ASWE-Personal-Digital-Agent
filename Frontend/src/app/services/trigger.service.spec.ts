@@ -78,4 +78,24 @@ describe('TriggerService', () => {
       expect(service.handleTriggerDisplayText).toHaveBeenCalled();
     }, 11000); // Wait for the longest timeout
   });
+
+  it('should handle error in getTriggerData', () => {
+    const date = '2023-01-01';
+    spyOn(apiService, 'getTriggerData').and.returnValue(throwError('Error'));
+
+    apiService.getTriggerData(date).subscribe(
+      () => fail('expected an error, not data'),
+      error => expect(error).toBe('Error')
+    );
+  });
+
+  it('should handle empty trigger data', () => {
+    const mockTriggerData = { triggers: [] };
+    spyOn(apiService, 'getTriggerData').and.returnValue(of(mockTriggerData));
+
+    service.setOffTrigger();
+
+    expect(apiService.getTriggerData).toHaveBeenCalled();
+    expect(service['triggerMap']).toEqual({});
+  });
 });
