@@ -22,9 +22,7 @@ public class RestClientConfig {
 
         RestClient restClient = RestClient.builder()
                 .baseUrl(speisekarteServiceUrl)
-                .defaultHeaders(httpHeaders -> {
-                    httpHeaders.addAll(myHeaders());
-                })
+                .defaultHeaders(httpHeaders -> httpHeaders.addAll(myHeaders()))
                 .build();
 
         RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);

@@ -68,7 +68,7 @@ public class GeoCodingServiceTest {
         assertThat(response.status()).isEqualTo("OK");
         assertThat(response.results()).hasSize(1);
 
-        Result returnedResult = response.results().get(0);
+        Result returnedResult = response.results().getFirst();
         assertThat(returnedResult.formatted_address()).isEqualTo("1600 Amphitheatre Parkway, Mountain View, CA, USA");
         assertThat(returnedResult.geometry().location().lat()).isEqualTo(37.423021);
         assertThat(returnedResult.geometry().location().lng()).isEqualTo(-122.083739);

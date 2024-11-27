@@ -304,39 +304,5 @@ public class SpeisekarteServiceTest {
         assertTrue(result.buffet().stream().noneMatch(s -> s.allergene().contains("Gl") || s.allergene().contains("S")),
                 "Buffet should not contain any dishes with Gl or S allergens");
     }
-    // The following tests for prepareFormData Method
-    // Commented out because of private method
-    // Decide later if needed
-    // either refactor to be public method or test indirectly
-/*
-    @Test
-    void testPrepareFormData_Weekday() {
-        // Arrange
-        String testDate = "2024-10-29";
-        MultiValueMap<String, String> formData = SpeisekarteService.prepareFormData(testDate);
 
-        // Assert
-        assertEquals("make_spl", formData.getFirst("func"));
-        assertEquals("16", formData.getFirst("locId"));
-        assertEquals("de", formData.getFirst("lang"));
-        assertEquals(testDate, formData.getFirst("date"));
-        assertNotNull(formData.getFirst("startThisWeek"));
-        assertNotNull(formData.getFirst("startNextWeek"));
-    }
-
-    @Test
-    void testPrepareFormData_EdgeCase() {
-        // Arrange
-        String testDate = "2024-01-01"; // A Monday at the start of the year
-        MultiValueMap<String, String> formData = SpeisekarteService.prepareFormData(testDate);
-
-        // Assert
-        assertEquals("make_spl", formData.getFirst("func"));
-        assertEquals("16", formData.getFirst("locId"));
-        assertEquals("de", formData.getFirst("lang"));
-        assertEquals(testDate, formData.getFirst("date"));
-        assertNotNull(formData.getFirst("startThisWeek"));
-        assertNotNull(formData.getFirst("startNextWeek"));
-    }
- */
 }

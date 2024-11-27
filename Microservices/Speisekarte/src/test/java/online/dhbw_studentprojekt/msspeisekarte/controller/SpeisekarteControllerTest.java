@@ -180,13 +180,13 @@ public class SpeisekarteControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 // Verify some fields in the JSON response using jsonPath -> no Object Mapper
-                .andExpect(jsonPath("$.vorspeisen[0].name").value(speisekarte.vorspeisen().get(0).name()))
-                .andExpect(jsonPath("$.veganerRenner[0].name").value(speisekarte.veganerRenner().get(0).name()))
-                .andExpect(jsonPath("$.hauptgericht[0].name").value(speisekarte.hauptgericht().get(0).name()))
-                .andExpect(jsonPath("$.beilagen[0].name").value(speisekarte.beilagen().get(0).name()))
-                .andExpect(jsonPath("$.salat[0].name").value(speisekarte.salat().get(0).name()))
-                .andExpect(jsonPath("$.dessert[0].name").value(speisekarte.dessert().get(0).name()))
-                .andExpect(jsonPath("$.buffet[0].name").value(speisekarte.buffet().get(0).name()));
+                .andExpect(jsonPath("$.vorspeisen[0].name").value(speisekarte.vorspeisen().getFirst().name()))
+                .andExpect(jsonPath("$.veganerRenner[0].name").value(speisekarte.veganerRenner().getFirst().name()))
+                .andExpect(jsonPath("$.hauptgericht[0].name").value(speisekarte.hauptgericht().getFirst().name()))
+                .andExpect(jsonPath("$.beilagen[0].name").value(speisekarte.beilagen().getFirst().name()))
+                .andExpect(jsonPath("$.salat[0].name").value(speisekarte.salat().getFirst().name()))
+                .andExpect(jsonPath("$.dessert[0].name").value(speisekarte.dessert().getFirst().name()))
+                .andExpect(jsonPath("$.buffet[0].name").value(speisekarte.buffet().getFirst().name()));
     }
     @Test
     void testGetSpeisekarte_NoDate() throws Exception {
@@ -198,13 +198,13 @@ public class SpeisekarteControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.vorspeisen[0].name").value(speisekarte.vorspeisen().get(0).name()))
-                .andExpect(jsonPath("$.veganerRenner[0].name").value(speisekarte.veganerRenner().get(0).name()))
-                .andExpect(jsonPath("$.hauptgericht[0].name").value(speisekarte.hauptgericht().get(0).name()))
-                .andExpect(jsonPath("$.beilagen[0].name").value(speisekarte.beilagen().get(0).name()))
-                .andExpect(jsonPath("$.salat[0].name").value(speisekarte.salat().get(0).name()))
-                .andExpect(jsonPath("$.dessert[0].name").value(speisekarte.dessert().get(0).name()))
-                .andExpect(jsonPath("$.buffet[0].name").value(speisekarte.buffet().get(0).name()));
+                .andExpect(jsonPath("$.vorspeisen[0].name").value(speisekarte.vorspeisen().getFirst().name()))
+                .andExpect(jsonPath("$.veganerRenner[0].name").value(speisekarte.veganerRenner().getFirst().name()))
+                .andExpect(jsonPath("$.hauptgericht[0].name").value(speisekarte.hauptgericht().getFirst().name()))
+                .andExpect(jsonPath("$.beilagen[0].name").value(speisekarte.beilagen().getFirst().name()))
+                .andExpect(jsonPath("$.salat[0].name").value(speisekarte.salat().getFirst().name()))
+                .andExpect(jsonPath("$.dessert[0].name").value(speisekarte.dessert().getFirst().name()))
+                .andExpect(jsonPath("$.buffet[0].name").value(speisekarte.buffet().getFirst().name()));
     }
 
     @Test

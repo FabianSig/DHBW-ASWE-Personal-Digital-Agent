@@ -58,7 +58,7 @@ class NewsServiceTest {
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).title()).isEqualTo("Title1");
+        assertThat(result.getFirst().title()).isEqualTo("Title1");
 
         verify(newsClient, times(1)).getNews("sports");
     }

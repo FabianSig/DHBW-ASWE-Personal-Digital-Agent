@@ -71,7 +71,7 @@ public class StockControllerTest {
                 .andExpect(result -> {
                     Exception resolvedException = result.getResolvedException();
                     assertNotNull(resolvedException, "Resolved exception should not be null");
-                    assertTrue(resolvedException instanceof ResponseStatusException);
+                    assertInstanceOf(ResponseStatusException.class, resolvedException);
                     assertEquals("404 NOT_FOUND \"Invalid symbol\"", resolvedException.getMessage());
                 });
     }
@@ -113,7 +113,7 @@ public class StockControllerTest {
                 .andExpect(result -> {
                     Exception resolvedException = result.getResolvedException();
                     assertNotNull(resolvedException, "Resolved exception should not be null");
-                    assertTrue(resolvedException instanceof ResponseStatusException);
+                    assertInstanceOf(ResponseStatusException.class, resolvedException);
                     assertEquals("429 TOO_MANY_REQUESTS \"API rate limit exceeded\"", resolvedException.getMessage());
                 });
     }

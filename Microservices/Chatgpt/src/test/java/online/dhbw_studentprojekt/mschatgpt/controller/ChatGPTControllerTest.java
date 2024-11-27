@@ -101,8 +101,8 @@ class ChatGPTControllerTest {
         // Assert
         Assertions.assertEquals("intention", result.route());
         Assertions.assertEquals(1, result.attributes().size());
-        Assertions.assertEquals("attribute", result.attributes().get(0).name());
-        Assertions.assertEquals("value", result.attributes().get(0).value());
+        Assertions.assertEquals("attribute", result.attributes().getFirst().name());
+        Assertions.assertEquals("value", result.attributes().getFirst().value());
 
         Mockito.verify(chatGPTService).findIntention(chatGPTMessage);
     }

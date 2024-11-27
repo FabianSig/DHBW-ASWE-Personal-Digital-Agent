@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -43,8 +42,8 @@ public class WetterServiceTest {
         assertEquals(25.0, result.main().temp());
         assertNotNull(result.weather());
         assertEquals(1, result.weather().size());
-        assertEquals("Rain", result.weather().get(0).main());
-        assertEquals("moderate rain", result.weather().get(0).description());
+        assertEquals("Rain", result.weather().getFirst().main());
+        assertEquals("moderate rain", result.weather().getFirst().description());
         verify(wetterClient, times(1)).getWetter("Stuttgart");
     }
 }
