@@ -2,16 +2,18 @@ package online.dhbw_studentprojekt.bff.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import online.dhbw_studentprojekt.bff.client.*;
+import online.dhbw_studentprojekt.bff.client.ChatGPTClient;
+import online.dhbw_studentprojekt.bff.client.MapsClient;
+import online.dhbw_studentprojekt.bff.client.PrefsClient;
+import online.dhbw_studentprojekt.bff.client.SpeisekarteClient;
 import online.dhbw_studentprojekt.dto.chatgpt.intention.ChatGPTIntentionResponse;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
+import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatId;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.MessageRequest;
-import online.dhbw_studentprojekt.dto.chatgpt.standard.*;
 import online.dhbw_studentprojekt.dto.prefs.Preference;
 import online.dhbw_studentprojekt.dto.routing.custom.DirectionResponse;
 import online.dhbw_studentprojekt.dto.routing.custom.RouteAddressRequest;
-import online.dhbw_studentprojekt.dto.routing.routing.RouteResponse;
 import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -53,42 +55,6 @@ public class IntentionMessageService {
             case "/api/logic/speisekarte" -> getSpeisekarteResponse(message, attributes);
             default -> "Entschuldigung, das habe ich nicht verstanden. Bitte versuche es erneut.";
         };
-    }
-
-    /**
-     * Processes the given message and generates a response based on the detected intention.
-     *
-     * @param message the message to process
-     * @return the generated response message
-     */
-    private String getSpeisekarteResponse(MessageRequest message, Map<String, String> attributes) {
-
-        try {
-            String date = attributes.get("date");
-            if (date == null) {
-                date = LocalDate.now().toString();
-            }
-
-            List<String> allergene = prefsClient.getPreference("allergene")
-                    .map(Preference::value)
-                    .orElse(Collections.emptyList());
-
-            Speisekarte speisekarte = speisekarteClient.getSpeisekarteWithFilteredAllergene(date, allergene);
-
-            if (speisekarte == null) {
-                log.error("Speisekarte is null.");
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Speisekarte nicht gefunden.");
-            }
-
-            ChatMessageRequest chatRequest = new ChatMessageRequest(message.message(),
-                    "Speisekarte:" + speisekarte);
-            ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, ChatId.TEST.getValue(), "message");
-
-            return gptResponse.message().content();
-        } catch (Exception e) {
-            log.error("Error during speisekarte request: ", e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not process Speisekarte information.");
-        }
     }
 
     /**
@@ -138,6 +104,42 @@ public class IntentionMessageService {
         } catch (Exception e) {
             log.error("Error during routing request: ", e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not process routing information.");
+        }
+    }
+
+    /**
+     * Processes the given message and generates a response based on the detected intention.
+     *
+     * @param message the message to process
+     * @return the generated response message
+     */
+    private String getSpeisekarteResponse(MessageRequest message, Map<String, String> attributes) {
+
+        try {
+            String date = attributes.get("date");
+            if (date == null) {
+                date = LocalDate.now().toString();
+            }
+
+            List<String> allergene = prefsClient.getPreference("allergene")
+                    .map(Preference::value)
+                    .orElse(Collections.emptyList());
+
+            Speisekarte speisekarte = speisekarteClient.getSpeisekarteWithFilteredAllergene(date, allergene);
+
+            if (speisekarte == null) {
+                log.error("Speisekarte is null.");
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Speisekarte nicht gefunden.");
+            }
+
+            ChatMessageRequest chatRequest = new ChatMessageRequest(message.message(),
+                    "Speisekarte:" + speisekarte);
+            ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, ChatId.TEST.getValue(), "message");
+
+            return gptResponse.message().content();
+        } catch (Exception e) {
+            log.error("Error during speisekarte request: ", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not process Speisekarte information.");
         }
     }
 

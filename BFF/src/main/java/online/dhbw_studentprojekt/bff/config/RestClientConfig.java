@@ -13,7 +13,6 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 @Slf4j
 public class RestClientConfig {
 
-
     @Value("${microservice.chatgpt.ip}")
     private String chatGPTServiceUrl;
 
@@ -40,7 +39,6 @@ public class RestClientConfig {
 
     @Value("${microservice.weather.ip}")
     private String wetterServiceUrl;
-
 
 
     @Bean

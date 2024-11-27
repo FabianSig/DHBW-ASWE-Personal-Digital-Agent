@@ -1,8 +1,8 @@
 package online.dhbw_studentprojekt.msmaps.config;
 
+import lombok.extern.slf4j.Slf4j;
 import online.dhbw_studentprojekt.msmaps.clients.MapsClient;
 import online.dhbw_studentprojekt.msmaps.clients.RoutingClient;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -9,12 +9,12 @@ import online.dhbw_studentprojekt.dto.trigger.Trigger;
 import online.dhbw_studentprojekt.dto.trigger.TriggerResponse;
 import org.springframework.stereotype.Service;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -30,13 +30,13 @@ public class TriggerService {
 
         RaplaResponse raplaResponse = raplaClient.getLectureTimes(date);
         String triggerWecker = prefsClient.getPreference("alarm").map(pref -> pref.value()
-                                            .getFirst())
-                                            .orElseGet(() -> {
-                                                ZoneId zoneId = ZoneId.of("Europe/Berlin");
-                                                LocalDateTime localDateTime = LocalDateTime.now(zoneId).withHour(8).withMinute(0).withSecond(0).withNano(0);
-                                                ZonedDateTime zonedDateTime = localDateTime.atZone(zoneId);
-                                                return zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-                                            });
+                        .getFirst())
+                .orElseGet(() -> {
+                    ZoneId zoneId = ZoneId.of("Europe/Berlin");
+                    LocalDateTime localDateTime = LocalDateTime.now(zoneId).withHour(8).withMinute(0).withSecond(0).withNano(0);
+                    ZonedDateTime zonedDateTime = localDateTime.atZone(zoneId);
+                    return zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                });
 
         // Setting Trigger and constructing nachmittag trigger by adding one hour to raplaResponse.end_of_first_lecture()
         triggers.add(new Trigger("/api/logic/morning", triggerWecker));
@@ -46,4 +46,5 @@ public class TriggerService {
 
         return new TriggerResponse(triggers);
     }
+
 }

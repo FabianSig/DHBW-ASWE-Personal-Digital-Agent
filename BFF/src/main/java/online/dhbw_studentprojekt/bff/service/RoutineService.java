@@ -3,7 +3,6 @@ package online.dhbw_studentprojekt.bff.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import online.dhbw_studentprojekt.bff.client.*;
-import online.dhbw_studentprojekt.dto.chatgpt.morning.MorningRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatId;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
@@ -11,19 +10,14 @@ import online.dhbw_studentprojekt.dto.news.Article;
 import online.dhbw_studentprojekt.dto.prefs.Preference;
 import online.dhbw_studentprojekt.dto.routing.custom.DirectionResponse;
 import online.dhbw_studentprojekt.dto.routing.custom.RouteAddressRequest;
-import online.dhbw_studentprojekt.dto.routing.geocoding.AddressComponent;
-import online.dhbw_studentprojekt.dto.routing.geocoding.GeoCodingResponse;
 import online.dhbw_studentprojekt.dto.speisekarte.Speisekarte;
 import online.dhbw_studentprojekt.dto.stock.Stock;
-import online.dhbw_studentprojekt.dto.wetter.Wetter;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -40,7 +34,6 @@ public class RoutineService {
     private final NewsClient newsClient;
     private final MapsClient mapsClient;
     private final ContactsClient contactsClient;
-    private final WetterClient wetterClient;
 
     /**
      * Retrieves the morning routine by gathering and processing user preferences for news topics and stock symbols,
@@ -136,7 +129,7 @@ public class RoutineService {
         return responseChoice.message().content();
     }
 
-    public String getAbendRoutine(){
+    public String getAbendRoutine() {
 
         // Get Preferences
         List<String> home = prefsClient.getPreference("home")

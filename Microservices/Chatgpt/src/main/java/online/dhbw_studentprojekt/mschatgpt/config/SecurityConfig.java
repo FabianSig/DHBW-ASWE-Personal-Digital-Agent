@@ -15,6 +15,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+
         return httpSecurity.authorizeHttpRequests(authorize -> authorize.anyRequest()
                         .permitAll())
                 .addFilterAfter(new CustomAPIKeyFilter(), BasicAuthenticationFilter.class)

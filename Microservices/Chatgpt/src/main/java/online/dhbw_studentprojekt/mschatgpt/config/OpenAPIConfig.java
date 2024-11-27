@@ -11,6 +11,7 @@ public class OpenAPIConfig {
 
     @Bean
     public OpenAPI chatGPTServiceAPI() {
+
         return new OpenAPI()
                 .info(new Info().title("ChatGPT Service API")
                         .description("A microservice to interact with a GPT model for chatbot responses.")

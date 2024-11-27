@@ -18,6 +18,7 @@ public class RestClientConfig {
 
     @Bean
     public ChatGPTClient chatGPTClient() {
+
         RestClient restClient = RestClient.builder()
                 .baseUrl(chatGPTServiceUrl)
                 .defaultHeader("Authorization", "Bearer " + System.getenv("API_KEY"))
@@ -27,4 +28,5 @@ public class RestClientConfig {
         HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(restClientAdapter).build();
         return httpServiceProxyFactory.createClient(ChatGPTClient.class);
     }
+
 }

@@ -11,6 +11,7 @@ public class OpenAPIConfig {
 
     @Bean
     public OpenAPI routingServiceAPI() {
+
         return new OpenAPI()
                 .info(new Info().title("Routing Service API")
                         .description("A microservice that calls the google maps api to get the best route between two points.")
