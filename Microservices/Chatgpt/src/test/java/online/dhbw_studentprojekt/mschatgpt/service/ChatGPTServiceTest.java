@@ -62,7 +62,6 @@ class ChatGPTServiceTest {
 
         Mockito.when(promptRepository.findFirstByPromptId("message")).thenReturn(Optional.of(prompt));
         Mockito.when(promptRepository.findFirstByPromptId(extraPromptId)).thenReturn(Optional.of(extraPrompt));
-        Mockito.when(messageRepository.findByChatId(chatId)).thenReturn(previousMessages);
         Mockito.when(chatGPTClient.sendMessage(Mockito.any())).thenReturn(mockResponse);
 
         // Act
@@ -75,7 +74,6 @@ class ChatGPTServiceTest {
         // Verify interactions
         Mockito.verify(promptRepository).findFirstByPromptId("message");
         Mockito.verify(promptRepository).findFirstByPromptId(extraPromptId);
-        Mockito.verify(messageRepository).findByChatId(chatId);
         Mockito.verify(chatGPTClient).sendMessage(Mockito.any());
     }
 

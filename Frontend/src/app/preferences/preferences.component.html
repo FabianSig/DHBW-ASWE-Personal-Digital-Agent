@@ -55,23 +55,40 @@
         </div>
         <div class="mb-3">
           <label for="korb3" class="form-label">Postkorb 3:</label>
-          <input type="number" formControlName="korb3" id="korb3" required class="form-control">
+          <input type="text" formControlName="korb3" id="korb3" required class="form-control">
         </div>
       </div>
     </div>
 
     <div class="mb-5">
-      <h2 class="text-secondary">Erinnerung für Kalender</h2>
-      <select formControlName="reminder" id="reminder" required class="form-select ms-3">
-        <option value="">Keine Erinnerung</option>
-        <option value="1">1 Minute</option>
-        <option value="5">5 Minuten</option>
-        <option value="10">10 Minuten</option>
-        <option value="15">15 Minuten</option>
-        <option value="30">30 Minuten</option>
-        <option value="45">45 Minuten</option>
-        <option value="60">60 Minuten</option>
-      </select>
+      <h2 class="text-secondary">Aktien</h2>
+      <div formGroupName="stocks" class="ms-3">
+        <div class="mb-3">
+          <input type="text" formControlName="stock1" id="stock-symbols-1" required class="form-control">
+          <input type="text" formControlName="stock2" id="stock-symbols-2" required class="form-control">
+          <input type="text" formControlName="stock3" id="stock-symbols-3" required class="form-control">
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-5">
+      <h2 class="text-secondary">Nachrichtenpräferenz</h2>
+      <div formGroupName="news" class="ms-3">
+        <div class="mb-3">
+          <input type="text" formControlName="topic" id="news-topic" required class="form-control">
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-5">
+      <h2 class="text-secondary">Telefonkontakte</h2>
+      <div formGroupName="contacts" class="ms-3">
+        <div class="mb-3">
+          <input type="text" formControlName="contact1" id="phone-contacts-1" required class="form-control">
+          <input type="text" formControlName="contact2" id="phone-contacts-2" required class="form-control">
+          <input type="text" formControlName="contact3" id="phone-contacts-3" required class="form-control">
+        </div>
+      </div>
     </div>
 
     <div class="mb-5">

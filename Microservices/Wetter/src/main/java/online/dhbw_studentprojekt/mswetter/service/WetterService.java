@@ -11,9 +11,9 @@ public class WetterService {
 
     private final WetterClient wetterClient;
 
-    public Wetter getWetter() {
+    public Wetter getWetter(String city) {
 
-        return wetterClient.getWetter();
+        return wetterClient.getWetter(city);
     }
 
 }

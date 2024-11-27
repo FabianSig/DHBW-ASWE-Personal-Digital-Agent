@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import online.dhbw_studentprojekt.bff.client.*;
 import online.dhbw_studentprojekt.dto.chatgpt.morning.MorningRequest;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatGPTResponseChoice;
+import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatId;
 import online.dhbw_studentprojekt.dto.chatgpt.standard.ChatMessageRequest;
 import online.dhbw_studentprojekt.dto.news.Article;
 import online.dhbw_studentprojekt.dto.prefs.Preference;
@@ -46,59 +47,57 @@ public class RoutineService {
      */
     public String getMorningRoutine() {
         // Get prefs for news, stocks and contacts
-        String newsTopic = prefsClient.getPreference("news-topics")
+        String newsTopic = prefsClient.getPreference("news-topic")
                 .map(pref -> pref.value().getFirst())
                 .orElse("");
 
-        int newsCount = prefsClient.getPreference("news-count")
-                .map(preference -> Integer.parseInt(preference.value().getFirst()))
-                .orElse(3);
-
-        List<String> stockSymbols = prefsClient.getPreference("stock-symbols")
+        List<String> stockSymbols = prefsClient.getPreference("stock")
                 .map(Preference::value)
                 .orElse(List.of("ALIZF", "GOOGL", "MSFT"));
+        // Get news TODO
+        //List<String> newsHeadlines = new java.util.ArrayList<>(newsClient.getNews(newsTopic, 3).stream().map(Article::title).toList());
+        List<String> newsHeadlines = new ArrayList<>();
+        newsHeadlines.add("\"Heute, am 26. November 2024, hat Verteidigungsminister Boris Pistorius seinen Verzicht auf eine Kanzlerkandidatur erklärt und unterstützt Bundeskanzler Olaf Scholz, der am kommenden Montag offiziell als SPD-Kanzlerkandidat nominiert werden soll. \\n\" +\n" +
+                "        //        \"ZDF\\n\" +\n" +
+                "         //       \" Zudem hat der Internationale Strafgerichtshof in Den Haag Haftbefehle gegen Israels Premierminister Benjamin Netanjahu und d");
+        // Get stocks TODO
+        //List<Stock> stocks = stockClient.getMultipleStock(stockSymbols);
+        List<Stock> stocks = new ArrayList<>();
 
+        Stock stock1 = new Stock(
+                "TechCorp",
+                new Stock.DataPoint("2024-11-25", "120.50", "118.00", "122.00", "121.00"),
+                new Stock.DataPoint("2024-11-24", "119.00", "117.50", "120.80", "118.20")
+        );
 
-        List<String> mailDirectories = prefsClient.getPreference("mail-directories")
-                .map(Preference::value)
-                .orElse(List.of("INBOX"));
+        Stock stock2 = new Stock(
+                "GreenEnergy",
+                new Stock.DataPoint("2024-11-25", "55.30", "54.00", "56.20", "55.80"),
+                new Stock.DataPoint("2024-11-24", "56.00", "53.90", "56.50", "54.50")
+        );
 
-        List<String> phoneContacts = prefsClient.getPreference("phone-contacts")
-                .map(Preference::value)
-                .orElse(List.of());
+        Stock stock3 = new Stock(
+                "RetailCo",
+                new Stock.DataPoint("2024-11-25", "78.10", "76.80", "79.50", "78.90"),
+                new Stock.DataPoint("2024-11-24", "77.50", "75.60", "78.20", "76.80")
+        );
 
-        // Get news
-        List<String> newsHeadlines = new java.util.ArrayList<>(newsClient.getNews(newsTopic, newsCount).stream().map(Article::title).toList());
-        //TODO entfernen für abgabe: Bugfix for chatgpt call
-        newsHeadlines.add(null);
-        newsHeadlines.add(null);
-        newsHeadlines.add(null);
+        stocks.add(stock1);
+        stocks.add(stock2);
+        stocks.add(stock3);
 
-        // Get stocks
-        List<Stock> stocks = stockClient.getMultipleStock(stockSymbols);
+        String prompt = "Du bist ein hilfreicher assistent, der als begleitung eines weckers informationen zu den heutigen nachrichten und bestimmten börsenwerten gibt. Die top 3 Nachrichten heute sind und  aktienwerte sind angehangen";
 
-        // Get mail directories
-        Map<String, Integer> unreadInMailDirectories = contactsClient.getUnreadInMultipleDirectories(mailDirectories);
+        ChatMessageRequest chatRequest = new ChatMessageRequest(prompt,
+                "Aktienwerte:" + stocks
+                        + "News:" + newsHeadlines);
+        ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, ChatId.TEST.getValue(), "message");
 
-        // Get last call dates
-        Map<String, LocalDate> lastCallDates = contactsClient.getLastCallDates(phoneContacts)
-                .entrySet().stream()
-                .filter(entrySet -> entrySet.getValue().isBefore(LocalDate.now().minusDays(7)))
-                .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
-
-        // Get Text for news and stocks
-        MorningRequest request = new MorningRequest(
-                newsHeadlines.getFirst(),
-                newsHeadlines.get(1),
-                newsHeadlines.get(2),
-                stocks,
-                unreadInMailDirectories,
-                lastCallDates);
-        //return chatGPTClient.getMorningRoutine(request).message().content();
+        return gptResponse.message().content();
         //TODO For Testing so we dont exceed API limit.
-        return "Heute, am 26. November 2024, hat Verteidigungsminister Boris Pistorius seinen Verzicht auf eine Kanzlerkandidatur erklärt und unterstützt Bundeskanzler Olaf Scholz, der am kommenden Montag offiziell als SPD-Kanzlerkandidat nominiert werden soll. \n" +
-                "ZDF\n" +
-                " Zudem hat der Internationale Strafgerichtshof in Den Haag Haftbefehle gegen Israels Premierminister Benjamin Netanjahu und den Hamas-Anführer erlassen. ";
+        //return "Heute, am 26. November 2024, hat Verteidigungsminister Boris Pistorius seinen Verzicht auf eine Kanzlerkandidatur erklärt und unterstützt Bundeskanzler Olaf Scholz, der am kommenden Montag offiziell als SPD-Kanzlerkandidat nominiert werden soll. \n" +
+        //        "ZDF\n" +
+         //       " Zudem hat der Internationale Strafgerichtshof in Den Haag Haftbefehle gegen Israels Premierminister Benjamin Netanjahu und den Hamas-Anführer erlassen. ";
     }
 
     /**
@@ -124,13 +123,43 @@ public class RoutineService {
 
         Speisekarte speisekarte = speisekarteClient.getSpeisekarteWithFilteredAllergene(today.toString(), allergene);
 
-        String prompt = "Bitte begrüße mich da es Mittagszeit ist und gebe ein mögliches Menü für das Mittagessen aus.";
+        String prompt = "Ich gebe dir anbei meine Speisekarte für heute. Bitte begrüße mich da es Mittagszeit ist und gebe ein mögliches Menü für das Mittagessen aus. Suche also eine Vorspeise, Hauptspeise und Nachspeise für mich aus.";
 
         ChatMessageRequest chatRequest = new ChatMessageRequest(prompt,
                 "Speisekarte:" + speisekarte);
         ChatGPTResponseChoice gptResponse = chatGPTClient.getResponse(chatRequest, "routine", "message");
 
         return gptResponse.message().content();
+    }
+
+
+    public String getNachmittagRoutine() {
+
+        // Get preferences
+        List<String> mailDirectories = prefsClient.getPreference("korb")
+                .map(Preference::value)
+                .orElse(List.of("INBOX"));
+
+        List<String> phoneContacts = prefsClient.getPreference("contact")
+                .map(Preference::value)
+                .orElse(List.of());
+
+        // Get mail directories
+        Map<String, Integer> unreadInMailDirectories = contactsClient.getUnreadInMultipleDirectories(mailDirectories);
+
+        // Get last call dates
+        Map<String, LocalDate> lastCallDates = contactsClient.getLastCallDates(phoneContacts)
+                .entrySet().stream()
+                .filter(entrySet -> entrySet.getValue().isBefore(LocalDate.now().minusDays(7)))
+                .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        String prompt = "Du bist ein hilfreicher assistent, der nachmittags an ungelesene mails in angegebenen ordnern erinnert. Außerdem sollst du erinnern, die angehängten kontakte mal wieder anzurufen, die schon länger nicht mehr kontaktiert werden.";
+
+        ChatMessageRequest request = new ChatMessageRequest(prompt, "Telefonkontakte: " + lastCallDates + "\nMail ordner: " + unreadInMailDirectories);
+
+        ChatGPTResponseChoice responseChoice = chatGPTClient.getResponse(request, ChatId.TEST.getValue(), "message");
+
+        return responseChoice.message().content();
     }
 
     public String getAbendRoutine(){

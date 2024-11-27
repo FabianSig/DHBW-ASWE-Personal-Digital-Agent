@@ -24,6 +24,9 @@ public class ContactsService {
 
         Map<String, Integer> unreadMap = new HashMap<>();
         for (String directory : directories) {
+            if(directory.isBlank()) {
+                continue;
+            }
             int unread = getUnreadInDirectory(directory);
             unreadMap.put(directory, unread);
         }
@@ -43,6 +46,9 @@ public class ContactsService {
 
         Map<String, LocalDate> lastCallDates = new HashMap<>();
         for (String contact : contacts) {
+            if(!contact.isBlank()) {
+                continue;
+            }
             LocalDate lastCallDate = getLastCallDate(contact);
             lastCallDates.put(contact, lastCallDate);
         }
@@ -50,8 +56,11 @@ public class ContactsService {
     }
 
     public LocalDate getLastCallDate(String contact) {
-
-        return phoneClient.getLastCallDate(contact);
+        // TODO remove
+        Map<String, LocalDate> callDates = new HashMap<>();
+        callDates.put("Mama", LocalDate.of(2024, 10, 24));
+        callDates.put("Papa", LocalDate.of(2024, 9, 15));
+        return callDates.get(contact);
     }
 
 }
