@@ -19,7 +19,6 @@ import online.dhbw_studentprojekt.mschatgpt.repository.PromptRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
@@ -30,7 +29,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -75,14 +73,7 @@ public class ChatGPTService {
 
         messages.addFirst(prompt);
 
-        if(extraPromptId != null && extraPromptId.equals("summary")) {
-            messages.add(new ChatGPTMessage("assistant", request.data()));
-        }
-        else{
-            messages.add(1, new ChatGPTMessage("system", request.data()));
-        }
-
-
+        messages.add(1, new ChatGPTMessage("system", request.data()));
 
 
         // If an extra prompt ID is provided, add the corresponding prompt to the list of messages
@@ -152,7 +143,8 @@ public class ChatGPTService {
         final Map<String, Object> responseFormat;
 
         try (InputStream is = getClass().getClassLoader().getResourceAsStream("responseFormat.json")) {
-            responseFormat = objectMapper.readValue(is, new TypeReference<>() {});
+            responseFormat = objectMapper.readValue(is, new TypeReference<>() {
+            });
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error reading response format", e);
         }
@@ -200,9 +192,17 @@ public class ChatGPTService {
         return response.choices().getFirst();
     }
 
-    public byte[]  getTTS(String message){
+    /**
+     * Generates a text-to-speech (TTS) audio byte array for the given message.
+     *
+     * @param message the input message to be summarized and converted to speech
+     * @return a byte array representing the generated TTS audio
+     * @throws IllegalArgumentException if the input message is null or empty
+     * @throws RuntimeException if there is an error during communication with the summarization or TTS service
+     */
+    public byte[] getTTS(String message) {
 
-        String summaryMessage = sendMessage(new ChatMessageRequest("Bitte fasse deine Nachricht nochmals zusammen um es kompakter zu machen", message), "summary", "summary").message().content();
+        String summaryMessage = sendMessage(new ChatMessageRequest(message, "N/A"), "summary", "summary").message().content();
 
         Map<String, String> requestBody = Map.of(
                 "voice", "alloy",

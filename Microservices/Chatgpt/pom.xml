@@ -40,7 +40,7 @@
         <dependency>
             <groupId>com.github.NikomitK</groupId>
             <artifactId>dtolibrary</artifactId>
-            <version>v1.14.0</version>
+            <version>v2.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
