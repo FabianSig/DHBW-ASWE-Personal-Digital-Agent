@@ -20,22 +20,39 @@ public class ContactsService {
     private final Store emailStore;
     private final PhoneClient phoneClient;
 
+    /**
+     * Retrieves the number of unread emails in multiple directories.
+     *
+     * @param directories the list of directories to check
+     * @return a map of directory names to the number of unread emails
+     */
     public Map<String, Integer> getUnreadInMultipleDirectories(List<String> directories) {
 
         Map<String, Integer> unreadMap = new HashMap<>();
+
+        // Iterate over directories and get unread emails count
         for (String directory : directories) {
-            if(directory.isBlank()) {
+            if (directory.isBlank()) {
                 continue;
             }
             int unread = getUnreadInDirectory(directory);
             unreadMap.put(directory, unread);
         }
-        if(unreadMap.isEmpty()){
-            unreadMap.put("INBOX",  getUnreadInDirectory("INBOX"));
+
+        // If no directories are provided, get unread emails count for INBOX
+        if (unreadMap.isEmpty()) {
+            unreadMap.put("INBOX", getUnreadInDirectory("INBOX"));
         }
         return unreadMap;
     }
 
+    /**
+     * Retrieves the number of unread emails in a specific directory.
+     *
+     * @param directory the directory to check
+     * @return the number of unread emails
+     * @throws ResponseStatusException if there is an error accessing the email store
+     */
     public int getUnreadInDirectory(String directory) {
 
         try {
@@ -45,31 +62,37 @@ public class ContactsService {
         }
     }
 
+    /**
+     * Retrieves the last call dates for multiple contacts.
+     *
+     * @param contacts the list of contacts to check
+     * @return a map of contact names to the last call dates
+     */
     public Map<String, LocalDate> getLastCallDates(List<String> contacts) {
 
         Map<String, LocalDate> lastCallDates = new HashMap<>();
+
+        // Iterate over contacts and get last call date
         for (String contact : contacts) {
-            if(contact.isBlank()) {
+            if (contact.isBlank()) {
                 continue;
             }
             LocalDate lastCallDate = getLastCallDate(contact);
             lastCallDates.put(contact, lastCallDate);
         }
+
         return lastCallDates;
     }
 
+    /**
+     * Retrieves the last call date for a specific contact.
+     *
+     * @param contact the contact to check
+     * @return the last call date
+     */
     public LocalDate getLastCallDate(String contact) {
-        // TODO remove
-        Map<String, LocalDate> callDates = new HashMap<>();
-        callDates.put("Mama", LocalDate.of(2024, 10, 24));
-        callDates.put("Papa", LocalDate.of(2024, 9, 15));
-        callDates.put("Kaka", LocalDate.of(2024, 8, 1));
-        callDates.put("Fabian", LocalDate.of(2024, 7, 1));
-        callDates.put("Niko", LocalDate.of(2024, 6, 1));
-        callDates.put("Sven", LocalDate.of(2024, 5, 1));
-        callDates.put("Ralf", LocalDate.of(2024, 4, 1));
-        callDates.put("Aziz", LocalDate.of(2024, 3, 1));
-        return callDates.get(contact);
+
+        return phoneClient.getLastCallDate(contact);
     }
 
 }

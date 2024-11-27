@@ -40,6 +40,7 @@ public class ClientConfig {
         properties.put("mail.imap.host", mailHost);
         properties.put("mail.imap.port", mailPort);
         properties.put("mail.imap.starttls.enable", "true");
+
         Session emailSession = Session.getDefaultInstance(properties);
         try {
             Store mailStore = emailSession.getStore("imaps");

@@ -33,6 +33,7 @@ public class ContactsServiceTest {
         // Arrange
         String contact = "Mama";
 
+        Mockito.when(phoneClient.getLastCallDate(contact)).thenReturn(LocalDate.of(2024, 10, 24));
 
         // Act
         LocalDate result = contactsService.getLastCallDate(contact);
@@ -44,6 +45,8 @@ public class ContactsServiceTest {
     @Test
     void getLastCallDates_ShouldReturnDateMap() {
         // Arrange
+        Mockito.when(phoneClient.getLastCallDate("Mama")).thenReturn(LocalDate.of(2024, 10, 24));
+        Mockito.when(phoneClient.getLastCallDate("Papa")).thenReturn(LocalDate.of(2024, 9, 15));
         // Act
         Map<String, LocalDate> result = contactsService.getLastCallDates(List.of("Mama", "Papa"));
 
