@@ -60,7 +60,6 @@ public class ContactsService {
 
     public LocalDate getLastCallDate(String contact) {
 
-        // TODO remove
         return phoneClient.getLastCallDate(contact);
     }
 
