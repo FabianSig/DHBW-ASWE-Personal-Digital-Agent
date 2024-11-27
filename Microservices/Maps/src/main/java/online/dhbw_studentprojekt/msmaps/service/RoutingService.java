@@ -18,6 +18,16 @@ public class RoutingService {
     private final MapsClient mapsClient;
     private final GeoCodingService geoCodingService;
 
+    /**
+     * Retrieves a route between two addresses based on the provided travel mode and route preferences.
+
+     *
+     * @param routeAddressRequest an object containing the origin and destination addresses,
+     *                            as well as the desired travel mode (e.g., "DRIVING", "WALKING")
+     * @return a {@link RouteResponse} object containing the route details such as distance, duration,
+     *         and path
+     */
+
     public RouteResponse getRouteByAddress(RouteAddressRequest routeAddressRequest) {
 
         GeoCodingResponse originResponse = geoCodingService.getGeoCoding(routeAddressRequest.origin());
@@ -39,20 +49,27 @@ public class RoutingService {
         return this.getRoute(routeRequest);
     }
 
+    /**
+     * Sends a route request to the routing client and retrieves the route details.
+     *
+     * @param routeRequest a {@link RouteRequest} object containing the necessary parameters
+     *                     to calculate the route, such as destination and travel mode
+     * @return a {@link RouteResponse} object containing details of the calculated route,
+     *         including distance, duration, and the route path
+     */
     public RouteResponse getRoute(RouteRequest routeRequest) {
 
         return routingClient.getRoute(routeRequest);
     }
 
-    private static LatLng extractCoordinates(GeoCodingResponse response) {
-
-        if (response.results() != null && !response.results().isEmpty()) {
-            Result result = response.results().getFirst();
-            return new LatLng(new Location(result.geometry().location().lat(), result.geometry().location().lng()));
-        }
-        throw new IllegalStateException("No results found in geocoding response.");
-    }
-
+    /**
+     * Retrieves directions between two addresses based on the provided travel mode.
+     *
+     * @param request a {@link RouteAddressRequest} object containing the destination
+     *                addresses, as well as the desired travel mode (e.g., "DRIVING", "WALKING")
+     * @return a {@link DirectionResponse} object containing detailed direction information,
+     *         such as step-by-step instructions, distance, and duration
+     */
     public DirectionResponse getDirections(RouteAddressRequest request) {
 
         GeoCodingResponse originResponse = geoCodingService.getGeoCoding(request.origin());
@@ -65,11 +82,31 @@ public class RoutingService {
         return response;
     }
 
+    /**
+     * Extracts the place ID from a geocoding response.
+     *
+     * @param response a {@link GeoCodingResponse} object containing the geocoding results
+     * @return a String representing the place ID
+     */
     private String extractPlaceId(GeoCodingResponse response) {
 
         if (response.results() != null && !response.results().isEmpty()) {
             Result result = response.results().getFirst();
             return "place_id:" + result.place_id();
+        }
+        throw new IllegalStateException("No results found in geocoding response.");
+    }
+
+    /**
+     * Extracts the coordinates (latitude and longitude) from a geocoding response.
+     *
+     * @param geoCodingResponse a {@link GeoCodingResponse} object containing the geocoding results
+     */
+    private static LatLng extractCoordinates(GeoCodingResponse geoCodingResponse) {
+
+        if (geoCodingResponse.results() != null && !geoCodingResponse.results().isEmpty()) {
+            Result result = geoCodingResponse.results().getFirst();
+            return new LatLng(new Location(result.geometry().location().lat(), result.geometry().location().lng()));
         }
         throw new IllegalStateException("No results found in geocoding response.");
     }
